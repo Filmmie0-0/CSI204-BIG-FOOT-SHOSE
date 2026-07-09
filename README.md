@@ -110,7 +110,6 @@
 ## 🗄️ โครงสร้างฐานข้อมูล (Database Schema)
 
 ```dbml
-// นำโค้ดส่วนนี้ไปวางใน dbdiagram.io ได้เลย
 Table users {
   id integer [primary key, increment]
   username varchar(50) [unique, not null]
