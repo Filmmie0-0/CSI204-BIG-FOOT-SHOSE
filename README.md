@@ -28,10 +28,18 @@
 * เพื่อให้ผู้ดูแลระบบ (Admin) และพนักงาน (Staff) สามารถจัดการสินค้า สต๊อก และคำสั่งซื้อได้อย่างมีประสิทธิภาพ
 
 ### ขอบเขตของระบบ
-* **ระบบแสดงสินค้า:** ค้นหา และกรองตามประเภทของรองเท้า
-* **ระบบตะกร้าสินค้า:** การจัดการสินค้าในตะกร้าและกระบวนการสั่งซื้อ
-* **ระบบสมาชิก:** สมัครสมาชิก เข้าสู่ระบบ (JWT Authentication) และดูประวัติการสั่งซื้อ
-* **ระบบจัดการหลังบ้าน:** สำหรับ Admin ในการเพิ่ม แก้ไข ลบสินค้า และอัปเดตสถานะการจัดส่ง
+---
+
+## ✨ ฟีเจอร์หลักของระบบ (Key Features)
+* **การจัดการสมาชิก (Authentication):** สมัครสมาชิก และเข้าสู่ระบบด้วยความปลอดภัยแบบ JWT
+* **การค้นหาสินค้า (Product Catalog):** ค้นหาสินค้า ดูรายละเอียด หมวดหมู่ ตัวเลือกย่อย (สี/ไซส์) และรีวิว
+* **ตะกร้าสินค้า (Shopping Cart):** จัดการสินค้าในตะกร้า เพิ่ม/ลดจำนวน พร้อมคำนวณยอดรวม
+* **ระบบสั่งซื้อสินค้า (Checkout & Orders):** จัดการที่อยู่จัดส่ง คำนวณค่าส่ง และสร้างใบสั่งซื้อ
+* **ระบบชำระเงิน (Payment Simulation):** จำลองการชำระเงินผ่านระบบ (เช่น บัตรเครดิต, PromptPay, COD)
+* **ติดตามคำสั่งซื้อ (Order Tracking):** ตรวจสอบประวัติการสั่งซื้อ และสถานะการจัดส่ง (Tracking)
+* **การจัดการสินค้าและสต็อก (Product Management):** เพิ่ม แก้ไข ลบ ข้อมูลสินค้า หมวดหมู่ รูปภาพ และจัดการคลังสินค้า
+* **การจัดการคำสั่งซื้อ (Order Management):** ตรวจสอบรายการสั่งซื้อ อัปเดตสถานะการชำระเงิน และสถานะการจัดส่ง
+* **แดชบอร์ดรายงาน (Dashboard & Reports):** สรุปภาพรวมยอดขาย จำนวนคำสั่งซื้อ และแจ้งเตือนสินค้าใกล้หมดสต็อก
 
 ---
 
@@ -86,6 +94,155 @@
 <p align="center">
   <img width="990" height="990" alt="use casediagram" src="https://github.com/user-attachments/assets/09523bb5-7196-4682-ad99-dfd7ee82f4fe" />
 </p>
+
+---
+## 🗄️ โครงสร้างฐานข้อมูล (Database Schema)
+
+```dbml
+// นำโค้ดส่วนนี้ไปวางใน dbdiagram.io ได้เลย
+Table users {
+  id integer [primary key, increment]
+  username varchar(50) [unique, not null]
+  email varchar(100) [unique, not null]
+  password_hash varchar(255) [not null]
+  first_name varchar(50)
+  last_name varchar(50)
+  phone_number varchar(20)
+  role varchar(20) [default: 'customer']
+  status varchar(20) [default: 'active']
+  created_at timestamp [default: `now()` ]
+  updated_at timestamp [default: `now()` ]
+}
+
+Table addresses {
+  id integer [primary key, increment]
+  user_id integer
+  address_type varchar(20)
+  receiver_name varchar(100) [not null]
+  receiver_phone varchar(20) [not null]
+  address_line1 varchar(255) [not null]
+  address_line2 varchar(255)
+  city varchar(100) [not null]
+  state varchar(100) [not null]
+  postal_code varchar(20) [not null]
+  is_default boolean [default: false]
+  created_at timestamp [default: `now()` ]
+}
+
+Table categories {
+  id integer [primary key, increment]
+  name varchar(100) [not null]
+  description text
+  parent_id integer
+  created_at timestamp [default: `now()` ]
+}
+
+Table products {
+  id integer [primary key, increment]
+  category_id integer
+  name varchar(150) [not null]
+  sku varchar(100) [unique, not null]
+  description text
+  price decimal(10,2) [not null]
+  discount_price decimal(10,2)
+  status varchar(20) [default: 'active']
+  created_at timestamp [default: `now()` ]
+  updated_at timestamp [default: `now()` ]
+}
+
+Table product_variants {
+  id integer [primary key, increment]
+  product_id integer
+  variant_name varchar(50) [not null]
+  variant_value varchar(50) [not null]
+  additional_price decimal(10,2) [default: 0]
+  stock_quantity integer [default: 0]
+}
+
+Table product_images {
+  id integer [primary key, increment]
+  product_id integer
+  image_url varchar(255) [not null]
+  is_primary boolean [default: false]
+  sort_order integer [default: 0]
+}
+
+Table carts {
+  id integer [primary key, increment]
+  user_id integer [unique]
+  created_at timestamp [default: `now()` ]
+  updated_at timestamp [default: `now()` ]
+}
+
+Table cart_items {
+  id integer [primary key, increment]
+  cart_id integer
+  product_id integer
+  variant_id integer [null]
+  quantity integer [not null, default: 1]
+  created_at timestamp [default: `now()` ]
+}
+
+Table orders {
+  id integer [primary key, increment]
+  user_id integer
+  shipping_address_id integer
+  billing_address_id integer
+  total_amount decimal(10,2) [not null]
+  shipping_fee decimal(10,2) [default: 0]
+  order_status varchar(30) [default: 'pending']
+  tracking_number varchar(100)
+  created_at timestamp [default: `now()` ]
+  updated_at timestamp [default: `now()` ]
+}
+
+Table order_items {
+  id integer [primary key, increment]
+  order_id integer
+  product_id integer
+  variant_id integer [null]
+  quantity integer [not null]
+  price_per_unit decimal(10,2) [not null]
+}
+
+Table payments {
+  id integer [primary key, increment]
+  order_id integer [unique]
+  payment_method varchar(50) [not null]
+  payment_status varchar(30) [default: 'pending']
+  transaction_id varchar(150)
+  amount_paid decimal(10,2) [not null]
+  paid_at timestamp
+}
+
+Table product_reviews {
+  id integer [primary key, increment]
+  user_id integer
+  product_id integer
+  rating integer [not null]
+  comment text
+  created_at timestamp [default: `now()` ]
+}
+
+Ref: addresses.user_id > users.id
+Ref: categories.parent_id > categories.id
+Ref: products.category_id > categories.id
+Ref: product_variants.product_id > products.id
+Ref: product_images.product_id > products.id
+Ref: carts.user_id - users.id
+Ref: cart_items.cart_id > carts.id
+Ref: cart_items.product_id > products.id
+Ref: cart_items.variant_id > product_variants.id
+Ref: orders.user_id > users.id
+Ref: orders.shipping_address_id > addresses.id
+Ref: orders.billing_address_id > addresses.id
+Ref: order_items.order_id > orders.id
+Ref: order_items.product_id > products.id
+Ref: order_items.variant_id > product_variants.id
+Ref: payments.order_id - orders.id 
+Ref: product_reviews.user_id > users.id
+Ref: product_reviews.product_id > products.id
+
 
 ---
 
