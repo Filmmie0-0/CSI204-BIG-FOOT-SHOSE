@@ -89,7 +89,7 @@
 ---
 ## USE CASEDIAGRAM
 <p align="center">
-  <img width="990" height="990" alt="use casediagram" src="https://github.com/user-attachments/assets/09523bb5-7196-4682-ad99-dfd7ee82f4fe" />
+  <img width="656" height="959" alt="use casediagram (1)" src="https://github.com/user-attachments/assets/37732f47-ac9e-4c5a-a39e-9d030dff8a43" />
 </p>
 
 ---
@@ -101,8 +101,7 @@
 ---
 ## Sequence Diagram
 <p align="center">
-  <img width="1550" height="1580" alt="Sequence Diagram" src="https://github.com/user-attachments/assets/e8650ac1-2a86-409f-a434-5a858dc9ea99" />
-
+  <img width="1063" height="1803" alt="Sequence Diagram (2)" src="https://github.com/user-attachments/assets/12b1f3b1-6155-43f1-83bd-9017e174be09" />
 </p>
 
 ---
