@@ -96,6 +96,20 @@
 </p>
 
 ---
+## Class Diagram
+<p align="center">
+  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/09438cc9-3763-4cbe-a3e2-0e68fb8903d2" />
+</p>
+
+---
+## Sequence Diagram
+<p align="center">
+  <img width="1550" height="1580" alt="Sequence Diagram" src="https://github.com/user-attachments/assets/e8650ac1-2a86-409f-a434-5a858dc9ea99" />
+
+</p>
+
+---
+
 ## 🗄️ โครงสร้างฐานข้อมูล (Database Schema)
 
 ```dbml
@@ -242,7 +256,6 @@ Ref: order_items.variant_id > product_variants.id
 Ref: payments.order_id - orders.id 
 Ref: product_reviews.user_id > users.id
 Ref: product_reviews.product_id > products.id
-
 
 ---
 
