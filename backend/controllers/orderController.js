@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const OrderItem = require('../models/OrderItem');
 const Address = require('../models/Address');
+const Payment = require('../models/Payment');
 
 const addOrderItems = async (req, res) => {
   try {
@@ -31,7 +32,8 @@ const addOrderItems = async (req, res) => {
         shipping_address_id,
         total_amount: totalPrice || itemsPrice,
         shipping_fee: shippingPrice || 0,
-        order_status: 'pending'
+        order_status: 'pending',
+        payment_method: paymentMethod || 'Credit / Debit Card'
       });
 
       const createdOrder = await order.save();
@@ -62,7 +64,13 @@ const getOrderById = async (req, res) => {
       .populate('shipping_address_id');
     if (order) {
       const items = await OrderItem.find({ order_id: order._id }).populate('product_id');
-      const orderWithItems = { ...order._doc, orderItems: items, user: order.user_id };
+      const paymentInfo = await Payment.findOne({ order_id: order._id });
+      const orderWithItems = { 
+        ...order._doc, 
+        orderItems: items, 
+        user: order.user_id,
+        payment: paymentInfo
+      };
       res.json(orderWithItems);
     } else {
       res.status(404).json({ message: 'ไม่พบคำสั่งซื้อนี้' });
@@ -95,10 +103,22 @@ const getOrders = async (req, res) => {
 
 const updateOrderToPaid = async (req, res) => {
   try {
+    const { payment_method, transaction_id } = req.body;
     const order = await Order.findById(req.params.id);
     if (order) {
       order.order_status = 'processing';
       const updatedOrder = await order.save();
+      
+      // บันทึกประวัติการจ่ายเงินลงฐานข้อมูล
+      await Payment.create({
+        order_id: order._id,
+        payment_method: payment_method || 'credit_card',
+        payment_status: 'completed',
+        transaction_id: transaction_id || '',
+        amount_paid: order.total_amount,
+        paid_at: Date.now()
+      });
+
       res.json(updatedOrder);
     } else {
       res.status(404).json({ message: 'ไม่พบคำสั่งซื้อ' });

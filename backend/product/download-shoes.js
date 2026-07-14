@@ -4,7 +4,7 @@ const path = require('path');
 const mongoose = require('mongoose');
 require('dotenv').config();
 
-const Product = require('./models/Product'); // Ensure correct path
+const Product = require('../models/Product'); // Ensure correct path
 
 const shoeData = [
   { id: '1542291026-7eec264c27ff', name: 'Nike Air Max Red', gender: 'Men', price: 4500, category: 'Sneakers' },
@@ -29,7 +29,7 @@ const shoeData = [
   { id: '1515955656352-a1fa3ffcd111', name: 'Kids Blue Denim Shoe', gender: 'Kids', price: 1700, category: 'Kids' }
 ];
 
-const targetDir = path.join(__dirname, '../frontend/public/product');
+const targetDir = path.join(__dirname, '../../frontend/public/product');
 
 // Create directory if it doesn't exist
 if (!fs.existsSync(targetDir)) {

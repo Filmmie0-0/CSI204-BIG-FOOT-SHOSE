@@ -46,7 +46,10 @@ const CheckoutForm = ({ orderId, onSuccess }) => {
       
       try {
         const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
-        await api.put(`/orders/${orderId}/pay`, {}, config);
+        await api.put(`/orders/${orderId}/pay`, {
+          payment_method: 'credit_card',
+          transaction_id: payload.paymentIntent.id
+        }, config);
         onSuccess();
       } catch (err) {
         setError('Payment succeeded but failed to update order status.');
