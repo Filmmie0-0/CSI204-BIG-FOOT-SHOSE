@@ -1,10 +1,23 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
+import FilterDrawer from '../components/FilterDrawer';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+
+  const [filters, setFilters] = useState({
+    sortBy: 'newest',
+    style: '',
+    sizeGroup: '', 
+    size: '',
+    color: '',
+    priceRange: '',
+    gender: []
+  });
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,80 +34,205 @@ const Home = () => {
     fetchProducts();
   }, []);
 
+  // FILTERING & SORTING LOGIC
+  const filteredProducts = useMemo(() => {
+    if (!Array.isArray(products)) return [];
+    let result = [...products];
+
+    if (filters.style) {
+      result = result.filter(p => p && p.style && p.style.toLowerCase() === filters.style.toLowerCase());
+    }
+
+    if (filters.size) {
+      result = result.filter(p => p && Array.isArray(p.sizes) && p.sizes.includes(filters.size));
+    }
+
+    if (filters.color) {
+      result = result.filter(p => p && p.color && p.color.toLowerCase() === filters.color.toLowerCase());
+    }
+
+    if (filters.priceRange) {
+      result = result.filter(p => {
+        if (!p || p.price === undefined) return false;
+        const price = p.price;
+        if (filters.priceRange === 'Under 1000฿') return price < 1000;
+        if (filters.priceRange === '1000฿ - 2000฿') return price >= 1000 && price <= 2000;
+        if (filters.priceRange === '2000฿ - 3000฿') return price >= 2000 && price <= 3000;
+        if (filters.priceRange === '3000฿ - 4000฿') return price >= 3000 && price <= 4000;
+        return true;
+      });
+    }
+
+    if (filters.gender.length > 0) {
+      result = result.filter(p => p && p.gender && filters.gender.includes(p.gender));
+    }
+
+    if (filters.sortBy === 'low-high') {
+      result.sort((a, b) => (a.price || 0) - (b.price || 0));
+    } else if (filters.sortBy === 'high-low') {
+      result.sort((a, b) => (b.price || 0) - (a.price || 0));
+    } else if (filters.sortBy === 'top-sellers') {
+      result.sort((a, b) => (b.salesCount || 0) - (a.salesCount || 0));
+    } else if (filters.sortBy === 'newest') {
+      result.sort((a, b) => new Date(b.createdAt || b._id) - new Date(a.createdAt || a._id));
+    }
+
+    return result;
+  }, [products, filters]);
+
+  const localStyles = {
+    heroSection: {
+      position: 'relative',
+      overflow: 'hidden',
+      borderRadius: '24px',
+      background: 'linear-gradient(135deg, #111827 0%, #1f2937 50%, #000000 100%)',
+      color: '#fff',
+      padding: '80px 24px',
+      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+      marginBottom: '64px',
+      marginTop: '24px'
+    },
+    heroHeading: {
+      fontSize: '3.5rem', 
+      fontWeight: '900',
+      letterSpacing: '-0.5px',
+      textTransform: 'uppercase',
+      lineHeight: '1.2',
+      color: '#ffffff'
+    },
+    sectionTitle: {
+      fontSize: '2rem', 
+      fontWeight: '900',
+      textTransform: 'uppercase',
+      color: '#111827',
+      margin: 0,
+      letterSpacing: '-0.5px'
+    },
+    filterBtn: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      border: '1px solid #dee2e6',
+      borderRadius: '50px',
+      padding: '8px 24px',
+      fontSize: '13px',
+      fontWeight: 'bold',
+      textTransform: 'uppercase',
+      letterSpacing: '0.5px',
+      color: '#111827',
+      backgroundColor: '#fff',
+      cursor: 'pointer',
+      height: '42px',
+      whiteSpace: 'nowrap',
+      boxShadow: '0 1px 3px rgba(0,0,0,0.05)'
+    },
+    headingUnderline: {
+      position: 'absolute',
+      bottom: '0',
+      left: '0',
+      width: '48px',
+      height: '4px',
+      backgroundColor: '#111827',
+      borderRadius: '50px',
+      marginBottom: '-8px'
+    }
+  };
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <Container style={{ maxWidth: '1240px', paddingBottom: '80px' }}>
       
       {/* Premium Hero Section */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-8 py-16 sm:px-16 sm:py-24 shadow-2xl">
-        {/* ตกแต่งแสงเบลอด้านหลัง */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-
-        <div className="relative max-w-2xl mx-auto text-center space-y-6">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest bg-white/10 text-blue-400 px-3 py-1 rounded-full backdrop-blur-sm">
+      <div style={localStyles.heroSection} className="text-center">
+        <div style={{ position: 'relative', zIndex: 2, maxWidth: '640px', margin: '0 auto' }}>
+          <span className="d-inline-block text-uppercase tracking-widest text-info px-3 py-1 rounded-pill mb-3 font-weight-bold" style={{ backgroundColor: 'rgba(255,255,255,0.1)', fontSize: '11px', letterSpacing: '1.5px' }}>
             New Collection 2026
           </span>
-          <h1 className="text-4xl font-black tracking-tight sm:text-6xl uppercase leading-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-            Find your <br className="sm:hidden" /> perfect match.
+          <h1 style={localStyles.heroHeading} className="mb-3">
+            Find your perfect match.
           </h1>
-          <p className="text-lg text-gray-400 font-medium">
+          <p className="mb-4" style={{ color: '#9ca3af', fontSize: '1.1rem', fontWeight: '500' }}>
             Explore our latest collection of premium footwear designed for comfort and style.
           </p>
-          <div className="pt-4">
-            <button className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-bold rounded-xl text-gray-900 bg-white hover:bg-gray-100 shadow-sm transition-all duration-200 transform hover:-translate-y-0.5">
+          <div>
+            <Button variant="light" size="lg" className="font-weight-bold px-4 py-2" style={{ borderRadius: '12px', fontSize: '15px', color: '#111827' }}>
               Shop New Arrivals
-            </button>
+            </Button>
           </div>
         </div>
       </div>
 
       {/* Product Grid Section */}
-      <div>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-10 border-b border-gray-100 pb-5">
+      <div className="w-100">
+        
+        {/* แถบหัวข้อและปุ่มตัวกรอง*/}
+        <div className="w-100 d-flex justify-content-between align-items-center pb-3 mb-5 border-bottom">
           <div>
-            
-            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight mt-1 relative inline-block">
+            <h2 style={localStyles.sectionTitle} className="position-relative d-inline-block">
               New Arrivals
-              <span className="absolute bottom-0 left-0 w-12 h-1 bg-gray-900 rounded-full -mb-1"></span>
+              <span style={localStyles.headingUnderline}></span>
             </h2>
           </div>
-          <p className="text-sm text-gray-500 font-medium">{products.length} Products Found</p>
+
+          <div className="d-flex align-items-center gap-4">
+            <span className="text-muted font-weight-bold m-0" style={{ fontSize: '14px', color: '#6b7280' }}>
+              {filteredProducts.length} Products Found
+            </span>
+            
+            {/* ปุ่มกดเปิดสไตล์ */}
+            <button 
+              onClick={() => setIsFilterOpen(true)}
+              style={localStyles.filterBtn}
+              className="btn btn-light"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" style={{ width: '14px', height: '14px' }}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+              </svg>
+              <span>ตัวกรอง</span>
+            </button>
+          </div>
         </div>
         
-        {/* Loading State ด้วย Skeleton Loader */}
+        {/* แสดงรายการสินค้า */}
         {loading ? (
-          <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+          <Row className="g-4">
             {[...Array(4)].map((_, index) => (
-              <div key={index} className="animate-pulse space-y-4">
-                <div className="aspect-square w-full bg-gray-200 rounded-2xl"></div>
-                <div className="h-4 bg-gray-200 rounded-md w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded-md w-1/2"></div>
-                <div className="h-6 bg-gray-200 rounded-md w-1/4"></div>
-              </div>
+              <Col xs={12} sm={6} lg={3} key={index}>
+                <div className="placeholder-glow">
+                  <div className="bg-light rounded-4 w-100" style={{ aspectRatio: '1/1', borderRadius: '16px' }}></div>
+                  <div className="bg-light rounded w-75 mt-3" style={{ height: '16px' }}></div>
+                  <div className="bg-light rounded w-50 mt-2" style={{ height: '16px' }}></div>
+                </div>
+              </Col>
             ))}
-          </div>
-        ) : products.length === 0 ? (
-          /* Empty State กรณีไม่มีข้อมูล หรือต่อ Backend ไม่ติด */
-          <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
-            </svg>
-            <h3 className="mt-4 text-lg font-bold text-gray-900">No products available</h3>
-            <p className="mt-2 text-sm text-gray-500">Please make sure your database server is connected.</p>
+          </Row>
+        ) : filteredProducts.length === 0 ? (
+          <div className="text-center py-5 bg-light border border-dashed" style={{ borderRadius: '16px' }}>
+            <h3 className="h6 font-weight-bold text-dark mt-2">No products match your filters</h3>
+            <p className="text-muted small mb-0">Try clearing some options or check backend server.</p>
           </div>
         ) : (
-          /* Product Grid ที่ได้ข้อมูลมาแล้ว */
-          <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-            {products.map((product) => (
-              <div key={product._id} className="transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg rounded-2xl">
-                <ProductCard product={product} />
-              </div>
+          <Row className="g-4">
+            {filteredProducts.map((product) => (
+              <Col xs={12} sm={6} lg={3} key={product._id}>
+                <div className="h-100 rounded-4 transition" style={{ transition: 'all 0.3s' }}>
+                  <ProductCard product={product} />
+                </div>
+              </Col>
             ))}
-          </div>
+          </Row>
         )}
       </div>
 
-    </div>
+      {/* เรียก component สไลด์ขวา */}
+      <FilterDrawer 
+        isOpen={isFilterOpen} 
+        onClose={() => setIsFilterOpen(false)} 
+        filters={filters}
+        setFilters={setFilters}
+        products={products}
+      />
+
+    </Container>
   );
 };
 
