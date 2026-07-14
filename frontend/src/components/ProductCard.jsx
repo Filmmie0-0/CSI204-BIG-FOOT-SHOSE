@@ -5,7 +5,7 @@ const ProductCard = ({ product }) => {
     <Link to={`/product/${product._id}`} className="group relative block overflow-hidden">
       <div className="bg-gray-100 aspect-square w-full overflow-hidden group-hover:opacity-75 transition-opacity duration-300">
         <img 
-          src={product.images?.[0] || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} 
+          src={product.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} 
           alt={product.name}
           className="h-full w-full object-cover object-center"
         />

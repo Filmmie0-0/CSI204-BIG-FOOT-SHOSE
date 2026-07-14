@@ -121,11 +121,34 @@ const updateOrderToDelivered = async (req, res) => {
   }
 };
 
+const stripe = require('stripe')(process.env.STRIPE_SECRET_KEY || 'sk_test_dummyKeyToPreventCrash');
+
+const createPaymentIntent = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'Order not found' });
+    }
+
+    const paymentIntent = await stripe.paymentIntents.create({
+      amount: Math.round(order.total_amount * 100), // Stripe expects amount in cents (THB has subunits)
+      currency: 'thb',
+    });
+
+    res.json({
+      clientSecret: paymentIntent.client_secret,
+    });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
 module.exports = {
   addOrderItems,
   getOrderById,
   getMyOrders,
   getOrders,
   updateOrderToPaid,
-  updateOrderToDelivered
+  updateOrderToDelivered,
+  createPaymentIntent
 };

@@ -120,7 +120,7 @@ const PlaceOrder = () => {
             <ul className="divide-y divide-gray-200">
               {cart.map((item, index) => (
                 <li key={index} className="py-4 flex items-center">
-                  <img src={item.images?.[0]} alt={item.name} className="w-16 h-16 rounded-sm object-cover bg-gray-100" />
+                  <img src={item.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} alt={item.name} className="w-16 h-16 rounded-sm object-cover bg-gray-100" />
                   <div className="ml-4 flex-1">
                     <Link to={`/product/${item._id}`} className="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">
                       {item.name}

@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
+import StripePayment from '../components/StripePayment';
 
 const OrderDetail = () => {
   const { id } = useParams();
@@ -57,9 +58,14 @@ const OrderDetail = () => {
             <h2 className="text-lg font-medium text-gray-900 uppercase mb-4 tracking-wide">Payment Method</h2>
             <p className="text-gray-600 text-sm leading-relaxed mb-4">{order.paymentMethod}</p>
             {order.isPaid ? (
-              <div className="bg-green-50 text-green-700 p-3 rounded-sm text-sm border border-green-200">Paid on {new Date(order.paidAt).toLocaleDateString()}</div>
+              <div className="bg-green-50 text-green-700 p-3 rounded-sm text-sm border border-green-200">Paid</div>
             ) : (
-              <div className="bg-red-50 text-red-700 p-3 rounded-sm text-sm border border-red-200">Not Paid</div>
+              <div>
+                <div className="bg-red-50 text-red-700 p-3 rounded-sm text-sm border border-red-200 mb-4">Not Paid</div>
+                {order.paymentMethod === 'Credit / Debit Card' && (
+                  <StripePayment orderId={order._id} onSuccess={() => window.location.reload()} />
+                )}
+              </div>
             )}
           </div>
 
@@ -69,16 +75,16 @@ const OrderDetail = () => {
             <ul className="divide-y divide-gray-200">
               {order.orderItems.map((item, index) => (
                 <li key={index} className="py-4 flex items-center">
-                  <img src={item.images?.[0]} alt={item.name} className="w-16 h-16 rounded-sm object-cover bg-gray-100" />
+                  <img src={item.product_id?.image_url || item.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} alt={item.product_id?.name || item.name} className="w-16 h-16 rounded-sm object-cover bg-gray-100" />
                   <div className="ml-4 flex-1">
-                    <Link to={`/product/${item.product}`} className="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">
-                      {item.name}
+                    <Link to={`/product/${item.product_id?._id || item.product}`} className="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">
+                      {item.product_id?.name || item.name}
                     </Link>
-                    <p className="text-sm text-gray-500 mt-1">Size: {item.selectedSize}</p>
+                    {item.selectedSize && <p className="text-sm text-gray-500 mt-1">Size: {item.selectedSize}</p>}
                   </div>
                   <div className="text-sm font-medium text-gray-900 text-right">
-                    <span className="text-gray-500 font-normal mr-2">{item.qty} x ฿{item.price.toLocaleString()}</span>
-                    ฿{(item.qty * item.price).toLocaleString()}
+                    <span className="text-gray-500 font-normal mr-2">{item.quantity || item.qty} x ฿{(item.price_per_unit || item.price).toLocaleString()}</span>
+                    ฿{((item.quantity || item.qty) * (item.price_per_unit || item.price)).toLocaleString()}
                   </div>
                 </li>
               ))}

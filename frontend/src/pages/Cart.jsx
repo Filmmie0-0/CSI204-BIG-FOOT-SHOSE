@@ -33,7 +33,7 @@ const Cart = () => {
               <li key={item.cartItemId} className="flex py-6 sm:py-10">
                 <div className="shrink-0">
                   <img
-                    src={item.images?.[0]}
+                    src={item.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'}
                     alt={item.name}
                     className="w-24 h-24 rounded-md object-center object-cover sm:w-32 sm:h-32 bg-gray-100"
                   />

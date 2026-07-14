@@ -20,8 +20,8 @@ const ProductDetail = () => {
         const { data } = await api.get(`/products/${id}`);
         setProduct(data);
         // กำหนดให้เลือกไซส์แรกเป็นค่าเริ่มต้น
-        if (data.variants && data.variants.length > 0) {
-          setSelectedSize(data.variants[0].variantValue);
+        if (data.sizes && data.sizes.length > 0) {
+          setSelectedSize(data.sizes[0]);
         }
       } catch (error) {
         console.error(error);
@@ -33,11 +33,12 @@ const ProductDetail = () => {
   }, [id]);
 
   const handleAddToCart = () => {
-    if (!selectedSize) {
+    // ถ้ารองเท้ามีไซส์ให้เลือก แต่ผู้ใช้ยังไม่ได้เลือก
+    if (product.sizes && product.sizes.length > 0 && !selectedSize) {
       alert('กรุณาเลือกไซส์ก่อนเพิ่มลงตะกร้า');
       return;
     }
-    // ส่งไซส์ที่เลือกไปด้วย
+    // ส่งไซส์ที่เลือกไปด้วย (ถ้าไม่มีก็จะเป็น string ว่าง)
     addToCart(product, selectedSize);
     navigate('/cart'); 
   };
@@ -49,7 +50,7 @@ const ProductDetail = () => {
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="md:flex md:items-center md:space-x-8 lg:space-x-12">
         <div className="md:w-1/2">
-          <img src={product.images?.[0]} alt={product.name} className="w-full h-auto object-cover bg-gray-100" />
+          <img src={product.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} alt={product.name} className="w-full h-auto object-cover bg-gray-100" />
         </div>
         
         <div className="md:w-1/2 mt-8 md:mt-0">
@@ -61,21 +62,21 @@ const ProductDetail = () => {
           </div>
 
           {/* --- UI สำหรับเลือกไซส์ --- */}
-          {product.variants && product.variants.length > 0 && (
+          {product.sizes && product.sizes.length > 0 && (
             <div className="mt-8">
               <h3 className="text-sm font-medium text-gray-900 uppercase">Size (EU)</h3>
               <div className="mt-3 flex flex-wrap gap-3">
-                {product.variants.map((variant) => (
+                {product.sizes.map((size) => (
                   <button
-                    key={variant.variantValue}
-                    onClick={() => setSelectedSize(variant.variantValue)}
+                    key={size}
+                    onClick={() => setSelectedSize(size)}
                     className={`border rounded-sm py-2 px-4 text-sm font-medium transition-colors ${
-                      selectedSize === variant.variantValue
+                      selectedSize === size
                         ? 'border-black bg-black text-white'
                         : 'border-gray-300 text-gray-900 hover:border-black'
                     }`}
                   >
-                    {variant.variantValue}
+                    {size}
                   </button>
                 ))}
               </div>

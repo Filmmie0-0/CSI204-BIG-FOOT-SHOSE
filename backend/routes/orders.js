@@ -5,16 +5,19 @@ const {
   getMyOrders, 
   getOrders, 
   updateOrderToPaid, 
-  updateOrderToDelivered 
+  updateOrderToDelivered,
+  createPaymentIntent
 } = require('../controllers/orderController');
+const { protect, admin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-router.post('/', addOrderItems);
-router.get('/', getOrders); 
-router.get('/myorders/:userId', getMyOrders);
-router.get('/:id', getOrderById);
-router.put('/:id/pay', updateOrderToPaid); 
-router.put('/:id/deliver', updateOrderToDelivered); 
+router.post('/', protect, addOrderItems);
+router.get('/', protect, admin, getOrders); 
+router.get('/myorders/:userId', protect, getMyOrders);
+router.get('/:id', protect, getOrderById);
+router.post('/:id/create-payment-intent', protect, createPaymentIntent);
+router.put('/:id/pay', protect, updateOrderToPaid); 
+router.put('/:id/deliver', protect, admin, updateOrderToDelivered); 
 
 module.exports = router;

@@ -7,6 +7,8 @@ const productSchema = new mongoose.Schema({
   description: { type: String },
   price: { type: Number, required: true }, // Using Number for decimal
   discount_price: { type: Number },
+  image_url: { type: String },
+  sizes: [{ type: String }], // เพิ่มฟิลด์ sizes
   status: { type: String, enum: ['active', 'draft', 'out_of_stock'], default: 'active' }
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
