@@ -169,11 +169,10 @@ const Navbar = () => {
               <span style={styles.badge}>{cartItemCount}</span>
             )}
           </Link>
-
         </div>
       </Container>
     </BootstrapNavbar>
   )
 }
 
-export default Navbar
+export default Navbar 

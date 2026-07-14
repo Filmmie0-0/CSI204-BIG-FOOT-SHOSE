@@ -4,7 +4,7 @@ import ProductCard from '../components/ProductCard'
 import FilterDrawer from '../components/FilterDrawer'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 
-const Home = () => {
+const Women = () => {
   const [products, setProducts] = useState([])
   const [loading, setLoading] = useState(true)
   const [isFilterOpen, setIsFilterOpen] = useState(false)
@@ -16,9 +16,10 @@ const Home = () => {
     size: '',
     color: '',
     priceRange: '',
-    gender: [],
+    gender: ['women'],
   })
 
+  // ดึงข้อมูลสินค้า
   useEffect(() => {
     const fetchProducts = async () => {
       try {
@@ -37,8 +38,13 @@ const Home = () => {
   // FILTERING & SORTING LOGIC
   const filteredProducts = useMemo(() => {
     if (!Array.isArray(products)) return []
-    let result = [...products]
 
+    // บังคับกรอง
+    let result = products.filter(
+      (p) => p && p.gender && p.gender.toLowerCase() === 'women',
+    )
+
+    // ตัวกรองจาก Drawer
     if (filters.style) {
       result = result.filter(
         (p) =>
@@ -74,12 +80,7 @@ const Home = () => {
       })
     }
 
-    if (filters.gender.length > 0) {
-      result = result.filter(
-        (p) => p && p.gender && filters.gender.includes(p.gender),
-      )
-    }
-
+    // จัดเรียงสินค้า)
     if (filters.sortBy === 'low-high') {
       result.sort((a, b) => (a.price || 0) - (b.price || 0))
     } else if (filters.sortBy === 'high-low') {
@@ -97,26 +98,6 @@ const Home = () => {
   }, [products, filters])
 
   const localStyles = {
-    heroSection: {
-      position: 'relative',
-      overflow: 'hidden',
-      borderRadius: '24px',
-      background:
-        'linear-gradient(135deg, #111827 0%, #1f2937 50%, #000000 100%)',
-      color: '#fff',
-      padding: '80px 24px',
-      boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-      marginBottom: '64px',
-      marginTop: '24px',
-    },
-    heroHeading: {
-      fontSize: '3.5rem',
-      fontWeight: '900',
-      letterSpacing: '-0.5px',
-      textTransform: 'uppercase',
-      lineHeight: '1.2',
-      color: '#ffffff',
-    },
     sectionTitle: {
       fontSize: '2rem',
       fontWeight: '900',
@@ -156,64 +137,17 @@ const Home = () => {
   }
 
   return (
-    <Container style={{ maxWidth: '1240px', paddingBottom: '80px' }}>
-      {/* Premium Hero Section */}
-      <div style={localStyles.heroSection} className="text-center">
-        <div
-          style={{
-            position: 'relative',
-            zIndex: 2,
-            maxWidth: '640px',
-            margin: '0 auto',
-          }}
-        >
-          <span
-            className="d-inline-block text-uppercase tracking-widest text-info px-3 py-1 rounded-pill mb-3 font-weight-bold"
-            style={{
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              fontSize: '11px',
-              letterSpacing: '1.5px',
-            }}
-          >
-            New Collection 2026
-          </span>
-          <h1 style={localStyles.heroHeading} className="mb-3">
-            Find your perfect match.
-          </h1>
-          <p
-            className="mb-4"
-            style={{ color: '#9ca3af', fontSize: '1.1rem', fontWeight: '500' }}
-          >
-            Explore our latest collection of premium footwear designed for
-            comfort and style.
-          </p>
-          <div>
-            <Button
-              variant="light"
-              size="lg"
-              className="font-weight-bold px-4 py-2"
-              style={{
-                borderRadius: '12px',
-                fontSize: '15px',
-                color: '#111827',
-              }}
-            >
-              Shop New Arrivals
-            </Button>
-          </div>
-        </div>
-      </div>
-
-      {/* Product Grid Section */}
+    <Container
+      style={{ maxWidth: '1240px', paddingBottom: '80px', marginTop: '40px' }}
+    >
       <div className="w-100">
-        {/* แถบหัวข้อและปุ่มตัวกรอง*/}
         <div className="w-100 d-flex justify-content-between align-items-center pb-3 mb-5 border-bottom">
           <div>
             <h2
               style={localStyles.sectionTitle}
               className="position-relative d-inline-block"
             >
-              New Arrivals
+              WOMEN
               <span style={localStyles.headingUnderline}></span>
             </h2>
           </div>
@@ -226,7 +160,6 @@ const Home = () => {
               {filteredProducts.length} Products Found
             </span>
 
-            {/* ปุ่มกดเปิดสไตล์ */}
             <button
               onClick={() => setIsFilterOpen(true)}
               style={localStyles.filterBtn}
@@ -251,7 +184,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* แสดงรายการสินค้า */}
+        {/* Grid สินค้า */}
         {loading ? (
           <Row className="g-4">
             {[...Array(4)].map((_, index) => (
@@ -263,10 +196,6 @@ const Home = () => {
                   ></div>
                   <div
                     className="bg-light rounded w-75 mt-3"
-                    style={{ height: '16px' }}
-                  ></div>
-                  <div
-                    className="bg-light rounded w-50 mt-2"
                     style={{ height: '16px' }}
                   ></div>
                 </div>
@@ -312,4 +241,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Women
