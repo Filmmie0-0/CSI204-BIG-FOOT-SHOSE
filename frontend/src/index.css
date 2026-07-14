@@ -1,5 +1,4 @@
-@import "tailwindcss";
-
-@theme {
-  --color-brand: #f97316;
+/* Reset some base styles if needed, but Bootstrap handles most */
+body {
+  background-color: #FF7A59;
 }

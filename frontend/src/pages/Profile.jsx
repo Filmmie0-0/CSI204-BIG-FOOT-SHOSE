@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import api from '../utils/api';
+import { Container, Row, Col, Card, Form, Button, Alert, Table, Badge } from 'react-bootstrap';
 
 const Profile = () => {
   const navigate = useNavigate();
@@ -75,137 +76,158 @@ const Profile = () => {
   if (!userInfo) return null;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 uppercase mb-10">
+    <Container className="py-5" style={{ maxWidth: '1200px' }}>
+      <h1 className="display-5 fw-black text-dark text-uppercase mb-5" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
         My Profile
       </h1>
 
-      <div className="lg:grid lg:grid-cols-4 lg:gap-x-8">
+      <Row className="gy-5 gx-lg-5">
         
         {/* คอลัมน์ซ้าย: ฟอร์มแก้ไขข้อมูล */}
-        <div className="lg:col-span-1 mb-8 lg:mb-0">
-          <div className="bg-gray-50 border border-gray-200 rounded-sm p-6">
-            <h2 className="text-lg font-medium text-gray-900 uppercase mb-4 tracking-wide">Edit Details</h2>
-            
-            {message && <div className="mb-4 bg-green-50 text-green-700 p-3 rounded-sm text-sm border border-green-200">{message}</div>}
-            {updateError && <div className="mb-4 bg-red-50 text-red-500 p-3 rounded-sm text-sm border border-red-200">{updateError}</div>}
+        <Col lg={4} className="mb-4 mb-lg-0">
+          <Card className="border-0 shadow-sm rounded-4 bg-light sticky-top" style={{ top: '2rem' }}>
+            <Card.Body className="p-4 p-md-5">
+              <h2 className="fs-5 fw-bold text-dark text-uppercase mb-4 pb-3 border-bottom" style={{ letterSpacing: '1px' }}>Edit Details</h2>
+              
+              {message && <Alert variant="success" className="border-0 shadow-sm py-2 px-3 fw-medium small mb-4">{message}</Alert>}
+              {updateError && <Alert variant="danger" className="border-0 shadow-sm py-2 px-3 fw-medium small mb-4">{updateError}</Alert>}
 
-            <form onSubmit={submitHandler} className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Username</label>
-                <input
-                  type="text"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-black sm:text-sm"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                <input
-                  type="email"
-                  required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-black sm:text-sm"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">New Password</label>
-                <input
-                  type="password"
-                  placeholder="ปล่อยว่างหากไม่ต้องการเปลี่ยน"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-black sm:text-sm placeholder-gray-400"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Confirm New Password</label>
-                <input
-                  type="password"
-                  placeholder="ยืนยันรหัสผ่านใหม่"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-sm focus:outline-none focus:border-black sm:text-sm placeholder-gray-400"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                />
-              </div>
-              <button
-                type="submit"
-                disabled={updateLoading}
-                className={`w-full mt-4 py-3 rounded-sm text-sm font-medium text-white uppercase tracking-widest transition-colors ${
-                  updateLoading ? 'bg-gray-400' : 'bg-black hover:bg-gray-800'
-                }`}
-              >
-                {updateLoading ? 'Updating...' : 'Update Profile'}
-              </button>
-            </form>
-          </div>
-        </div>
+              <Form onSubmit={submitHandler}>
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-2" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Username</Form.Label>
+                  <Form.Control
+                    type="text"
+                    required
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="py-3 px-4 bg-white border-0 shadow-sm focus-ring rounded-3"
+                    style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-2" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Email</Form.Label>
+                  <Form.Control
+                    type="email"
+                    required
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="py-3 px-4 bg-white border-0 shadow-sm focus-ring rounded-3"
+                    style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-3">
+                  <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-2" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>New Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="ปล่อยว่างหากไม่ต้องการเปลี่ยน"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="py-3 px-4 bg-white border-0 shadow-sm focus-ring rounded-3"
+                    style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+                  />
+                </Form.Group>
+                
+                <Form.Group className="mb-4">
+                  <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-2" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Confirm New Password</Form.Label>
+                  <Form.Control
+                    type="password"
+                    placeholder="ยืนยันรหัสผ่านใหม่"
+                    value={confirmPassword}
+                    onChange={(e) => setConfirmPassword(e.target.value)}
+                    className="py-3 px-4 bg-white border-0 shadow-sm focus-ring rounded-3"
+                    style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+                  />
+                </Form.Group>
+                
+                <div className="pt-2">
+                  <Button
+                    type="submit"
+                    variant="dark"
+                    size="lg"
+                    disabled={updateLoading}
+                    className="w-100 py-3 rounded-pill fw-bold text-uppercase shadow-sm hover-translate-y transition-all"
+                    style={{ letterSpacing: '1px' }}
+                  >
+                    {updateLoading ? 'Updating...' : 'Update Profile'}
+                  </Button>
+                </div>
+              </Form>
+            </Card.Body>
+          </Card>
+        </Col>
 
-        {/* คอลัมน์ขวา: ตารางประวัติการสั่งซื้อ (เหมือนเดิม) */}
-        <div className="lg:col-span-3">
-          <h2 className="text-xl font-bold text-gray-900 uppercase mb-6">Order History</h2>
+        {/* คอลัมน์ขวา: ตารางประวัติการสั่งซื้อ */}
+        <Col lg={8}>
+          <h2 className="fs-4 fw-black text-dark text-uppercase mb-4 pb-2 border-bottom d-inline-block">Order History</h2>
           
           {loadingOrders ? (
-            <p className="text-gray-500">Loading orders...</p>
+            <p className="text-muted">Loading orders...</p>
           ) : ordersError ? (
-            <p className="text-red-500">{ordersError}</p>
+            <p className="text-danger">{ordersError}</p>
           ) : orders.length === 0 ? (
-            <div className="bg-gray-50 border border-gray-200 rounded-sm p-8 text-center">
-              <p className="text-gray-500 mb-4">You haven't placed any orders yet.</p>
-              <Link to="/" className="text-black font-medium underline uppercase text-sm tracking-widest hover:text-gray-600">Start Shopping</Link>
-            </div>
+            <Card className="border-0 shadow-sm rounded-4 bg-light text-center p-5">
+              <Card.Body>
+                <p className="text-muted fs-5 mb-4">You haven't placed any orders yet.</p>
+                <Button 
+                  as={Link} 
+                  to="/" 
+                  variant="dark"
+                  className="px-4 py-2 rounded-pill text-uppercase fw-bold shadow-sm"
+                  style={{ letterSpacing: '1px' }}
+                >
+                  Start Shopping
+                </Button>
+              </Card.Body>
+            </Card>
           ) : (
-            <div className="bg-white border border-gray-200 rounded-sm overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-gray-200">
-                  <thead className="bg-gray-50">
-                    <tr>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Order ID</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Paid</th>
-                      <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Delivered</th>
-                      <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Action</th>
+            <Card className="border-0 shadow-sm rounded-4 overflow-hidden">
+              <Table responsive hover className="mb-0 border-light align-middle text-nowrap">
+                <thead className="bg-light text-muted fw-bold text-uppercase small" style={{ letterSpacing: '1px' }}>
+                  <tr>
+                    <th className="py-3 px-4 border-0">Order ID</th>
+                    <th className="py-3 px-4 border-0">Date</th>
+                    <th className="py-3 px-4 border-0">Total</th>
+                    <th className="py-3 px-4 border-0">Paid</th>
+                    <th className="py-3 px-4 border-0">Delivered</th>
+                    <th className="py-3 px-4 border-0 text-end">Action</th>
+                  </tr>
+                </thead>
+                <tbody className="border-top-0">
+                  {orders.map((order) => (
+                    <tr key={order._id}>
+                      <td className="py-3 px-4 fw-medium text-dark">{order._id.substring(0, 8)}...</td>
+                      <td className="py-3 px-4 text-secondary">{new Date(order.created_at || order.createdAt).toLocaleDateString()}</td>
+                      <td className="py-3 px-4 fw-bold text-dark">฿{(order.total_amount || 0).toLocaleString()}</td>
+                      <td className="py-3 px-4">
+                        {order.order_status !== 'pending' ? (
+                          <Badge bg="success" className="bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">Yes</Badge>
+                        ) : (
+                          <Badge bg="danger" className="bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">No</Badge>
+                        )}
+                      </td>
+                      <td className="py-3 px-4">
+                        {order.order_status === 'delivered' ? (
+                          <Badge bg="success" className="bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1">Yes</Badge>
+                        ) : (
+                          <Badge bg="danger" className="bg-opacity-10 text-danger border border-danger border-opacity-25 px-2 py-1">No</Badge>
+                        )}
+                      </td>
+                      <td className="py-3 px-4 text-end">
+                        <Link to={`/order/${order._id}`} className="btn btn-sm btn-outline-dark rounded-pill fw-bold text-uppercase px-3" style={{ fontSize: '0.75rem', letterSpacing: '0.5px' }}>
+                          Details
+                        </Link>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="bg-white divide-y divide-gray-200">
-                    {orders.map((order) => (
-                      <tr key={order._id} className="hover:bg-gray-50 transition-colors">
-                        <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order._id.substring(0, 8)}...</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900 font-medium">฿{order.totalPrice.toLocaleString()}</td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {order.isPaid ? (
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Yes</span>
-                          ) : (
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">No</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-sm">
-                          {order.isDelivered ? (
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Yes</span>
-                          ) : (
-                            <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">No</span>
-                          )}
-                        </td>
-                        <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                          <Link to={`/order/${order._id}`} className="text-black hover:text-gray-500 underline uppercase tracking-wider text-xs">
-                            View Details
-                          </Link>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
+                  ))}
+                </tbody>
+              </Table>
+            </Card>
           )}
-        </div>
-      </div>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

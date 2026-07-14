@@ -1,4 +1,4 @@
-import { Routes, Route } from 'react-router-dom';
+import { Routes, Route, useLocation } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -13,12 +13,25 @@ import AdminDashboard from './pages/AdminDashboard';
 import Men from './pages/Men';
 import Women from './pages/Women'
 
+// Admin Components
+import AdminLayout from './components/AdminLayout';
+import AdminDashboardHome from './pages/AdminDashboardHome';
+import AdminProducts from './pages/AdminProducts';
+import AdminOrders from './pages/AdminOrders';
+import AdminStaff from './pages/AdminStaff';
+import AdminInfo from './pages/AdminInfo';
+import ProductEdit from './pages/ProductEdit';
+
 function App() {
+  const location = useLocation();
+  const isAdminRoute = location.pathname.startsWith('/admin');
+
   return (
-    <div className="min-h-screen bg-white font-sans">
-      <Navbar />
+    <div className={`min-h-screen font-sans ${isAdminRoute ? 'bg-[#fdf5e6]' : 'bg-[#FF7A59]'}`}>
+      {!isAdminRoute && <Navbar />}
       <main>
         <Routes>
+          {/* Public / Customer Routes */}
           <Route path="/" element={<Home />} />
           <Route path="/men" element={<Men />} />
           <Route path="/women" element={<Women />} />
@@ -30,7 +43,17 @@ function App() {
           <Route path="/shipping" element={<Shipping />} />
           <Route path="/placeorder" element={<PlaceOrder />} />
           <Route path="/order/:id" element={<OrderDetail />} />
-          <Route path="/admin" element={<AdminDashboard />} />
+
+          {/* Admin Routes */}
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<AdminDashboardHome />} />
+            <Route path="products" element={<AdminProducts />} />
+            <Route path="product/new" element={<ProductEdit />} />
+            <Route path="product/:id/edit" element={<ProductEdit />} />
+            <Route path="staff" element={<AdminStaff />} />
+            <Route path="orders" element={<AdminOrders />} />
+            <Route path="info" element={<AdminInfo />} />
+          </Route>
         </Routes>
       </main>
     </div>

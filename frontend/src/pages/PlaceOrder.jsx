@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import api from '../utils/api';
+import { Container, Row, Col, Card, Button, Form, Alert, Badge } from 'react-bootstrap';
 
 const PlaceOrder = () => {
   const navigate = useNavigate();
@@ -36,7 +37,9 @@ const PlaceOrder = () => {
         user: userInfo ? userInfo._id : undefined
       });
 
-      clearCart();
+      if (paymentMethod !== 'Credit / Debit Card') {
+        clearCart();
+      }
       navigate(`/order/${data._id}`); 
     } catch (err) {
       setError(err.response?.data?.message || 'เกิดข้อผิดพลาดบางอย่าง');
@@ -47,132 +50,150 @@ const PlaceOrder = () => {
 
   if (cart.length === 0) {
     return (
-      <div className="max-w-7xl mx-auto px-4 py-24 text-center">
-        <h2 className="text-2xl font-bold uppercase text-gray-900">Your cart is empty</h2>
-        <Link to="/" className="mt-4 text-sm uppercase tracking-widest text-gray-500 hover:text-black transition-colors">
+      <Container className="py-5 text-center mt-5" style={{ maxWidth: '600px' }}>
+        <h2 className="display-6 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900 }}>Your cart is empty</h2>
+        <Button 
+          as={Link} 
+          to="/" 
+          variant="link" 
+          className="text-muted text-uppercase text-decoration-none fw-bold hover-dark"
+          style={{ letterSpacing: '1px' }}
+        >
           Go back to shopping
-        </Link>
-      </div>
+        </Button>
+      </Container>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 uppercase mb-10">
+    <Container className="py-5" style={{ maxWidth: '1200px' }}>
+      <h1 className="display-5 fw-black text-dark text-uppercase mb-5" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
         Order Summary
       </h1>
 
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
-        <div className="lg:col-span-8 space-y-8">
+      <Row className="gy-4 gx-lg-5">
+        <Col lg={8} className="d-flex flex-column gap-4">
           
-          <div className="bg-white border border-gray-200 rounded-sm p-6">
-            <h2 className="text-lg font-medium text-gray-900 uppercase mb-4 tracking-wide">Shipping Details</h2>
-            <p className="text-gray-600 text-sm leading-relaxed">
-              <span className="font-medium text-gray-900">Address: </span>
-              {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}
-            </p>
-          </div>
+          <Card className="border-0 shadow-sm rounded-4">
+            <Card.Body className="p-4 p-md-5">
+              <h2 className="fs-5 fw-bold text-dark text-uppercase mb-4" style={{ letterSpacing: '1px' }}>Shipping Details</h2>
+              <p className="text-secondary fs-6 mb-0 lh-lg">
+                <span className="fw-bold text-dark me-2">Address:</span>
+                {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}
+              </p>
+            </Card.Body>
+          </Card>
 
           {/* --- เพิ่มกล่องเลือกวิธีชำระเงิน --- */}
-          <div className="bg-white border border-gray-200 rounded-sm p-6">
-            <h2 className="text-lg font-medium text-gray-900 uppercase mb-4 tracking-wide">Payment Method</h2>
-            <div className="space-y-4">
-              <label className="flex items-center cursor-pointer">
-                <input 
+          <Card className="border-0 shadow-sm rounded-4">
+            <Card.Body className="p-4 p-md-5">
+              <h2 className="fs-5 fw-bold text-dark text-uppercase mb-4" style={{ letterSpacing: '1px' }}>Payment Method</h2>
+              <div className="d-flex flex-column gap-3">
+                <Form.Check 
                   type="radio" 
+                  id="payment-promptpay"
                   name="paymentMethod" 
                   value="PromptPay / Bank Transfer" 
                   checked={paymentMethod === 'PromptPay / Bank Transfer'}
                   onChange={(e) => savePaymentMethod(e.target.value)}
-                  className="w-4 h-4 text-black border-gray-300 focus:ring-black cursor-pointer"
+                  label={<span className="fw-medium text-dark ms-2">PromptPay / Bank Transfer</span>}
+                  className="cursor-pointer mb-2 custom-radio"
                 />
-                <span className="ml-3 text-sm text-gray-700">PromptPay / Bank Transfer</span>
-              </label>
-              
-              <label className="flex items-center cursor-pointer">
-                <input 
-                  type="radio" 
+                
+                <Form.Check 
+                  type="radio"
+                  id="payment-card"
                   name="paymentMethod" 
                   value="Credit / Debit Card" 
                   checked={paymentMethod === 'Credit / Debit Card'}
                   onChange={(e) => savePaymentMethod(e.target.value)}
-                  className="w-4 h-4 text-black border-gray-300 focus:ring-black cursor-pointer"
+                  label={<span className="fw-medium text-dark ms-2">Credit / Debit Card</span>}
+                  className="cursor-pointer mb-2 custom-radio"
                 />
-                <span className="ml-3 text-sm text-gray-700">Credit / Debit Card</span>
-              </label>
 
-              <label className="flex items-center cursor-pointer">
-                <input 
-                  type="radio" 
+                <Form.Check 
+                  type="radio"
+                  id="payment-cod"
                   name="paymentMethod" 
                   value="Cash On Delivery" 
                   checked={paymentMethod === 'Cash On Delivery'}
                   onChange={(e) => savePaymentMethod(e.target.value)}
-                  className="w-4 h-4 text-black border-gray-300 focus:ring-black cursor-pointer"
+                  label={<span className="fw-medium text-dark ms-2">Cash On Delivery</span>}
+                  className="cursor-pointer custom-radio"
                 />
-                <span className="ml-3 text-sm text-gray-700">Cash On Delivery</span>
-              </label>
-            </div>
-          </div>
+              </div>
+            </Card.Body>
+          </Card>
 
-          <div className="bg-white border border-gray-200 rounded-sm p-6">
-            <h2 className="text-lg font-medium text-gray-900 uppercase mb-4 tracking-wide">Order Items</h2>
-            <ul className="divide-y divide-gray-200">
-              {cart.map((item, index) => (
-                <li key={index} className="py-4 flex items-center">
-                  <img src={item.images?.[0]} alt={item.name} className="w-16 h-16 rounded-sm object-cover bg-gray-100" />
-                  <div className="ml-4 flex-1">
-                    <Link to={`/product/${item._id}`} className="text-sm font-medium text-gray-900 uppercase hover:text-gray-600">
-                      {item.name}
-                    </Link>
-                    <p className="text-sm text-gray-500 mt-1">Size: {item.selectedSize}</p>
+          <Card className="border-0 shadow-sm rounded-4">
+            <Card.Body className="p-4 p-md-5">
+              <h2 className="fs-5 fw-bold text-dark text-uppercase mb-4" style={{ letterSpacing: '1px' }}>Order Items</h2>
+              <div className="d-flex flex-column gap-3">
+                {cart.map((item, index) => (
+                  <div key={index} className={`d-flex align-items-center py-3 ${index !== cart.length - 1 ? 'border-bottom' : ''}`}>
+                    <div className="flex-shrink-0 bg-light rounded-3 overflow-hidden border" style={{ width: '64px', height: '64px' }}>
+                      <img src={item.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} alt={item.name} className="w-100 h-100 object-fit-cover" />
+                    </div>
+                    <div className="ms-4 flex-grow-1">
+                      <Link to={`/product/${item._id}`} className="text-dark text-decoration-none text-uppercase fw-bold hover-primary" style={{ fontSize: '0.9rem' }}>
+                        {item.name}
+                      </Link>
+                      <div className="mt-1">
+                        <span className="text-muted small fw-medium">Size: {item.selectedSize}</span>
+                      </div>
+                    </div>
+                    <div className="text-end ms-3">
+                      <div className="text-muted small fw-medium mb-1">{item.qty} x ฿{item.price.toLocaleString()}</div>
+                      <div className="fw-bold text-dark">฿{(item.qty * item.price).toLocaleString()}</div>
+                    </div>
                   </div>
-                  <div className="text-sm font-medium text-gray-900 text-right">
-                    <span className="text-gray-500 font-normal mr-2">{item.qty} x ฿{item.price.toLocaleString()}</span>
-                    ฿{(item.qty * item.price).toLocaleString()}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-
-        <div className="mt-8 lg:mt-0 lg:col-span-4">
-          <div className="bg-gray-50 border border-gray-200 rounded-sm p-6">
-            <h2 className="text-lg font-medium text-gray-900 uppercase mb-6 tracking-wide">Order Total</h2>
-            
-            {error && <div className="mb-4 bg-red-50 text-red-500 p-3 rounded text-sm">{error}</div>}
-
-            <dl className="space-y-4 text-sm text-gray-600">
-              <div className="flex justify-between">
-                <dt>Items Subtotal</dt>
-                <dd className="font-medium text-gray-900">฿{itemsPrice.toLocaleString()}</dd>
+                ))}
               </div>
-              <div className="flex justify-between border-t border-gray-200 pt-4">
-                <dt>Shipping</dt>
-                <dd className="font-medium text-gray-900">
-                  {shippingPrice === 0 ? 'Free' : `฿${shippingPrice.toLocaleString()}`}
-                </dd>
-              </div>
-              <div className="flex justify-between border-t border-gray-200 pt-4 text-base font-medium text-gray-900">
-                <dt className="uppercase">Total</dt>
-                <dd>฿{totalPrice.toLocaleString()}</dd>
-              </div>
-            </dl>
+            </Card.Body>
+          </Card>
+        </Col>
 
-            <button
-              onClick={placeOrderHandler}
-              disabled={loading}
-              className={`mt-8 w-full border border-transparent rounded-sm py-4 px-4 text-sm font-medium text-white uppercase tracking-widest transition-colors ${
-                loading ? 'bg-gray-400' : 'bg-black hover:bg-gray-800'
-              }`}
-            >
-              {loading ? 'Processing...' : 'Confirm Order'}
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+        <Col lg={4}>
+          <Card className="rounded-4 border-0 shadow-sm bg-light sticky-top" style={{ top: '2rem' }}>
+            <Card.Body className="p-4 p-md-5">
+              <h4 className="fs-5 fw-black text-dark text-uppercase border-bottom pb-3 mb-4">Order Total</h4>
+              
+              {error && <Alert variant="danger" className="border-0 shadow-sm py-2 px-3 fw-medium small mb-4">{error}</Alert>}
+
+              <div className="d-flex flex-column gap-3 mb-4">
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="text-muted fw-medium small">Items Subtotal</span>
+                  <span className="fw-bold text-dark">฿{itemsPrice.toLocaleString()}</span>
+                </div>
+                <div className="d-flex justify-content-between align-items-center border-top pt-3">
+                  <span className="text-muted fw-medium small">Shipping</span>
+                  <span className="fw-bold text-dark">
+                    {shippingPrice === 0 ? <Badge bg="success" className="bg-opacity-10 text-success text-uppercase border border-success border-opacity-25 px-2 py-1">Free</Badge> : `฿${shippingPrice.toLocaleString()}`}
+                  </span>
+                </div>
+                <div className="d-flex justify-content-between align-items-center border-top pt-3">
+                  <span className="fs-5 fw-black text-dark text-uppercase">Total</span>
+                  <span className="fs-4 fw-black text-dark">฿{totalPrice.toLocaleString()}</span>
+                </div>
+              </div>
+
+              <div className="pt-2">
+                <Button
+                  variant="dark"
+                  size="lg"
+                  disabled={loading}
+                  onClick={placeOrderHandler}
+                  className="w-100 py-3 rounded-4 fw-bold text-uppercase d-flex justify-content-center align-items-center gap-2 shadow"
+                  style={{ letterSpacing: '1px' }}
+                >
+                  {loading ? 'Processing...' : 'Confirm Order'}
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

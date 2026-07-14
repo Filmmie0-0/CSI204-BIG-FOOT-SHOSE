@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
+import { Container, Form, Button, Row, Col, Card } from 'react-bootstrap';
 
 const Shipping = () => {
   const { shippingAddress, saveShippingAddress } = useCartStore();
@@ -22,71 +23,86 @@ const Shipping = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-      <h1 className="text-3xl font-extrabold tracking-tight text-gray-900 uppercase text-center mb-10">
+    <Container className="py-5 mt-4" style={{ maxWidth: '700px' }}>
+      <h1 className="display-5 fw-black text-dark text-uppercase text-center mb-5" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
         Shipping Address
       </h1>
 
-      <form onSubmit={submitHandler} className="space-y-6">
-        <div>
-          <label className="block text-sm font-medium text-gray-700 uppercase tracking-wide">Address</label>
-          <input
-            type="text"
-            required
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            placeholder="123 Main St, Apartment 4B"
-            className="mt-1 block w-full border border-gray-300 rounded-sm shadow-sm py-3 px-4 focus:ring-black focus:border-black sm:text-sm"
-          />
-        </div>
+      <Card className="border-0 shadow-sm rounded-4 bg-light">
+        <Card.Body className="p-4 p-md-5">
+          <Form onSubmit={submitHandler}>
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-bold text-dark text-uppercase small" style={{ letterSpacing: '1px' }}>Address</Form.Label>
+              <Form.Control
+                type="text"
+                required
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                placeholder="123 Main St, Apartment 4B"
+                className="py-3 px-4 shadow-none focus-ring border-0"
+                style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+              />
+            </Form.Group>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 uppercase tracking-wide">City</label>
-          <input
-            type="text"
-            required
-            value={city}
-            onChange={(e) => setCity(e.target.value)}
-            placeholder="Bangkok"
-            className="mt-1 block w-full border border-gray-300 rounded-sm shadow-sm py-3 px-4 focus:ring-black focus:border-black sm:text-sm"
-          />
-        </div>
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-bold text-dark text-uppercase small" style={{ letterSpacing: '1px' }}>City</Form.Label>
+              <Form.Control
+                type="text"
+                required
+                value={city}
+                onChange={(e) => setCity(e.target.value)}
+                placeholder="Bangkok"
+                className="py-3 px-4 shadow-none focus-ring border-0"
+                style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+              />
+            </Form.Group>
 
-        <div className="grid grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 uppercase tracking-wide">Postal Code</label>
-            <input
-              type="text"
-              required
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
-              placeholder="10110"
-              className="mt-1 block w-full border border-gray-300 rounded-sm shadow-sm py-3 px-4 focus:ring-black focus:border-black sm:text-sm"
-            />
-          </div>
+            <Row className="mb-4 gx-4">
+              <Col sm={6} className="mb-4 mb-sm-0">
+                <Form.Group>
+                  <Form.Label className="fw-bold text-dark text-uppercase small" style={{ letterSpacing: '1px' }}>Postal Code</Form.Label>
+                  <Form.Control
+                    type="text"
+                    required
+                    value={postalCode}
+                    onChange={(e) => setPostalCode(e.target.value)}
+                    placeholder="10110"
+                    className="py-3 px-4 shadow-none focus-ring border-0"
+                    style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+                  />
+                </Form.Group>
+              </Col>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 uppercase tracking-wide">Country</label>
-            <input
-              type="text"
-              required
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="mt-1 block w-full border border-gray-300 rounded-sm shadow-sm py-3 px-4 focus:ring-black focus:border-black sm:text-sm bg-gray-50"
-            />
-          </div>
-        </div>
+              <Col sm={6}>
+                <Form.Group>
+                  <Form.Label className="fw-bold text-dark text-uppercase small" style={{ letterSpacing: '1px' }}>Country</Form.Label>
+                  <Form.Control
+                    type="text"
+                    required
+                    value={country}
+                    onChange={(e) => setCountry(e.target.value)}
+                    className="py-3 px-4 shadow-none focus-ring border-0 bg-white"
+                    style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+                  />
+                </Form.Group>
+              </Col>
+            </Row>
 
-        <div className="pt-6">
-          <button
-            type="submit"
-            className="w-full bg-black border border-transparent rounded-sm py-4 px-4 text-sm font-medium text-white hover:bg-gray-800 transition-colors uppercase tracking-widest focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-900"
-          >
-            Continue to Order Summary
-          </button>
-        </div>
-      </form>
-    </div>
+            <div className="pt-4 mt-2 border-top">
+              <Button
+                type="submit"
+                variant="dark"
+                size="lg"
+                className="w-100 py-3 rounded-pill fw-bold text-uppercase shadow-sm hover-translate-y transition-all"
+                style={{ letterSpacing: '1.5px' }}
+              >
+                Continue to Order Summary
+              </Button>
+            </div>
+          </Form>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

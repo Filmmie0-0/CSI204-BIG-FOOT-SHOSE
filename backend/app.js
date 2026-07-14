@@ -7,8 +7,10 @@ const app = express();
 // Connect to MongoDB
 connectDB();
 
+const path = require('path');
 app.use(cors());
 app.use(express.json());
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
 
 // Routes
 app.use('/api/users', require('./routes/users'));
@@ -17,6 +19,7 @@ app.use('/api/products', require('./routes/products'));
 app.use('/api/customer', require('./routes/customer'));
 app.use('/api/admin', require('./routes/admin'));
 app.use('/api/staff', require('./routes/staff'));
+app.use('/api/upload', require('./routes/upload'));
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
