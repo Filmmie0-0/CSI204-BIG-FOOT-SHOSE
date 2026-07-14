@@ -117,7 +117,7 @@ const Navbar = () => {
       </style>
       <BsNavbar expand="lg" className={`sticky-top py-3 nav-glass ${scrolled ? 'scrolled' : ''}`}>
         <Container>
-          <BsNavbar.Brand as={Link} to="/" className="d-flex align-items-center gap-2 me-4">
+          <BsNavbar.Brand as={Link} to="/" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="d-flex align-items-center gap-2 me-4">
             <img 
               src="/logo.png" 
               alt="Big Foot Shoes Logo" 
@@ -133,9 +133,9 @@ const Navbar = () => {
           
           <BsNavbar.Collapse id="basic-navbar-nav">
             <Nav className="me-auto gap-1 gap-lg-3 mt-3 mt-lg-0">
-              <Nav.Link as={Link} to="/" className="text-dark px-2 text-uppercase nav-link-custom" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>New Arrivals</Nav.Link>
-              <Nav.Link as={Link} to="/men" className="text-dark px-2 text-uppercase nav-link-custom" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>Men</Nav.Link>
-              <Nav.Link as={Link} to="/women" className="text-dark px-2 text-uppercase nav-link-custom" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>Women</Nav.Link>
+              <Nav.Link as={Link} to="/" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className="text-dark px-2 text-uppercase nav-link-custom" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>New Arrivals</Nav.Link>
+              <Nav.Link as={Link} to="/men" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className="text-dark px-2 text-uppercase nav-link-custom" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>Men</Nav.Link>
+              <Nav.Link as={Link} to="/women" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className="text-dark px-2 text-uppercase nav-link-custom" style={{ fontSize: '0.85rem', letterSpacing: '1px' }}>Women</Nav.Link>
             </Nav>
             
             <Nav className="align-items-lg-center gap-3 mt-4 mt-lg-0 pb-2 pb-lg-0">

@@ -64,138 +64,150 @@ const Cart = () => {
   // === กรณีไม่มีสินค้าในตะกร้า (เพิ่มกรอบสี่เหลี่ยมล้อมรอบ) ===
   if (cart.length === 0) {
     return (
-      <div className="max-w-md mx-auto px-4 py-24 animate-fade-in">
-        <div className="bg-white rounded-3xl border border-white/40 p-8 sm:p-12 text-center space-y-8 shadow-2xl shadow-black/15">
-          <div className="inline-flex p-6 rounded-full bg-[#FF7A59]/10 text-[#FF7A59] mb-2 transform hover:rotate-6 transition-transform duration-300">
-            <ShoppingBag className="w-16 h-16 stroke-[1.5]" />
+      <Container className="py-5 mt-5 d-flex justify-content-center">
+        <Card className="border-0 shadow-lg rounded-4 text-center p-5 bg-white" style={{ maxWidth: '600px', width: '100%' }}>
+          <div className="d-inline-flex p-4 rounded-circle mb-4 mx-auto" style={{ backgroundColor: 'rgba(255,87,34,0.1)', color: '#ff5722' }}>
+            <ShoppingBag size={64} strokeWidth={1.5} />
           </div>
-          <h2 className="text-3xl font-black tracking-tight text-gray-950 uppercase">
+          <h2 className="display-6 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900 }}>
             Your cart is empty
           </h2>
-          <p className="text-gray-600 font-medium max-w-sm mx-auto leading-relaxed">
+          <p className="text-secondary fs-5 mb-5 mx-auto" style={{ maxWidth: '400px' }}>
             Looks like you haven't added any premium footwear to your cart yet. Let's find your match!
           </p>
-          <Link 
+          <Button 
+            as={Link} 
             to="/" 
-            className="inline-block w-full bg-[#FF7A59] text-white px-10 py-4 font-extrabold rounded-2xl hover:bg-gray-950 transition-all duration-300 uppercase text-xs tracking-widest shadow-lg shadow-[#FF7A59]/20 hover:shadow-xl transform hover:-translate-y-1"
+            size="lg" 
+            className="px-5 py-3 rounded-pill text-uppercase fw-bold shadow border-0"
+            style={{ letterSpacing: '2px', backgroundColor: '#ff5722', color: '#fff', transition: 'all 0.3s' }}
+            onMouseEnter={(e) => { e.target.style.transform = 'translateY(-3px)'; e.target.style.boxShadow = '0 10px 20px rgba(255,87,34,0.3)'; }} 
+            onMouseLeave={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)'; }}
           >
             Continue Shopping
-          </Link>
-        </div>
-      </div>
+          </Button>
+        </Card>
+      </Container>
     );
   }
 
   // === กรณีมีสินค้าในตะกร้า ===
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-10 border-b border-gray-200 pb-5">
-        <span className="text-xs font-black text-gray-900 uppercase tracking-widest bg-gray-100 px-2.5 py-1 rounded-md shadow-sm">Your Selection</span>
-        <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight mt-3 relative inline-block drop-shadow-sm">
+    <Container className="py-5 mt-4" style={{ maxWidth: '1200px' }}>
+      <div className="mb-5 border-bottom pb-3">
+        <Badge bg="light" text="dark" className="text-uppercase mb-3 shadow-sm py-2 px-3 border rounded-pill">Your Selection</Badge>
+        <h1 className="display-5 fw-black text-dark text-uppercase" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
           Shopping Cart
-          <span className="absolute bottom-0 left-0 w-12 h-1 bg-gray-900 rounded-full -mb-1"></span>
         </h1>
       </div>
 
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
-        <div className="lg:col-span-8 bg-white/40 backdrop-blur-md rounded-3xl p-6 shadow-sm border border-gray-200">
-          <ul role="list" className="divide-y divide-gray-200">
-            {cart.map((item) => (
-              <li key={item.cartItemId} className="flex py-6 group transition-all first:pt-0 last:pb-0">
-                <div className="shrink-0 relative overflow-hidden rounded-2xl bg-white border border-gray-200 shadow-sm" style={{ width: '100px', height: '100px' }}>
-                  <img
-                    src={item.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'}
-                    alt={item.name}
-                    className="w-full h-full object-cover transition-transform"
-                  />
-                </div>
+      <Row className="g-5">
+        <Col lg={8}>
+          <Card className="border-0 shadow-lg rounded-4 bg-white p-4 p-md-5">
+            <Card.Body className="p-0">
+              {cart.map((item, index) => (
+                <div key={item.cartItemId} className={`d-flex py-4 ${index !== cart.length - 1 ? 'border-bottom' : ''}`}>
+                  <div className="flex-shrink-0" style={{ width: '120px', height: '120px' }}>
+                    <img
+                      src={item.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'}
+                      alt={item.name}
+                      className="w-100 h-100 object-fit-cover rounded-3 shadow-sm border p-1"
+                    />
+                  </div>
 
-                <div className="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
-                  <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-                    <div>
-                      <div className="flex justify-between">
-                        <h3 className="text-base font-bold text-gray-950">
-                          <Link to={`/product/${item._id}`} className="hover:text-gray-600 transition-colors uppercase tracking-tight">
+                  <div className="ms-4 flex-grow-1 d-flex flex-column justify-content-between">
+                    <div className="d-flex justify-content-between align-items-start">
+                      <div>
+                        <h3 className="fs-5 fw-bold text-dark text-uppercase mb-2">
+                          <Link to={`/product/${item._id}`} className="text-dark text-decoration-none hover-orange transition-colors" style={{ letterSpacing: '0.5px' }}>
                             {item.name}
                           </Link>
                         </h3>
+                        <Badge bg="light" text="dark" className="border shadow-sm px-2 py-1">Size: {item.selectedSize}</Badge>
                       </div>
-                      <div className="mt-2 flex items-center space-x-2">
-                        <span className="text-xs font-bold px-2.5 py-1 bg-gray-100 text-gray-800 rounded-lg shadow-sm border border-gray-200">
-                          Size: {item.selectedSize}
-                        </span>
+                      <div className="text-end ms-3">
+                        <button 
+                          onClick={() => removeFromCart(item.cartItemId)}
+                          className="btn btn-sm btn-light text-danger rounded-circle shadow-sm"
+                          style={{ width: '40px', height: '40px', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', transition: 'all 0.2s' }}
+                          onMouseEnter={(e) => { e.currentTarget.style.backgroundColor = '#dc3545'; e.currentTarget.style.color = '#fff'; }}
+                          onMouseLeave={(e) => { e.currentTarget.style.backgroundColor = '#f8f9fa'; e.currentTarget.style.color = '#dc3545'; }}
+                        >
+                          <Trash2 size={18} />
+                        </button>
                       </div>
-                      <p className="mt-3 text-lg font-black text-gray-950">
+                    </div>
+                    
+                    <div className="d-flex justify-content-between align-items-end mt-3">
+                      <p className="fs-4 fw-black mb-0" style={{ color: '#ff5722' }}>
                         ฿{item.price.toLocaleString()}
                       </p>
-                    </div>
-
-                    <div className="mt-4 sm:mt-0 sm:pr-9 flex items-center justify-between sm:justify-start">
-                      <div className="flex items-center bg-white border border-gray-300 rounded-xl p-1 shadow-sm">
+                      <div className="d-flex align-items-center bg-light border rounded-pill p-1 shadow-sm">
                         <button 
                           onClick={() => decreaseQty(item.cartItemId)} 
-                          className="p-1.5 rounded-lg text-gray-500 hover:text-gray-950 hover:bg-gray-50 transition-all"
+                          className="btn btn-sm btn-white rounded-circle border-0 d-flex align-items-center justify-content-center"
+                          style={{ width: '30px', height: '30px' }}
                         >
-                          <Minus className="w-3.5 h-3.5" />
+                          <Minus size={14} />
                         </button>
-                        <span className="px-4 text-sm font-black text-gray-950 min-w-[24px] text-center">{item.qty}</span>
+                        <span className="px-3 fw-bold">{item.qty}</span>
                         <button 
                           onClick={() => addToCart(item, item.selectedSize)} 
                           disabled={item.qty >= (item.countInStock !== undefined ? item.countInStock : 10)}
-                          className="p-1.5 rounded-lg text-gray-500 hover:text-gray-950 hover:bg-gray-50 transition-all disabled:opacity-50"
+                          className="btn btn-sm btn-white rounded-circle border-0 d-flex align-items-center justify-content-center"
+                          style={{ width: '30px', height: '30px' }}
                         >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
-                      </div>
-
-                      <div className="absolute top-0 right-0">
-                        <button 
-                          onClick={() => removeFromCart(item.cartItemId)}
-                          className="-m-2 p-2 inline-flex text-gray-900 hover:text-red-600 hover:bg-white rounded-full transition-all duration-200 shadow-sm sm:shadow-none"
-                        >
-                          <span className="sr-only">Remove</span>
-                          <Trash2 className="w-5 h-5" />
+                          <Plus size={14} />
                         </button>
                       </div>
                     </div>
                   </div>
                 </div>
-              </li>
-            ))}
-          </ul>
-        </div>
+              ))}
+            </Card.Body>
+          </Card>
+        </Col>
 
-        <div className="mt-16 bg-white px-6 py-8 sm:p-8 lg:mt-0 lg:col-span-4 rounded-3xl border border-gray-200 shadow-xl shadow-black/5 sticky top-6">
-          <h2 className="text-lg font-black text-gray-950 uppercase tracking-tight border-b border-gray-150 pb-3">Order summary</h2>
-          
-          <dl className="mt-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <dt className="text-sm font-medium text-gray-500">Subtotal</dt>
-              <dd className="text-sm font-bold text-gray-950">฿{subtotal.toLocaleString()}</dd>
+        <Col lg={4}>
+          <Card className="border-0 shadow-lg rounded-4 bg-white p-4 p-md-5 sticky-top" style={{ top: '100px' }}>
+            <h4 className="fs-5 fw-black text-dark text-uppercase border-bottom pb-3 mb-4">Order summary</h4>
+            
+            <div className="d-flex justify-content-between mb-3">
+              <span className="text-secondary fw-medium">Subtotal</span>
+              <span className="fw-bold text-dark">฿{subtotal.toLocaleString()}</span>
             </div>
-            <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-              <dt className="text-sm font-medium text-gray-500">Shipping estimate</dt>
-              <dd className="text-xs font-black text-green-700 uppercase bg-green-50 px-2.5 py-1 rounded-md">Free</dd>
+            
+            <div className="d-flex justify-content-between border-bottom pb-4 mb-4 align-items-center">
+              <span className="text-secondary fw-medium">Shipping estimate</span>
+              <Badge bg="success" className="bg-opacity-10 text-success border border-success fw-bold px-2 py-1" style={{ backgroundColor: 'rgba(25, 135, 84, 0.1)' }}>FREE</Badge>
             </div>
-            <div className="flex items-center justify-between border-t border-gray-100 pt-4">
-              <dt className="text-base font-black text-gray-950 uppercase tracking-tight">Order total</dt>
-              <dd className="text-xl font-black text-[#FF7A59]">฿{subtotal.toLocaleString()}</dd>
+            
+            <div className="d-flex justify-content-between mb-4 align-items-center">
+              <span className="fs-5 fw-black text-uppercase">Order total</span>
+              <span className="fs-2 fw-black" style={{ color: '#ff5722' }}>฿{subtotal.toLocaleString()}</span>
             </div>
-          </dl>
 
-          <div className="mt-8">
-            <button
-              type="button"
+            <Button
+              size="lg"
               onClick={() => navigate('/shipping')}
-              className="w-full bg-[#FF7A59] border border-transparent rounded-2xl shadow-lg shadow-[#FF7A59]/20 py-4 px-4 text-sm font-bold text-white hover:bg-gray-950 transition-all duration-300 flex justify-center items-center uppercase tracking-widest group transform hover:-translate-y-0.5"
+              className="w-100 py-3 text-uppercase fw-bold rounded-pill border-0 shadow d-flex justify-content-center align-items-center"
+              style={{ letterSpacing: '1px', backgroundColor: '#ff5722', color: '#fff', transition: 'all 0.3s' }}
+              onMouseEnter={(e) => { 
+                e.target.style.transform = 'translateY(-3px)'; 
+                e.target.style.boxShadow = '0 10px 20px rgba(255,87,34,0.3)'; 
+              }} 
+              onMouseLeave={(e) => { 
+                e.target.style.transform = 'translateY(0)'; 
+                e.target.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)'; 
+              }}
             >
               Proceed to Checkout 
-              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+              <ArrowRight size={18} className="ms-2" />
+            </Button>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

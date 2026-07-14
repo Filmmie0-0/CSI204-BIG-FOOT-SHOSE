@@ -47,8 +47,8 @@ const OrderDetail = () => {
 
   if (loading) return (
     <Container className="py-5 text-center mt-5">
-      <Spinner animation="border" variant="dark" />
-      <div className="mt-3 text-uppercase tracking-widest text-secondary fw-bold">Loading Order...</div>
+      <Spinner animation="border" variant="light" />
+      <div className="mt-3 text-uppercase tracking-widest text-white fw-bold">Loading Order...</div>
     </Container>
   );
 
@@ -62,10 +62,12 @@ const OrderDetail = () => {
 
   return (
     <Container className="py-5" style={{ maxWidth: '1200px' }}>
-      <h1 className="display-6 fw-black text-dark text-uppercase mb-2" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
-        Order <span className="text-secondary fs-4 fw-medium">#{order._id}</span>
-      </h1>
-      <p className="text-muted small fw-medium mb-5">Placed on {new Date(order.created_at || order.createdAt).toLocaleDateString()}</p>
+      <div className="mb-5 border-bottom border-white border-opacity-25 pb-4">
+        <h1 className="display-6 fw-black text-white text-uppercase mb-2 drop-shadow-sm" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
+          Order <span className="text-white opacity-75 fs-4 fw-medium">#{order._id}</span>
+        </h1>
+        <p className="text-white opacity-75 small fw-medium mb-0">Placed on {new Date(order.created_at || order.createdAt).toLocaleDateString()}</p>
+      </div>
 
       <Row className="gy-4 gx-lg-5">
         <Col lg={8} className="d-flex flex-column gap-4">
@@ -89,115 +91,124 @@ const OrderDetail = () => {
             </Card.Body>
           </Card>
 
-          <div className="bg-white border border-gray-200 rounded-sm p-6">
-            <h2 className="text-lg font-medium text-gray-900 uppercase mb-4 tracking-wide">Payment Method</h2>
-            <p className="text-gray-600 text-sm leading-relaxed mb-4">
-              {order.payment_method || 'Credit / Debit Card'}
-            </p>
-            
-            {order.order_status !== 'pending' ? (
-              <div className="bg-green-50 text-green-700 p-3 rounded-sm text-sm border border-green-200">
-                Paid (ชำระเงินเรียบร้อยแล้ว)
-              </div>
-            ) : (
-              <div>
-                <div className="bg-red-50 text-red-700 p-3 rounded-sm text-sm border border-red-200 mb-4">
-                  Not Paid (ยังไม่ชำระเงิน)
-                </div>
+          <Card className="border-0 shadow-sm rounded-4 mt-4">
+            <Card.Body className="p-4 p-md-5">
+              <h2 className="fs-5 fw-bold text-dark text-uppercase mb-4" style={{ letterSpacing: '1px' }}>Payment Method</h2>
+              <p className="text-secondary fs-6 mb-4 lh-lg">
+                {order.payment_method || 'Credit / Debit Card'}
+              </p>
+              
+              {order.order_status !== 'pending' ? (
+                <Alert variant="success" className="border-0 shadow-sm py-2 px-3 fw-bold mb-0 d-inline-block">
+                  Paid (ชำระเงินเรียบร้อยแล้ว)
+                </Alert>
+              ) : (
+                <div>
+                  <Alert variant="danger" className="border-0 shadow-sm py-2 px-3 fw-bold mb-4 d-inline-block">
+                    Not Paid (ยังไม่ชำระเงิน)
+                  </Alert>
 
-                {/* 1. PromptPay Flow */}
-                {order.payment_method === 'PromptPay / Bank Transfer' && (
-                  <div className="border border-gray-200 p-4 rounded bg-gray-50 flex flex-col items-center space-y-4">
-                    <p className="text-sm font-semibold text-gray-800 text-center">
-                      สแกน QR Code เพื่อโอนเงินเข้าบัญชีพร้อมเพย์
-                    </p>
-                    <div className="bg-white p-4 border border-gray-200 rounded shadow-sm">
-                      <img 
-                        src={`https://promptpay.io/0987654321/${order.total_amount}.png`} 
-                        alt="PromptPay QR Code" 
-                        className="w-48 h-48 object-contain"
-                      />
-                    </div>
-                    <div className="text-xs text-gray-600 text-center leading-relaxed">
-                      <span className="font-bold text-gray-800 text-sm">พร้อมเพย์: 098-765-4321</span><br />
-                      บจก. บิ๊กฟุต ชูส์ (Big Foot Shoes Co., Ltd.)<br />
-                      ยอดโอนที่ถูกต้อง: <span className="font-bold text-[#ff7f50] text-sm">฿{order.total_amount.toLocaleString()}</span>
-                    </div>
+                  {/* 1. PromptPay Flow */}
+                  {order.payment_method === 'PromptPay / Bank Transfer' && (
+                    <Card className="border-0 bg-light shadow-sm mb-4">
+                      <Card.Body className="p-4 d-flex flex-column align-items-center gap-3">
+                        <p className="small fw-bold text-dark text-center mb-0">
+                          สแกน QR Code เพื่อโอนเงินเข้าบัญชีพร้อมเพย์
+                        </p>
+                        <div className="bg-white p-3 rounded-4 shadow-sm border">
+                          <img 
+                            src={`https://promptpay.io/0987654321/${order.total_amount}.png`} 
+                            alt="PromptPay QR Code" 
+                            className="img-fluid" style={{ width: '180px', height: '180px', objectFit: 'contain' }}
+                          />
+                        </div>
+                        <div className="small text-secondary text-center lh-lg">
+                          <span className="fw-bold text-dark fs-6">พร้อมเพย์: 098-765-4321</span><br />
+                          บจก. บิ๊กฟุต ชูส์ (Big Foot Shoes Co., Ltd.)<br />
+                          ยอดโอนที่ถูกต้อง: <span className="fw-bold fs-6" style={{ color: '#ff5722' }}>฿{order.total_amount.toLocaleString()}</span>
+                        </div>
 
-                    <div className="w-full border-t border-gray-200 pt-4">
-                      <label className="block text-xs font-semibold text-gray-700 mb-2 uppercase">อัปโหลดสลิปการโอนเงิน</label>
-                      <div className="flex items-center space-x-2">
-                        <label className="bg-white border border-gray-300 hover:border-gray-400 text-gray-750 text-xs px-3 py-2 rounded cursor-pointer transition-colors shadow-sm">
-                          เลือกรูปภาพสลิป
-                          <input 
-                            type="file" 
-                            accept="image/*"
-                            onChange={(e) => {
-                              if (e.target.files && e.target.files[0]) {
-                                setSlipName(e.target.files[0].name);
+                        <div className="w-100 border-top pt-3 mt-2">
+                          <label className="form-label small fw-bold text-secondary text-uppercase mb-2">อัปโหลดสลิปการโอนเงิน</label>
+                          <div className="d-flex align-items-center gap-3">
+                            <label className="btn btn-outline-secondary btn-sm fw-bold">
+                              เลือกรูปภาพสลิป
+                              <input 
+                                type="file" 
+                                accept="image/*"
+                                onChange={(e) => {
+                                  if (e.target.files && e.target.files[0]) {
+                                    setSlipName(e.target.files[0].name);
+                                  }
+                                }}
+                                className="d-none" 
+                              />
+                            </label>
+                            <span className="small text-muted text-truncate" style={{ maxWidth: '200px' }}>{slipName || 'ไม่ได้เลือกไฟล์ใดๆ'}</span>
+                          </div>
+                        </div>
+
+                        {slipError && <div className="text-danger small w-100">{slipError}</div>}
+
+                        <Button
+                          disabled={slipUploading || !slipName}
+                          onClick={handlePromptPayPay}
+                          variant="dark"
+                          className="w-100 mt-2 py-3 text-uppercase fw-bold rounded-pill border-0 shadow-sm"
+                          style={{ letterSpacing: '1px', backgroundColor: '#ff5722' }}
+                        >
+                          {slipUploading ? 'กำลังประมวลผล...' : 'แจ้งโอนเงิน (Confirm Bank Transfer)'}
+                        </Button>
+                      </Card.Body>
+                    </Card>
+                  )}
+
+                  {/* 2. Credit / Debit Card Flow */}
+                  {(order.payment_method === 'Credit / Debit Card' || !order.payment_method) && (
+                    <StripePayment orderId={order._id} onSuccess={() => window.location.reload()} />
+                  )}
+
+                  {/* 3. Cash On Delivery Flow */}
+                  {order.payment_method === 'Cash On Delivery' && (
+                    <Card className="border-0 shadow-sm mb-4" style={{ backgroundColor: 'rgba(13, 110, 253, 0.05)', border: '1px solid rgba(13, 110, 253, 0.2) !important' }}>
+                      <Card.Body className="p-4 d-flex flex-column gap-3 text-primary">
+                        <p className="fw-bold mb-0">
+                          📦 ชำระเงินปลายทาง (Cash On Delivery)
+                        </p>
+                        <p className="small mb-0 lh-lg">
+                          คำสั่งซื้อได้รับการบันทึกเรียบร้อยแล้ว กรุณาเตรียมเงินสดจำนวน <span className="fw-bold fs-5 text-dark">฿{order.total_amount.toLocaleString()}</span> เพื่อชำระให้กับเจ้าหน้าที่จัดส่งสินค้าเมื่อพัสดุเดินทางไปถึง
+                        </p>
+                        
+                        {/* Mock delivery confirmation button for simulation */}
+                        <div className="border-top pt-3 mt-2 d-flex flex-column gap-2">
+                          <span className="small text-uppercase fw-bold opacity-75">
+                            สำหรับเจ้าหน้าที่จัดส่งสินค้า (จำลองการรับเงิน)
+                          </span>
+                          <Button
+                            onClick={async () => {
+                              try {
+                                await api.put(`/orders/${order._id}/pay`, {
+                                  payment_method: 'Cash On Delivery',
+                                  transaction_id: 'COD_CASH_' + Date.now()
+                                });
+                                window.location.reload();
+                              } catch (err) {
+                                alert('เกิดข้อผิดพลาดในการยืนยันการรับเงินสด');
                               }
                             }}
-                            className="hidden" 
-                          />
-                        </label>
-                        <span className="text-xs text-gray-500 truncate max-w-xs">{slipName || 'ไม่ได้เลือกไฟล์ใดๆ'}</span>
-                      </div>
-                    </div>
-
-                    {slipError && <div className="text-red-500 text-xs w-full">{slipError}</div>}
-
-                    <button
-                      disabled={slipUploading || !slipName}
-                      onClick={handlePromptPayPay}
-                      className="w-full bg-[#ff7f50] hover:bg-[#e06b3e] text-white text-xs py-3 uppercase tracking-widest font-semibold rounded shadow transition-colors disabled:bg-gray-400"
-                    >
-                      {slipUploading ? 'กำลังประมวลผล...' : 'แจ้งโอนเงิน (Confirm Bank Transfer)'}
-                    </button>
-                  </div>
-                )}
-
-                {/* 2. Credit / Debit Card Flow */}
-                {(order.payment_method === 'Credit / Debit Card' || !order.payment_method) && (
-                  <StripePayment orderId={order._id} onSuccess={() => window.location.reload()} />
-                )}
-
-                {/* 3. Cash On Delivery Flow */}
-                {order.payment_method === 'Cash On Delivery' && (
-                  <div className="border border-blue-200 p-4 rounded bg-blue-50 text-blue-800 space-y-4">
-                    <p className="text-sm font-semibold">
-                      📦 ชำระเงินปลายทาง (Cash On Delivery)
-                    </p>
-                    <p className="text-xs leading-relaxed">
-                      คำสั่งซื้อได้รับการบันทึกเรียบร้อยแล้ว กรุณาเตรียมเงินสดจำนวน <span className="font-bold text-lg">฿{order.total_amount.toLocaleString()}</span> เพื่อชำระให้กับเจ้าหน้าที่จัดส่งสินค้าเมื่อพัสดุเดินทางไปถึง
-                    </p>
-                    
-                    {/* Mock delivery confirmation button for simulation */}
-                    <div className="border-t border-blue-100 pt-3 flex flex-col space-y-2">
-                      <span className="text-[10px] text-blue-500 uppercase tracking-widest font-bold">
-                        สำหรับเจ้าหน้าที่จัดส่งสินค้า (จำลองการรับเงิน)
-                      </span>
-                      <button
-                        onClick={async () => {
-                          try {
-                            await api.put(`/orders/${order._id}/pay`, {
-                              payment_method: 'Cash On Delivery',
-                              transaction_id: 'COD_CASH_' + Date.now()
-                            });
-                            window.location.reload();
-                          } catch (err) {
-                            alert('เกิดข้อผิดพลาดในการยืนยันการรับเงินสด');
-                          }
-                        }}
-                        className="w-full bg-blue-600 hover:bg-blue-700 text-white text-xs py-2 rounded transition-colors"
-                      >
-                        ยืนยันการได้รับเงินสดปลายทาง
-                      </button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
+                            variant="primary"
+                            className="w-100 py-2 rounded-pill fw-bold border-0 shadow-sm"
+                          >
+                            ยืนยันการได้รับเงินสดปลายทาง
+                          </Button>
+                        </div>
+                      </Card.Body>
+                    </Card>
+                  )}
+                </div>
+              )}
+            </Card.Body>
+          </Card>
 
           {/* รายการสินค้า */}
           <Card className="border-0 shadow-sm rounded-4">

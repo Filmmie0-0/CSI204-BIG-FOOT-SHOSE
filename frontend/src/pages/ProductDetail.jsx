@@ -61,67 +61,87 @@ const ProductDetail = () => {
 
   return (
     <Container className="py-5 mt-4" style={{ maxWidth: '1200px' }}>
-      <Row className="gx-5">
-        <Col md={6} className="mb-4 mb-md-0">
-          <div className="bg-light rounded-4 overflow-hidden shadow-sm">
-            <img 
-              src={product.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} 
-              alt={product.name} 
-              className="w-100 h-100 object-fit-cover" 
-              style={{ maxHeight: '600px' }}
-            />
-          </div>
-        </Col>
-        
-        <Col md={6} className="d-flex flex-column justify-content-center">
-          <h1 className="display-5 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
-            {product.name}
-          </h1>
-          <p className="fs-3 fw-bold text-dark mb-4">฿{product.price?.toLocaleString()}</p>
-          
-          <div className="mb-4">
-            <span className={`badge ${ (product.countInStock !== undefined ? product.countInStock : 10) > 0 ? 'bg-success' : 'bg-danger'} px-3 py-2 fs-6`}>
-              { (product.countInStock !== undefined ? product.countInStock : 10) > 0 ? `In Stock: ${product.countInStock !== undefined ? product.countInStock : 10}` : 'Out of Stock'}
-            </span>
-          </div>
-
-          <div className="mb-5">
-            <p className="fs-5 text-secondary lh-lg">{product.description}</p>
-          </div>
-
-          {/* --- UI สำหรับเลือกไซส์ --- */}
-          {product.sizes && product.sizes.length > 0 && (
-            <div className="mb-5">
-              <h5 className="fw-bold text-dark text-uppercase mb-3" style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>Size (EU)</h5>
-              <div className="d-flex flex-wrap gap-2">
-                {product.sizes.map((size) => (
-                  <Button
-                    key={size}
-                    variant={selectedSize === size ? 'dark' : 'outline-secondary'}
-                    onClick={() => setSelectedSize(size)}
-                    className={`rounded-1 px-4 py-2 fw-semibold border-2 ${selectedSize === size ? 'border-dark' : 'border-gray-300 text-dark'}`}
-                  >
-                    {size}
-                  </Button>
-                ))}
-              </div>
+      <div className="bg-white rounded-4 shadow-lg p-4 p-md-5">
+        <Row className="gx-5">
+          <Col md={6} className="mb-5 mb-md-0">
+            <div className="bg-light rounded-4 overflow-hidden shadow-sm h-100 d-flex align-items-center justify-content-center p-3">
+              <img 
+                src={product.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'} 
+                alt={product.name} 
+                className="w-100 object-fit-contain rounded-3" 
+                style={{ maxHeight: '500px' }}
+              />
             </div>
-          )}
+          </Col>
           
-          <div>
-            <Button
-              variant="dark"
-              size="lg"
-              onClick={handleAddToCart}
-              disabled={(product.countInStock !== undefined ? product.countInStock : 10) === 0 || isAdminOrStaff}
-              className="w-100 py-3 text-uppercase fw-bold rounded-1 border-0"
-              style={{ letterSpacing: '2px' }}
-            >
-              {isAdminOrStaff ? 'Admin cannot purchase' : ((product.countInStock !== undefined ? product.countInStock : 10) === 0 ? 'Out of Stock' : 'Add to Cart')}
-            </Button>
-          </div>
-        </Col>
-      </Row>
+          <Col md={6} className="d-flex flex-column justify-content-center">
+            <h1 className="display-5 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
+              {product.name}
+            </h1>
+            <p className="fs-2 fw-black mb-4" style={{ color: '#ff5722' }}>฿{product.price?.toLocaleString()}</p>
+            
+            <div className="mb-4">
+              <span className={`badge ${ (product.countInStock !== undefined ? product.countInStock : 10) > 0 ? 'bg-success' : 'bg-danger'} px-3 py-2 fs-6 rounded-pill shadow-sm`}>
+                { (product.countInStock !== undefined ? product.countInStock : 10) > 0 ? `In Stock: ${product.countInStock !== undefined ? product.countInStock : 10}` : 'Out of Stock'}
+              </span>
+            </div>
+
+            <div className="mb-5">
+              <p className="fs-5 text-secondary lh-lg fw-medium">{product.description}</p>
+            </div>
+
+            {/* --- UI สำหรับเลือกไซส์ --- */}
+            {product.sizes && product.sizes.length > 0 && (
+              <div className="mb-5">
+                <h5 className="fw-bold text-dark text-uppercase mb-3" style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>Size (EU)</h5>
+                <div className="d-flex flex-wrap gap-2">
+                  {product.sizes.map((size) => (
+                    <Button
+                      key={size}
+                      variant={selectedSize === size ? 'dark' : 'outline-secondary'}
+                      onClick={() => setSelectedSize(size)}
+                      className={`rounded-3 px-4 py-2 fw-bold border-2 shadow-sm ${selectedSize === size ? 'border-dark bg-dark text-white' : 'border-light bg-light text-dark'}`}
+                      style={{ transition: 'all 0.2s' }}
+                    >
+                      {size}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            )}
+            
+            <div className="mt-auto">
+              <Button
+                variant="light"
+                size="lg"
+                onClick={handleAddToCart}
+                disabled={(product.countInStock !== undefined ? product.countInStock : 10) === 0 || isAdminOrStaff}
+                className="w-100 py-3 text-uppercase fw-bold rounded-pill border-0 shadow"
+                style={{ 
+                  letterSpacing: '2px', 
+                  backgroundColor: (product.countInStock !== undefined ? product.countInStock : 10) === 0 || isAdminOrStaff ? '#e9ecef' : '#ff5722',
+                  color: (product.countInStock !== undefined ? product.countInStock : 10) === 0 || isAdminOrStaff ? '#6c757d' : '#fff',
+                  transition: 'all 0.3s'
+                }}
+                onMouseEnter={(e) => { 
+                  if (!e.target.disabled) {
+                    e.target.style.transform = 'translateY(-3px)'; 
+                    e.target.style.boxShadow = '0 10px 20px rgba(255,87,34,0.3)'; 
+                  }
+                }} 
+                onMouseLeave={(e) => { 
+                  if (!e.target.disabled) {
+                    e.target.style.transform = 'translateY(0)'; 
+                    e.target.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)'; 
+                  }
+                }}
+              >
+                {isAdminOrStaff ? 'Admin cannot purchase' : ((product.countInStock !== undefined ? product.countInStock : 10) === 0 ? 'Out of Stock' : 'Add to Cart')}
+              </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
     </Container>
   );
 };

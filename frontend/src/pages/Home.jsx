@@ -11,6 +11,17 @@ const Home = () => {
   const pathname = location.pathname;
   const searchParams = new URLSearchParams(location.search);
   const searchKeyword = searchParams.get('search') || '';
+  
+  // Hero Section Shoe Animation State
+  const heroShoes = ['/product/shoe-1.jpg', '/product/shoe-3.jpg', '/product/shoe-7.jpg', '/product/shoe-9.jpg'];
+  const [currentShoeIndex, setCurrentShoeIndex] = useState(0);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentShoeIndex((prev) => (prev + 1) % heroShoes.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -88,9 +99,6 @@ const Home = () => {
               
               {/* Text Content */}
               <div className="col-lg-6 text-center text-lg-start mb-5 mb-lg-0 pe-lg-5 hero-text-anim">
-                <span className="d-inline-block fw-bold text-uppercase rounded-pill px-4 py-2 mb-4" style={{ fontSize: '0.75rem', letterSpacing: '3px', backgroundColor: 'rgba(255,87,34,0.1)', color: '#ff5722', border: '1px solid rgba(255,87,34,0.3)', backdropFilter: 'blur(10px)' }}>
-                  🔥 The Ultimate Collection
-                </span>
                 <h1 className="display-3 fw-black text-white text-uppercase mb-4" style={{ fontWeight: 900, letterSpacing: '-2px', lineHeight: '1.1' }}>
                   Step Into <br/><span style={{ color: '#ff5722' }}>Greatness.</span>
                 </h1>
@@ -113,25 +121,26 @@ const Home = () => {
               {/* Floating Shoe Animation */}
               <div className="col-lg-6 position-relative d-none d-lg-block">
                 <div className="position-relative mx-auto" style={{ width: '100%', maxWidth: '600px', height: '400px' }}>
-                  {/* The Floating Shoe Image */}
-                  <img 
-                    src="https://purepng.com/public/uploads/large/purepng.com-nike-shoeclothingnike-shoe-lifestyle-sports-shoe-shoe-sneaker-6315223270914u4d0.png"
-                    onError={(e) => { 
-                      e.target.src = '/product/shoe-1.jpg'; 
-                      e.target.style.borderRadius = '20px'; 
-                      e.target.style.border = '4px solid rgba(255,255,255,0.1)';
-                      e.target.style.transform = 'rotate(-10deg)';
-                    }}
-                    alt="Premium Floating Shoe" 
-                    className="img-fluid position-absolute w-100" 
-                    style={{ 
-                      animation: 'floatShoe 6s ease-in-out infinite', 
-                      zIndex: 2,
-                      top: '0',
-                      left: '0',
-                      filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.5))'
-                    }} 
-                  />
+                  {/* The Floating Shoe Images with Crossfade */}
+                  {heroShoes.map((shoeSrc, index) => (
+                    <img 
+                      key={shoeSrc}
+                      src={shoeSrc}
+                      alt="Premium Floating Shoe" 
+                      className="img-fluid position-absolute w-100 shadow-lg" 
+                      style={{ 
+                        animation: 'floatShoe 6s ease-in-out infinite', 
+                        zIndex: 2,
+                        top: '0',
+                        left: '0',
+                        borderRadius: '20px',
+                        border: '4px solid rgba(255,255,255,0.1)',
+                        filter: 'drop-shadow(0 25px 25px rgba(0,0,0,0.5))',
+                        opacity: index === currentShoeIndex ? 1 : 0,
+                        transition: 'opacity 1s ease-in-out'
+                      }} 
+                    />
+                  ))}
                   {/* Dynamic Shadow on the "floor" */}
                   <div 
                     className="bg-black rounded-ellipse mx-auto position-absolute" 
