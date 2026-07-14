@@ -9,6 +9,9 @@ import Cart from './pages/Cart';
 import Shipping from './pages/Shipping';
 import PlaceOrder from './pages/PlaceOrder';
 import OrderDetail from './pages/OrderDetail';
+import AdminDashboard from './pages/AdminDashboard';
+import Men from './pages/Men';
+import Women from './pages/Women'
 
 // Admin Components
 import AdminLayout from './components/AdminLayout';
@@ -30,8 +33,8 @@ function App() {
         <Routes>
           {/* Public / Customer Routes */}
           <Route path="/" element={<Home />} />
-          <Route path="/men" element={<Home />} />
-          <Route path="/women" element={<Home />} />
+          <Route path="/men" element={<Men />} />
+          <Route path="/women" element={<Women />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />
