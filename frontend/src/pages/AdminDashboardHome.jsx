@@ -11,29 +11,22 @@ const AdminDashboardHome = () => {
   });
 
   useEffect(() => {
-    // Just fetch orders and products to get a basic count for now
-    // In a real app, you'd have a specific /api/admin/dashboard endpoint
     const fetchData = async () => {
       try {
-        const [ordersRes, productsRes] = await Promise.all([
-          api.get('/orders'),
-          api.get('/products')
-        ]);
-        
-        const orders = ordersRes.data;
-        const revenue = orders.reduce((acc, order) => acc + (order.order_status !== 'pending' ? (order.total_amount || 0) : 0), 0);
+        const config = { headers: { Authorization: `Bearer ${userInfo.token}` } };
+        const { data } = await api.get('/admin/dashboard', config);
         
         setStats({
-          totalOrders: orders.length,
-          totalProducts: productsRes.data.length,
-          totalRevenue: revenue
+          totalOrders: data.totalOrders || 0,
+          totalProducts: data.totalProducts || 0,
+          totalRevenue: data.totalRevenue || 0
         });
       } catch (err) {
         console.error(err);
       }
     };
     fetchData();
-  }, []);
+  }, [userInfo]);
 
   return (
     <div className="space-y-6">
