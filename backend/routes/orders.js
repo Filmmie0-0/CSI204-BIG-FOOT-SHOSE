@@ -6,7 +6,8 @@ const {
   getOrders, 
   updateOrderToPaid, 
   updateOrderToDelivered,
-  createPaymentIntent
+  createPaymentIntent,
+  deleteOrder
 } = require('../controllers/orderController');
 const { protect, admin } = require('../middleware/authMiddleware');
 
@@ -19,5 +20,6 @@ router.get('/:id', protect, getOrderById);
 router.post('/:id/create-payment-intent', protect, createPaymentIntent);
 router.put('/:id/pay', protect, updateOrderToPaid); 
 router.put('/:id/deliver', protect, admin, updateOrderToDelivered); 
+router.delete('/:id', protect, admin, deleteOrder);
 
 module.exports = router;

@@ -46,6 +46,17 @@ const AdminOrders = () => {
     }
   };
 
+  const deleteOrderHandler = async (id) => {
+    if (window.confirm('คุณแน่ใจหรือไม่ว่าต้องการลบคำสั่งซื้อนี้?')) {
+      try {
+        await api.delete(`/orders/${id}`);
+        fetchOrders();
+      } catch (err) {
+        alert(err.response?.data?.message || 'เกิดข้อผิดพลาดในการลบคำสั่งซื้อ');
+      }
+    }
+  };
+
   if (loading) return <div className="text-center py-10">Loading Orders...</div>;
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
 
@@ -81,23 +92,24 @@ const AdminOrders = () => {
             {orders.map((order) => (
               <tr key={order._id} className="hover:bg-gray-50 transition">
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{order._id.substring(0, 6)}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.user ? order.user.username : 'Guest'}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">฿{order.totalPrice.toLocaleString()}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{order.user_id ? order.user_id.username : 'Guest'}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{new Date(order.created_at || order.createdAt).toLocaleDateString()}</td>
+                <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-gray-900">฿{(order.total_amount || 0).toLocaleString()}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-center space-x-2">
-                  {order.isPaid ? (
+                  {order.order_status !== 'pending' ? (
                     <span className="px-2 py-1 text-xs font-semibold rounded bg-green-100 text-green-800 border border-green-200">Paid</span>
                   ) : (
                     <button onClick={() => markAsPaid(order._id)} className="px-2 py-1 text-xs font-semibold rounded bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 transition">Mark Paid</button>
                   )}
-                  {order.isDelivered ? (
+                  {order.order_status === 'delivered' ? (
                     <span className="px-2 py-1 text-xs font-semibold rounded bg-blue-100 text-blue-800 border border-blue-200">Sent</span>
                   ) : (
                     <button onClick={() => markAsDelivered(order._id)} className="px-2 py-1 text-xs font-semibold rounded bg-gray-100 hover:bg-gray-200 text-gray-700 border border-gray-300 transition">Mark Sent</button>
                   )}
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
+                <td className="px-6 py-4 whitespace-nowrap text-sm text-right space-x-2">
                   <Link to={`/order/${order._id}`} className="text-white bg-[#ff7f50] hover:bg-[#ff632c] px-3 py-1.5 rounded text-xs font-medium transition">View</Link>
+                  <button onClick={() => deleteOrderHandler(order._id)} className="text-white bg-red-500 hover:bg-red-600 px-3 py-1.5 rounded text-xs font-medium transition">Delete</button>
                 </td>
               </tr>
             ))}

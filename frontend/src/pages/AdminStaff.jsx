@@ -88,11 +88,11 @@ const AdminStaff = () => {
                     className="border border-gray-300 rounded px-2 py-1 text-xs outline-none focus:border-[#ff7f50]"
                     value={user.role}
                     onChange={(e) => handleRoleChange(user._id, e.target.value)}
-                    disabled={user._id === userInfo._id} // ป้องกันไม่ให้เปลี่ยนสิทธิ์ตัวเอง
+                    disabled={user._id === userInfo._id || user.role === 'admin'} 
                   >
                     <option value="customer">Customer</option>
                     <option value="staff">Staff</option>
-                    <option value="admin">Admin</option>
+                    {user.role === 'admin' && <option value="admin">Admin</option>}
                   </select>
                 </td>
               </tr>

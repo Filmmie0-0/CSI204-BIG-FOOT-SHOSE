@@ -13,6 +13,13 @@ exports.updateUserRole = async (req, res) => {
   try {
     const user = await User.findById(req.params.id);
     if (user) {
+      if (req.body.role === 'admin') {
+        return res.status(403).json({ message: 'คุณไม่สามารถให้สิทธิ์ Admin แก่ผู้อื่นได้' });
+      }
+      if (user.role === 'admin' && req.body.role !== 'admin') {
+        return res.status(403).json({ message: 'คุณไม่สามารถแก้ไขหรือถอดถอนสิทธิ์ของ Admin คนอื่นได้' });
+      }
+
       user.role = req.body.role || user.role;
       const updatedUser = await user.save();
       res.json({

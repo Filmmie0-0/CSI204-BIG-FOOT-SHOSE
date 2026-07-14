@@ -57,7 +57,9 @@ const addOrderItems = async (req, res) => {
 
 const getOrderById = async (req, res) => {
   try {
-    const order = await Order.findById(req.params.id).populate('user_id', 'username email');
+    const order = await Order.findById(req.params.id)
+      .populate('user_id', 'username email')
+      .populate('shipping_address_id');
     if (order) {
       const items = await OrderItem.find({ order_id: order._id }).populate('product_id');
       const orderWithItems = { ...order._doc, orderItems: items, user: order.user_id };
@@ -130,8 +132,11 @@ const createPaymentIntent = async (req, res) => {
       return res.status(404).json({ message: 'Order not found' });
     }
 
+    const amountInThb = order.total_amount || 0; // if it's missing or 0, fallback
+    const stripeAmount = Math.max(Math.round(amountInThb * 100), 1000); // minimum 10 THB (1000 subunits)
+
     const paymentIntent = await stripe.paymentIntents.create({
-      amount: Math.round(order.total_amount * 100), // Stripe expects amount in cents (THB has subunits)
+      amount: stripeAmount,
       currency: 'thb',
     });
 
@@ -143,6 +148,20 @@ const createPaymentIntent = async (req, res) => {
   }
 };
 
+const deleteOrder = async (req, res) => {
+  try {
+    const order = await Order.findById(req.params.id);
+    if (!order) {
+      return res.status(404).json({ message: 'ไม่พบคำสั่งซื้อ' });
+    }
+    await OrderItem.deleteMany({ order_id: order._id });
+    await Order.findByIdAndDelete(req.params.id);
+    res.json({ message: 'ลบคำสั่งซื้อเรียบร้อยแล้ว' });
+  } catch (error) {
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการลบคำสั่งซื้อ' });
+  }
+};
+
 module.exports = {
   addOrderItems,
   getOrderById,
@@ -150,5 +169,6 @@ module.exports = {
   getOrders,
   updateOrderToPaid,
   updateOrderToDelivered,
-  createPaymentIntent
+  createPaymentIntent,
+  deleteOrder
 };

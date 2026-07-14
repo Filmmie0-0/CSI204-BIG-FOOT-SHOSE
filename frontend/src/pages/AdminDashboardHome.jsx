@@ -21,7 +21,7 @@ const AdminDashboardHome = () => {
         ]);
         
         const orders = ordersRes.data;
-        const revenue = orders.reduce((acc, order) => acc + (order.isPaid ? order.totalPrice : 0), 0);
+        const revenue = orders.reduce((acc, order) => acc + (order.order_status !== 'pending' ? (order.total_amount || 0) : 0), 0);
         
         setStats({
           totalOrders: orders.length,
