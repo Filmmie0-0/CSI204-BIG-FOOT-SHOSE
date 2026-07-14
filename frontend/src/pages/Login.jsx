@@ -2,7 +2,8 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuthStore } from '../store/authStore';
-
+import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
+import { GoogleLogin } from '@react-oauth/google';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -45,97 +46,130 @@ const Login = () => {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    setError('');
+    try {
+      const { data } = await api.post('/users/google', { token: credentialResponse.credential });
+      login(data);
+      if (data.role === 'admin' || data.role === 'staff') {
+        navigate('/admin');
+      } else {
+        navigate('/');
+      }
+    } catch (err) {
+      setError(err.response?.data?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google');
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <div className="min-h-[80vh] flex flex-col justify-center items-center py-12 px-4 sm:px-6 lg:px-8 bg-gray-50/50">
-      <div className="max-w-md w-full space-y-8 bg-white p-8 sm:p-10 rounded-3xl border border-gray-200/60 shadow-xl relative overflow-hidden">
+    <Container className="d-flex flex-column justify-content-center align-items-center py-5" style={{ minHeight: '80vh' }}>
+      <Card className="w-100 border-0 shadow-lg rounded-4 position-relative overflow-hidden" style={{ maxWidth: '450px' }}>
         {/* แสงเอฟเฟกต์มุมกล่อง เพิ่มมิติ */}
-        <div className="absolute -top-20 -right-20 w-40 h-40 bg-blue-500 rounded-full blur-3xl opacity-10 pointer-events-none"></div>
+        <div className="position-absolute bg-primary rounded-circle" style={{ width: '150px', height: '150px', top: '-50px', right: '-50px', filter: 'blur(50px)', opacity: 0.1, pointerEvents: 'none' }}></div>
         
-        <div className="text-center">
-          <h2 className="mt-2 text-3xl font-black text-gray-900 uppercase tracking-tight relative inline-block">
-            Sign In
-            <span className="absolute bottom-0 left-1/2 -translate-x-1/2 w-8 h-1 bg-gray-900 rounded-full -mb-1"></span>
-          </h2>
-          <p className="mt-3 text-sm text-gray-500 font-medium">
-            Access your Big Foot Shoes account
-          </p>
-        </div>
-        
-        <form className="mt-8 space-y-6" onSubmit={submitHandler}>
-          {/* กล่อง Error Message ดีไซน์ใหม่ */}
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 p-4 rounded-xl text-sm font-semibold flex items-center justify-center space-x-2 animate-shake">
-              <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
-              </svg>
-              <span>{error}</span>
-            </div>
-          )}
+        <Card.Body className="p-4 p-sm-5">
+          <div className="text-center mb-4">
+            <h2 className="fs-3 fw-black text-dark text-uppercase position-relative d-inline-block mb-2" style={{ fontWeight: 900, letterSpacing: '-0.5px' }}>
+              Sign In
+              <div className="position-absolute bottom-0 start-50 translate-middle-x bg-dark rounded-pill" style={{ width: '2rem', height: '4px', marginBottom: '-4px' }}></div>
+            </h2>
+            <p className="text-muted fw-medium small mb-0 mt-3">
+              Access your Big Foot Shoes account
+            </p>
+          </div>
           
-          <div className="space-y-4">
-            <div>
-              <label htmlFor="email-address" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5 ml-1">
+          <Form onSubmit={submitHandler} className="mt-4 pt-2">
+            {/* กล่อง Error Message ดีไซน์ใหม่ */}
+            {error && (
+              <Alert variant="danger" className="d-flex align-items-center justify-content-center gap-2 border-0 shadow-sm fw-bold small rounded-3 py-3">
+                <svg width="16" height="16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
+                </svg>
+                <span>{error}</span>
+              </Alert>
+            )}
+            
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-2" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
                 Email address
-              </label>
-              <input
-                id="email-address"
-                name="email"
+              </Form.Label>
+              <Form.Control
                 type="email"
                 required
-                className="appearance-none block w-full px-4 py-3.5 border border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm transition-all duration-200 bg-gray-50/50 focus:bg-white"
-                placeholder="name@example.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                placeholder="name@example.com"
+                className="py-3 px-4 bg-light border-0 shadow-none focus-ring rounded-3"
+                style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
               />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-xs font-bold uppercase tracking-wider text-gray-500 mb-1.5 ml-1">
+            </Form.Group>
+            
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-2" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
                 Password
-              </label>
-              <input
-                id="password"
-                name="password"
+              </Form.Label>
+              <Form.Control
                 type="password"
                 required
-                className="appearance-none block w-full px-4 py-3.5 border border-gray-200 placeholder-gray-400 text-gray-900 rounded-xl focus:outline-none focus:ring-2 focus:ring-gray-900 focus:border-transparent text-sm transition-all duration-200 bg-gray-50/50 focus:bg-white"
-                placeholder="••••••••"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                className="py-3 px-4 bg-light border-0 shadow-none focus-ring rounded-3"
+                style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+              />
+            </Form.Group>
+
+            <div className="pt-3">
+              <Button
+                type="submit"
+                variant="dark"
+                size="lg"
+                disabled={loading}
+                className="w-100 py-3 rounded-3 fw-bold text-uppercase d-flex justify-content-center align-items-center gap-2 shadow-sm hover-translate-y transition-all"
+                style={{ letterSpacing: '1.5px' }}
+              >
+                {loading ? (
+                  <>
+                    <Spinner as="span" animation="border" size="sm" role="status" aria-hidden="true" />
+                    <span>Signing in...</span>
+                  </>
+                ) : (
+                  'Sign In'
+                )}
+              </Button>
+            </div>
+            
+            <div className="d-flex align-items-center my-4">
+              <div className="flex-grow-1 border-bottom"></div>
+              <span className="px-3 text-muted small fw-medium text-uppercase">Or</span>
+              <div className="flex-grow-1 border-bottom"></div>
+            </div>
+            
+            <div className="d-flex justify-content-center">
+              <GoogleLogin
+                onSuccess={handleGoogleSuccess}
+                onError={() => {
+                  setError('Google Login Failed');
+                }}
+                useOneTap
               />
             </div>
-          </div>
+          </Form>
 
-          <div className="pt-2">
-            <button
-              type="submit"
-              disabled={loading}
-              className="group relative w-full flex justify-center items-center py-4 px-4 border border-transparent text-sm font-bold rounded-xl text-white bg-gray-900 hover:bg-black uppercase tracking-widest transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5 disabled:opacity-70 disabled:pointer-events-none"
-            >
-              {loading ? (
-                <>
-                  <svg className="animate-spin -ml-1 mr-3 h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
-                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
-                  </svg>
-                  <span>Signing in...</span>
-                </>
-              ) : (
-                'Sign In'
-              )}
-            </button>
+          <div className="mt-5 text-center small border-top pt-4">
+            <p className="text-muted fw-medium mb-0">
+              New customer?{' '}
+              <Link to="/register" className="fw-bold text-dark text-decoration-none hover-primary transition-colors border-bottom border-dark pb-1">
+                Create an account
+              </Link>
+            </p>
           </div>
-        </form>
-
-        <div className="mt-8 text-center text-sm border-t border-gray-100 pt-6">
-          <p className="text-gray-500 font-medium">
-            New customer?{' '}
-            <Link to="/register" className="font-bold text-gray-900 hover:text-blue-600 transition-colors underline underline-offset-4">
-              Create an account
-            </Link>
-          </p>
-        </div>
-      </div>
-    </div>
+        </Card.Body>
+      </Card>
+    </Container>
   );
 };
 

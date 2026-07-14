@@ -1,32 +1,47 @@
 const express = require('express');
 const multer = require('multer');
-const { CloudinaryStorage } = require('multer-storage-cloudinary');
-const cloudinary = require('cloudinary').v2;
+const path = require('path');
+const fs = require('fs');
 const { protect, admin } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
-// Configuration 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
+const uploadDir = path.join(__dirname, '../../frontend/public/product');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+const storage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, uploadDir);
+  },
+  filename(req, file, cb) {
+    cb(null, `${file.fieldname}-${Date.now()}${path.extname(file.originalname)}`);
+  },
 });
 
-const storage = new CloudinaryStorage({
-  cloudinary: cloudinary,
-  params: {
-    folder: 'big-foot-shoes',
-    allowedFormats: ['jpg', 'png', 'jpeg', 'webp'],
-    transformation: [{ width: 800, height: 800, crop: 'limit' }]
+function checkFileType(file, cb) {
+  const filetypes = /jpg|jpeg|png|webp/;
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = filetypes.test(file.mimetype);
+
+  if (extname && mimetype) {
+    return cb(null, true);
+  } else {
+    cb('Images only!');
   }
-});
+}
 
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage,
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  },
+});
 
 router.post('/', protect, admin, upload.single('image'), (req, res) => {
-  if (req.file && req.file.path) {
-    res.json({ image_url: req.file.path });
+  if (req.file) {
+    res.json({ image_url: `/product/${req.file.filename}` });
   } else {
     res.status(400).json({ message: 'Image upload failed' });
   }

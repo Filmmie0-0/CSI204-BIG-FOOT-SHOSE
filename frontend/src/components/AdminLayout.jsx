@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { Outlet, Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
+import { Container, Row, Col, Nav, Navbar, Button, Dropdown, Badge } from 'react-bootstrap';
 
 const AdminLayout = () => {
   const location = useLocation();
@@ -26,74 +27,103 @@ const AdminLayout = () => {
     { name: 'ดูข้อมูล', path: '/admin/info', icon: 'ℹ️', roles: ['admin'] },
   ];
 
-  // กรองเมนูตาม role ของ user
   const filteredNavItems = navItems.filter(item => item.roles.includes(userInfo?.role));
 
   return (
-    <div className="min-h-screen flex bg-[#fdf5e6]">
-      {/* Sidebar */}
-      <aside className="w-64 bg-[#ff7f50] text-white flex flex-col shadow-xl">
-        <div className="p-6 border-b border-[#ff632c] flex items-center justify-center">
-          <Link to="/" className="flex items-center bg-white p-2 rounded-lg shadow-sm">
-            <img src="/logo.png" alt="Big Foot Shoes" className="h-12 w-auto" />
-          </Link>
-        </div>
+    <Container fluid className="min-vh-100 p-0" style={{ backgroundColor: '#F5F5DC' }}>
+      <Row className="g-0 min-vh-100">
+        {/* Sidebar */}
+        <Col md={3} lg={2} className="text-white d-flex flex-column shadow-lg z-2 position-relative" style={{ backgroundColor: '#FF7A59' }}>
+          <div className="p-4 d-flex justify-content-center align-items-center" style={{ minHeight: '76px', backgroundColor: 'rgba(0,0,0,0.1)' }}>
+            <Link to="/" className="text-white text-decoration-none fw-bold fs-5 d-flex align-items-center gap-2">
+              <span className="fs-3">👟</span> BigFoot<span className="text-light opacity-75">Admin</span>
+            </Link>
+          </div>
 
-        <nav className="flex-1 py-6 space-y-1">
-          {filteredNavItems.map((item) => {
-            const isActive = location.pathname === item.path;
-            return (
-              <Link
-                key={item.name}
-                to={item.path}
-                className={`flex items-center space-x-3 px-6 py-3 font-medium transition-colors ${
-                  isActive 
-                    ? 'bg-[#fdf5e6] text-[#ff7f50] border-r-4 border-[#ff4500]' 
-                    : 'text-white hover:bg-[#ff632c]'
-                }`}
+          <div className="px-3 pt-4 text-uppercase text-white-50 small fw-bold mb-2" style={{ letterSpacing: '1px', fontSize: '0.7rem' }}>
+            Menu
+          </div>
+
+          <Nav className="flex-column flex-grow-1 px-2 gap-1">
+            {filteredNavItems.map((item) => {
+              const isActive = location.pathname === item.path;
+              return (
+                <Nav.Link
+                  as={Link}
+                  key={item.name}
+                  to={item.path}
+                  className={`d-flex align-items-center px-3 py-2 rounded-3 fw-bold transition-all ${
+                    isActive
+                      ? ''
+                      : 'text-white'
+                  }`}
+                  style={{
+                    backgroundColor: isActive ? '#F5F5DC' : 'transparent',
+                    color: isActive ? '#FF7A59' : 'white'
+                  }}
+                  onMouseEnter={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'rgba(255,255,255,0.2)';
+                    }
+                  }}
+                  onMouseLeave={(e) => {
+                    if (!isActive) {
+                      e.currentTarget.style.backgroundColor = 'transparent';
+                    }
+                  }}
+                >
+                  <span className="me-3 fs-6">{item.icon}</span>
+                  <span style={{ fontSize: '0.9rem' }}>{item.name}</span>
+                </Nav.Link>
+              );
+            })}
+          </Nav>
+
+          <div className="p-3 m-3 rounded-3" style={{ backgroundColor: 'rgba(0,0,0,0.1)' }}>
+            <div className="d-flex align-items-center mb-3">
+              <div
+                className="rounded-circle bg-white fw-bold d-flex align-items-center justify-content-center me-3 shadow-sm"
+                style={{ width: '40px', height: '40px', color: '#FF7A59' }}
               >
-                <span className="text-lg">{item.icon}</span>
-                <span>{item.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        <div className="p-6 border-t border-[#ff632c]">
-          <div className="flex items-center space-x-3 mb-4">
-            <div className="w-10 h-10 rounded-full bg-white text-[#ff7f50] flex items-center justify-center font-bold text-xl uppercase">
-              {userInfo?.username?.charAt(0) || 'A'}
+                {userInfo?.username?.charAt(0).toUpperCase() || 'A'}
+              </div>
+              <div className="overflow-hidden">
+                <p className="mb-0 fw-bold text-truncate text-white" style={{ fontSize: '0.9rem' }}>{userInfo?.username}</p>
+                <Badge bg={userInfo?.role === 'admin' ? 'danger' : 'warning'} text="dark" className="text-uppercase border border-white" style={{ fontSize: '0.65rem' }}>
+                  {userInfo?.role}
+                </Badge>
+              </div>
             </div>
-            <div>
-              <p className="text-sm font-medium">{userInfo?.username}</p>
-              <p className="text-xs text-white/70 capitalize">{userInfo?.role}</p>
+            <Button variant="outline-light" size="sm" className="w-100 d-flex align-items-center justify-content-center gap-2 border-white text-white hover-bg-white" onClick={handleLogout}>
+              <span style={{ fontSize: '0.8rem' }}>Sign Out</span>
+            </Button>
+          </div>
+        </Col>
+
+        {/* Main Content Area */}
+        <Col md={9} lg={10} className="d-flex flex-column h-100 min-vh-100">
+          {/* Top Header */}
+          <Navbar bg="white" className="px-4 shadow-sm py-3 border-bottom z-1 d-flex justify-content-between align-items-center">
+            <h4 className="mb-0 fw-bold text-dark">
+              {filteredNavItems.find(item => item.path === location.pathname)?.name || 'Dashboard'}
+            </h4>
+            <div className="d-flex align-items-center gap-3">
+              <Button variant="light" className="rounded-circle p-2 d-flex align-items-center justify-content-center position-relative">
+                🔔
+                <span className="position-absolute top-0 start-100 translate-middle p-1 bg-danger border border-light rounded-circle">
+                  <span className="visually-hidden">New alerts</span>
+                </span>
+              </Button>
             </div>
-          </div>
-          <button
-            onClick={handleLogout}
-            className="w-full flex items-center justify-center space-x-2 bg-black hover:bg-gray-800 text-white py-2 rounded transition"
-          >
-            <span>🚪</span>
-            <span>Logout</span>
-          </button>
-        </div>
-      </aside>
+          </Navbar>
 
-      {/* Main Content Area */}
-      <main className="flex-1 flex flex-col">
-        {/* Top Header */}
-        <header className="bg-[#2c3e50] text-white py-3 px-8 shadow-md flex justify-between items-center">
-          <div className="text-sm font-medium text-gray-300">
-            {userInfo?.role === 'admin' ? 'Admin Panel' : 'Staff Panel'} <span className="mx-2 text-gray-500">|</span> {filteredNavItems.find(item => item.path === location.pathname)?.name || 'Dashboard'}
+          {/* Content */}
+          <div className="flex-grow-1 p-4 p-md-5 overflow-auto">
+            <Outlet />
           </div>
-        </header>
-
-        {/* Content */}
-        <div className="flex-1 p-8 overflow-y-auto">
-          <Outlet />
-        </div>
-      </main>
-    </div>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 

@@ -1,6 +1,7 @@
 const Order = require('../models/Order');
 const OrderItem = require('../models/OrderItem');
 const Address = require('../models/Address');
+const Product = require('../models/Product');
 
 const addOrderItems = async (req, res) => {
   try {
@@ -45,6 +46,16 @@ const addOrderItems = async (req, res) => {
              quantity: item.qty || item.quantity || 1,
              price_per_unit: item.price || 0
            });
+           
+           // Decrement stock
+           const productId = item.product || item._id;
+           const qty = item.qty || item.quantity || 1;
+           const product = await Product.findById(productId);
+           if (product) {
+             product.countInStock = product.countInStock - qty;
+             if (product.countInStock < 0) product.countInStock = 0;
+             await product.save();
+           }
         }
       }
 

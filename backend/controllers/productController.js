@@ -37,6 +37,7 @@ exports.createProduct = async (req, res) => {
       category_id: req.body.category_id || null,
       description: req.body.description || 'Sample description',
       discount_price: req.body.discount_price || 0,
+      countInStock: req.body.countInStock !== undefined ? req.body.countInStock : 10,
       sizes: req.body.sizes || [],
       status: req.body.status || 'active'
     });
@@ -62,6 +63,7 @@ exports.updateProduct = async (req, res) => {
       image_url,
       category_id,
       discount_price,
+      countInStock,
       sizes,
       status
     } = req.body;
@@ -76,6 +78,7 @@ exports.updateProduct = async (req, res) => {
       product.image_url = image_url || product.image_url;
       product.category_id = category_id || product.category_id;
       product.discount_price = discount_price !== undefined ? discount_price : product.discount_price;
+      product.countInStock = countInStock !== undefined ? countInStock : product.countInStock;
       if (sizes !== undefined) product.sizes = sizes;
       product.status = status || product.status;
 

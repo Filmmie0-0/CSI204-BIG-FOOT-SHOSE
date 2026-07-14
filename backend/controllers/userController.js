@@ -101,4 +101,72 @@ const updateUserProfile = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile };
+const { OAuth2Client } = require('google-auth-library');
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+// @desc    เข้าสู่ระบบด้วย Google
+// @route   POST /api/users/google
+// @access  Public
+const googleLogin = async (req, res) => {
+  try {
+    const { token } = req.body;
+    
+    // ตรวจสอบ token กับ Google
+    const ticket = await client.verifyIdToken({
+      idToken: token,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+    
+    const payload = ticket.getPayload();
+    const { email, name, given_name, family_name, sub } = payload;
+    
+    // ค้นหาผู้ใช้จากอีเมล
+    let user = await User.findOne({ email });
+    
+    if (user) {
+      // มีผู้ใช้อยู่แล้ว ให้ล็อกอินเลย
+      res.json({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role,
+        token: generateToken(user._id),
+      });
+    } else {
+      // ยังไม่มีผู้ใช้ ให้สร้างใหม่
+      const password = Math.random().toString(36).slice(-8) + Math.random().toString(36).slice(-8); // สุ่มรหัสผ่าน
+      
+      // หา username ที่ไม่ซ้ำ
+      let username = name.replace(/\s+/g, '').toLowerCase();
+      let usernameExists = await User.findOne({ username });
+      if (usernameExists) {
+        username = username + sub.substring(0, 4);
+      }
+      
+      user = await User.create({
+        username: username,
+        email: email,
+        password_hash: password, // ใส่รหัสผ่านสุ่มไว้
+        first_name: given_name || name,
+        last_name: family_name || '',
+      });
+      
+      if (user) {
+        res.status(201).json({
+          _id: user._id,
+          username: user.username,
+          email: user.email,
+          role: user.role,
+          token: generateToken(user._id),
+        });
+      } else {
+        res.status(400).json({ message: 'ไม่สามารถสร้างบัญชีผู้ใช้ได้' });
+      }
+    }
+  } catch (error) {
+    console.error('Google login error:', error);
+    res.status(401).json({ message: 'Google authentication failed', error: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, updateUserProfile, googleLogin };

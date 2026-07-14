@@ -12,21 +12,21 @@ const createAdmin = async () => {
     if (admin) {
       console.log(`Admin user already exists: ${admin.email}`);
       // Let's reset the password so the user can log in
-      admin.password_hash = 'admin1234';
+      admin.password_hash = '12345678';
       await admin.save();
-      console.log('Password has been reset to: admin1234');
+      console.log('Password has been reset to: 12345678');
     } else {
       admin = await User.create({
         username: 'admin',
         email: 'admin@bigfoot.com',
-        password_hash: 'admin1234',
+        password_hash: '12345678',
         first_name: 'Admin',
         last_name: 'User',
         role: 'admin'
       });
       console.log('Created new Admin account!');
       console.log(`Email: admin@bigfoot.com`);
-      console.log(`Password: admin1234`);
+      console.log(`Password: 12345678`);
     }
     process.exit();
   } catch (err) {

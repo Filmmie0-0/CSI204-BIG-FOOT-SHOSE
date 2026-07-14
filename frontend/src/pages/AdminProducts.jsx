@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthStore } from '../store/authStore';
 import api from '../utils/api';
+import { Card, Table, Button, Badge, Spinner, Alert, Form } from 'react-bootstrap';
 
 const AdminProducts = () => {
   const [products, setProducts] = useState([]);
@@ -23,13 +24,17 @@ const AdminProducts = () => {
 
   useEffect(() => {
     if (userInfo?.role !== 'admin') {
-      return; // If not admin, the App component or Layout could handle it, or we can just return empty
+      return;
     }
     fetchProducts();
   }, [userInfo]);
 
   if (userInfo?.role !== 'admin') {
-    return <div className="text-center py-20 text-red-500 font-bold text-xl">ไม่มีสิทธิ์เข้าถึงหน้านี้ (Admin Only)</div>;
+    return (
+      <div className="text-center py-5">
+        <Alert variant="danger" className="fw-bold fs-5 shadow-sm border-0 rounded-4">ไม่มีสิทธิ์เข้าถึงหน้านี้ (Admin Only)</Alert>
+      </div>
+    );
   }
 
   const deleteProduct = async (id) => {
@@ -44,56 +49,82 @@ const AdminProducts = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-10">Loading Products...</div>;
-  if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
+  if (loading) return (
+    <div className="d-flex flex-column align-items-center justify-content-center py-5">
+      <Spinner animation="border" variant="primary" />
+      <div className="mt-3 text-muted fw-medium">Loading Products...</div>
+    </div>
+  );
+  
+  if (error) return <Alert variant="danger" className="text-center mt-4 border-0 shadow-sm rounded-4">{error}</Alert>;
 
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-[#ffcfc0] overflow-hidden">
-      <div className="bg-[#ffcfc0] px-6 py-4 flex justify-between items-center">
-        <h2 className="text-xl font-bold text-gray-800">จัดการสินค้า</h2>
-        <Link 
-          to="/admin/product/new" 
-          className="bg-[#ff7f50] hover:bg-[#ff632c] text-white px-4 py-2 rounded font-medium text-sm transition"
-        >
-          + เพิ่มสินค้า
-        </Link>
-      </div>
+    <Card className="shadow-sm border-0 rounded-4 overflow-hidden">
+      <Card.Header className="bg-white border-bottom px-4 py-4 d-flex justify-content-between align-items-center">
+        <h5 className="mb-0 fw-bold text-dark">จัดการสินค้า</h5>
+        <div className="d-flex gap-2">
+          <Form.Control type="text" placeholder="ค้นหาสินค้า..." className="shadow-none border-light bg-light rounded-pill px-4 focus-ring" style={{ '--bs-focus-ring-color': 'rgba(255, 122, 89, 0.25)' }} />
+          <Button 
+            as={Link} 
+            to="/admin/product/new" 
+            className="fw-bold shadow-sm rounded-pill px-4 text-nowrap d-flex align-items-center gap-2 text-white border-0"
+            style={{ backgroundColor: '#FF7A59' }}
+          >
+            <span>+</span> เพิ่มสินค้า
+          </Button>
+        </div>
+      </Card.Header>
       
-      <div className="overflow-x-auto p-4">
-        <table className="min-w-full">
-          <thead className="bg-[#fdf5e6]">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#ff632c] uppercase tracking-wider rounded-tl">ID</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#ff632c] uppercase tracking-wider">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#ff632c] uppercase tracking-wider">Price</th>
-              <th className="px-6 py-3 text-left text-xs font-semibold text-[#ff632c] uppercase tracking-wider">Status</th>
-              <th className="px-6 py-3 text-right text-xs font-semibold text-[#ff632c] uppercase tracking-wider rounded-tr">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-100">
-            {products.map((product) => (
-              <tr key={product._id} className="hover:bg-gray-50 transition">
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{product._id.substring(0, 6)}...</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex items-center space-x-3">
-                  <img src={product.image_url || 'https://via.placeholder.com/40'} alt={product.name} className="w-10 h-10 object-cover rounded bg-gray-100" />
-                  <span>{product.name}</span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">฿{product.price.toLocaleString()}</td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm">
-                  <span className={`px-2 py-1 rounded text-xs font-medium ${product.status === 'active' ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'}`}>
-                    {product.status}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-right">
-                  <Link to={`/admin/product/${product._id}/edit`} className="text-[#ff7f50] hover:text-[#ff4500] font-medium mr-4">Edit</Link>
-                  <button onClick={() => deleteProduct(product._id)} className="text-red-500 hover:text-red-700 font-medium">Delete</button>
-                </td>
+      <Card.Body className="p-0">
+        <div className="table-responsive">
+          <Table hover className="mb-0 align-middle text-nowrap">
+            <thead className="bg-light">
+              <tr>
+                <th className="px-4 py-3 text-uppercase text-secondary fw-bold border-0" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>ID</th>
+                <th className="px-4 py-3 text-uppercase text-secondary fw-bold border-0" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Product Info</th>
+                <th className="px-4 py-3 text-uppercase text-secondary fw-bold border-0" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Price</th>
+                <th className="px-4 py-3 text-uppercase text-secondary fw-bold border-0" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Status</th>
+                <th className="px-4 py-3 text-end text-uppercase text-secondary fw-bold border-0" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </div>
+            </thead>
+            <tbody className="border-top-0">
+              {products.map((product) => (
+                <tr key={product._id}>
+                  <td className="px-4 py-3 text-muted" style={{ fontSize: '0.85rem' }}>#{product._id.substring(0, 6)}</td>
+                  <td className="px-4 py-3">
+                    <div className="d-flex align-items-center gap-3">
+                      <div className="rounded-3 overflow-hidden bg-light border" style={{ width: '48px', height: '48px' }}>
+                        <img 
+                          src={product.image_url || 'https://via.placeholder.com/48'} 
+                          alt={product.name} 
+                          className="w-100 h-100 object-fit-cover"
+                        />
+                      </div>
+                      <div>
+                        <div className="fw-bold text-dark">{product.name}</div>
+                        <div className="text-muted small">{product.brand || 'No Brand'}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td className="px-4 py-3 fw-bold text-dark">฿{product.price.toLocaleString()}</td>
+                  <td className="px-4 py-3">
+                    <Badge bg={product.status === 'active' ? 'success' : 'secondary'} className="bg-opacity-10 text-success border border-success border-opacity-25 px-2 py-1 rounded-pill">
+                      {product.status}
+                    </Badge>
+                  </td>
+                  <td className="px-4 py-3 text-end">
+                    <div className="d-flex justify-content-end gap-2">
+                      <Link to={`/admin/product/${product._id}/edit`} className="btn btn-sm btn-light fw-bold rounded-pill px-3 shadow-sm hover-translate-y" style={{ color: '#FF7A59' }}>Edit</Link>
+                      <Button variant="light" size="sm" onClick={() => deleteProduct(product._id)} className="text-danger fw-bold rounded-pill px-3 shadow-sm hover-translate-y">Delete</Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </Table>
+        </div>
+      </Card.Body>
+    </Card>
   );
 };
 

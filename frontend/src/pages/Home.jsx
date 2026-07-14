@@ -1,10 +1,16 @@
 import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import api from '../utils/api';
 import ProductCard from '../components/ProductCard';
+import { Container, Row, Col, Button } from 'react-bootstrap';
 
 const Home = () => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const location = useLocation();
+  const pathname = location.pathname;
+  const searchParams = new URLSearchParams(location.search);
+  const searchKeyword = searchParams.get('search') || '';
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -21,80 +27,102 @@ const Home = () => {
     fetchProducts();
   }, []);
 
+  const filteredProducts = products.filter(product => {
+    // 1. Search filter
+    const matchesSearch = product.name.toLowerCase().includes(searchKeyword.toLowerCase()) || 
+      (product.brand && product.brand.toLowerCase().includes(searchKeyword.toLowerCase()));
+      
+    // 2. Category/Gender filter based on URL path
+    let matchesCategory = true;
+    const desc = product.description || '';
+    if (pathname === '/men') {
+      matchesCategory = /\bMen\b/i.test(desc) || /\bUnisex\b/i.test(desc);
+    } else if (pathname === '/women') {
+      matchesCategory = /\bWomen\b/i.test(desc) || /\bUnisex\b/i.test(desc);
+    }
+    
+    return matchesSearch && matchesCategory;
+  });
+
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+    <Container className="py-5 my-3">
       
       {/* Premium Hero Section */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-8 py-16 sm:px-16 sm:py-24 shadow-2xl">
-        {/* ตกแต่งแสงเบลอด้านหลัง */}
-        <div className="absolute -top-24 -right-24 w-96 h-96 bg-blue-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
-        <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-purple-500 rounded-full blur-3xl opacity-20 pointer-events-none"></div>
+      {!searchKeyword && (
+        <div className="position-relative overflow-hidden rounded-4 bg-dark text-white p-4 p-md-5 mb-5 shadow-lg" style={{ background: 'linear-gradient(135deg, #212529, #343a40, #000)' }}>
+          {/* Decorative elements */}
+          <div className="position-absolute bg-primary rounded-circle" style={{ width: '300px', height: '300px', top: '-100px', right: '-100px', filter: 'blur(100px)', opacity: 0.2, pointerEvents: 'none' }}></div>
+          <div className="position-absolute rounded-circle" style={{ backgroundColor: '#6f42c1', width: '300px', height: '300px', bottom: '-100px', left: '-100px', filter: 'blur(100px)', opacity: 0.2, pointerEvents: 'none' }}></div>
 
-        <div className="relative max-w-2xl mx-auto text-center space-y-6">
-          <span className="inline-block text-xs font-bold uppercase tracking-widest bg-white/10 text-blue-400 px-3 py-1 rounded-full backdrop-blur-sm">
-            New Collection 2026
-          </span>
-          <h1 className="text-4xl font-black tracking-tight sm:text-6xl uppercase leading-tight bg-gradient-to-r from-white via-gray-200 to-gray-400 bg-clip-text text-transparent">
-            Find your <br className="sm:hidden" /> perfect match.
-          </h1>
-          <p className="text-lg text-gray-400 font-medium">
-            Explore our latest collection of premium footwear designed for comfort and style.
-          </p>
-          <div className="pt-4">
-            <button className="inline-flex items-center justify-center px-6 py-3 border border-transparent text-base font-bold rounded-xl text-gray-900 bg-white hover:bg-gray-100 shadow-sm transition-all duration-200 transform hover:-translate-y-0.5">
-              Shop New Arrivals
-            </button>
+          <div className="position-relative mx-auto text-center" style={{ maxWidth: '700px', zIndex: 1 }}>
+            <span className="d-inline-block fw-bold text-uppercase rounded-pill px-3 py-1 mb-3" style={{ fontSize: '0.75rem', letterSpacing: '2px', backgroundColor: 'rgba(255,255,255,0.1)', color: '#6ea8fe', backdropFilter: 'blur(4px)' }}>
+              New Collection 2026
+            </span>
+            <h1 className="display-3 fw-black text-uppercase lh-1 mb-4" style={{ fontWeight: 900, background: 'linear-gradient(to right, #fff, #e9ecef, #adb5bd)', WebkitBackgroundClip: 'text', color: 'transparent' }}>
+              Find your <br className="d-block d-sm-none" /> perfect match.
+            </h1>
+            <p className="fs-5 text-secondary fw-medium mb-4">
+              Explore our latest collection of premium footwear designed for comfort and style.
+            </p>
+            <div className="pt-2">
+              <Button variant="light" size="lg" className="fw-bold px-4 py-3 rounded-3 shadow-sm text-dark hover-translate-y">
+                Shop New Arrivals
+              </Button>
+            </div>
           </div>
         </div>
-      </div>
+      )}
 
       {/* Product Grid Section */}
       <div>
-        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-10 border-b border-gray-100 pb-5">
+        <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-5 pb-3 border-bottom border-light-subtle">
           <div>
-            
-            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight mt-1 relative inline-block">
-              New Arrivals
-              <span className="absolute bottom-0 left-0 w-12 h-1 bg-gray-900 rounded-full -mb-1"></span>
+            <h2 className="fs-2 fw-black text-dark text-uppercase position-relative d-inline-block mb-0" style={{ fontWeight: 900, letterSpacing: '-0.5px' }}>
+              {searchKeyword ? `Search Results for "${searchKeyword}"` : (pathname === '/men' ? "Men's Collection" : (pathname === '/women' ? "Women's Collection" : 'New Arrivals'))}
+              <div className="position-absolute bottom-0 start-0 bg-dark rounded-pill" style={{ width: '3rem', height: '4px', marginBottom: '-4px' }}></div>
             </h2>
           </div>
-          <p className="text-sm text-gray-500 font-medium">{products.length} Products Found</p>
+          <p className="text-muted fw-medium small mb-0">{filteredProducts.length} Products Found</p>
         </div>
         
         {/* Loading State ด้วย Skeleton Loader */}
         {loading ? (
-          <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-4 xl:gap-x-8">
+          <Row className="g-4">
             {[...Array(4)].map((_, index) => (
-              <div key={index} className="animate-pulse space-y-4">
-                <div className="aspect-square w-full bg-gray-200 rounded-2xl"></div>
-                <div className="h-4 bg-gray-200 rounded-md w-3/4"></div>
-                <div className="h-4 bg-gray-200 rounded-md w-1/2"></div>
-                <div className="h-6 bg-gray-200 rounded-md w-1/4"></div>
-              </div>
+              <Col key={index} sm={6} lg={3}>
+                <div className="placeholder-glow">
+                  <div className="placeholder w-100 rounded-4 mb-3" style={{ aspectRatio: '1/1' }}></div>
+                  <div className="placeholder rounded w-75 mb-2" style={{ height: '1rem' }}></div>
+                  <div className="placeholder rounded w-50 mb-3" style={{ height: '1rem' }}></div>
+                  <div className="placeholder rounded w-25" style={{ height: '1.5rem' }}></div>
+                </div>
+              </Col>
             ))}
-          </div>
-        ) : products.length === 0 ? (
+          </Row>
+        ) : filteredProducts.length === 0 ? (
           /* Empty State กรณีไม่มีข้อมูล หรือต่อ Backend ไม่ติด */
-          <div className="text-center py-20 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-200">
-            <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <div className="text-center py-5 bg-light rounded-4 border border-2 border-dashed">
+            <svg className="mx-auto text-secondary mb-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" style={{ width: '48px', height: '48px' }}>
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
             </svg>
-            <h3 className="mt-4 text-lg font-bold text-gray-900">No products available</h3>
-            <p className="mt-2 text-sm text-gray-500">Please make sure your database server is connected.</p>
+            <h5 className="fw-bold text-dark mb-2">No products available</h5>
+            <p className="small text-muted mb-0">Please make sure your database server is connected or try a different search keyword.</p>
           </div>
         ) : (
           /* Product Grid ที่ได้ข้อมูลมาแล้ว */
-          <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-4 xl:gap-x-8">
-            {products.map((product) => (
-              <div key={product._id} className="transition-all duration-300 transform hover:-translate-y-1 hover:shadow-lg rounded-2xl">
-                <ProductCard product={product} />
-              </div>
+          <Row className="g-4">
+            {filteredProducts.map((product) => (
+              <Col key={product._id} sm={6} lg={3}>
+                <div className="h-100 transition-transform-hover">
+                  <ProductCard product={product} />
+                </div>
+              </Col>
             ))}
-          </div>
+          </Row>
         )}
       </div>
 
-    </div>
+    </Container>
   );
 };
 

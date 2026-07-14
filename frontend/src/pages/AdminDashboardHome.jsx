@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/authStore';
 import api from '../utils/api';
+import { Row, Col, Card } from 'react-bootstrap';
 
 const AdminDashboardHome = () => {
   const { userInfo } = useAuthStore();
@@ -11,8 +12,6 @@ const AdminDashboardHome = () => {
   });
 
   useEffect(() => {
-    // Just fetch orders and products to get a basic count for now
-    // In a real app, you'd have a specific /api/admin/dashboard endpoint
     const fetchData = async () => {
       try {
         const [ordersRes, productsRes] = await Promise.all([
@@ -36,33 +35,68 @@ const AdminDashboardHome = () => {
   }, []);
 
   return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-gray-800">Dashboard Overview</h2>
-      
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-lg shadow-sm border-t-4 border-[#ff7f50]">
-          <h3 className="text-gray-500 text-sm uppercase font-semibold">Total Orders</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalOrders}</p>
-        </div>
+    <div>
+      <Row className="g-4 mb-4">
+        <Col md={4}>
+          <Card className="shadow-sm border-0 rounded-4 overflow-hidden h-100">
+            <Card.Body className="p-4 d-flex align-items-center">
+              <div className="rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '60px', height: '60px', backgroundColor: 'rgba(255,122,89,0.1)', color: '#FF7A59' }}>
+                <span className="fs-3">🛍️</span>
+              </div>
+              <div>
+                <h6 className="text-muted text-uppercase fw-bold mb-1" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Total Orders</h6>
+                <h3 className="fw-black text-dark mb-0">{stats.totalOrders}</h3>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
         
-        <div className="bg-white p-6 rounded-lg shadow-sm border-t-4 border-[#ff7f50]">
-          <h3 className="text-gray-500 text-sm uppercase font-semibold">Total Products</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalProducts}</p>
-        </div>
+        <Col md={4}>
+          <Card className="shadow-sm border-0 rounded-4 overflow-hidden h-100">
+            <Card.Body className="p-4 d-flex align-items-center">
+              <div className="bg-success bg-opacity-10 text-success rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '60px', height: '60px' }}>
+                <span className="fs-3">📦</span>
+              </div>
+              <div>
+                <h6 className="text-muted text-uppercase fw-bold mb-1" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Total Products</h6>
+                <h3 className="fw-black text-dark mb-0">{stats.totalProducts}</h3>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
         
-        <div className="bg-white p-6 rounded-lg shadow-sm border-t-4 border-[#ff7f50]">
-          <h3 className="text-gray-500 text-sm uppercase font-semibold">Total Revenue (Paid)</h3>
-          <p className="text-3xl font-bold text-gray-900 mt-2">฿{stats.totalRevenue.toLocaleString()}</p>
-        </div>
-      </div>
+        <Col md={4}>
+          <Card className="shadow-sm border-0 rounded-4 overflow-hidden h-100">
+            <Card.Body className="p-4 d-flex align-items-center">
+              <div className="bg-warning bg-opacity-10 text-warning rounded-circle d-flex align-items-center justify-content-center me-3" style={{ width: '60px', height: '60px' }}>
+                <span className="fs-3">💰</span>
+              </div>
+              <div>
+                <h6 className="text-muted text-uppercase fw-bold mb-1" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>Total Revenue</h6>
+                <h3 className="fw-black text-dark mb-0">฿{stats.totalRevenue.toLocaleString()}</h3>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
       
       {/* Placeholder for chart matching mockup */}
-      <div className="bg-white p-6 rounded-lg shadow-sm mt-8 border border-gray-100">
-        <h3 className="text-gray-800 font-semibold mb-4">Revenue & Sales Chart</h3>
-        <div className="h-64 bg-gray-50 border border-dashed border-gray-300 rounded flex items-center justify-center text-gray-400">
-          [ Chart Placeholder ]
-        </div>
-      </div>
+      <Card className="shadow-sm border-0 rounded-4">
+        <Card.Body className="p-4 p-md-5">
+          <div className="d-flex justify-content-between align-items-center mb-4">
+            <h5 className="fw-bold text-dark mb-0">Revenue Overview</h5>
+            <select className="form-select w-auto shadow-none border-light bg-light fw-medium">
+              <option>This Month</option>
+              <option>Last Month</option>
+              <option>This Year</option>
+            </select>
+          </div>
+          <div className="bg-light border border-secondary border-opacity-25 border-dashed rounded-4 d-flex flex-column align-items-center justify-content-center text-muted" style={{ height: '300px' }}>
+            <span className="fs-1 mb-2">📈</span>
+            <span className="fw-medium">Chart Data will appear here</span>
+          </div>
+        </Card.Body>
+      </Card>
     </div>
   );
 };

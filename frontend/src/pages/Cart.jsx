@@ -2,147 +2,210 @@ import { useCartStore } from '../store/cartStore';
 import { Trash2, Plus, Minus, ArrowRight, ShoppingBag } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { useAuthStore } from '../store/authStore';
+import { Container, Row, Col, Card, Button, Badge } from 'react-bootstrap';
+
 const Cart = () => {
   const navigate = useNavigate();
   const { cart, addToCart, decreaseQty, removeFromCart } = useCartStore();
+  const { userInfo } = useAuthStore();
 
   // คำนวณราคารวมทั้งหมด
   const subtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
 
+  if (!userInfo) {
+    return (
+      <Container className="py-5 text-center mt-5" style={{ maxWidth: '600px' }}>
+        <div className="d-inline-flex p-4 rounded-circle bg-light text-secondary mb-4">
+          <ShoppingBag size={64} strokeWidth={1.5} />
+        </div>
+        <h2 className="display-6 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900 }}>Please Login</h2>
+        <p className="text-muted fs-5 mb-5 mx-auto" style={{ maxWidth: '400px' }}>
+          You need to be logged in to view and manage your shopping cart.
+        </p>
+        <Button 
+          as={Link} 
+          to="/login" 
+          variant="dark" 
+          size="lg" 
+          className="px-5 py-3 rounded-pill text-uppercase fw-bold shadow-sm"
+          style={{ letterSpacing: '1px' }}
+        >
+          Login Now
+        </Button>
+      </Container>
+    );
+  }
+
+  if (userInfo && (userInfo.role === 'admin' || userInfo.role === 'staff')) {
+    return (
+      <Container className="py-5 text-center mt-5" style={{ maxWidth: '600px' }}>
+        <div className="d-inline-flex p-4 rounded-circle bg-light text-secondary mb-4">
+          <ShoppingBag size={64} strokeWidth={1.5} />
+        </div>
+        <h2 className="display-6 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900 }}>Admin View</h2>
+        <p className="text-muted fs-5 mb-5 mx-auto" style={{ maxWidth: '400px' }}>
+          Administrators and staff members cannot make purchases.
+        </p>
+        <Button 
+          as={Link} 
+          to="/admin" 
+          variant="dark" 
+          size="lg" 
+          className="px-5 py-3 rounded-pill text-uppercase fw-bold shadow-sm"
+          style={{ letterSpacing: '1px' }}
+        >
+          Go to Dashboard
+        </Button>
+      </Container>
+    );
+  }
+
   if (cart.length === 0) {
     return (
-      <div className="max-w-md mx-auto px-4 py-24 text-center space-y-6">
-        <div className="inline-flex p-6 rounded-full bg-gray-50 text-gray-400 mb-2">
-          <ShoppingBag className="w-16 h-16 stroke-[1.5]" />
+      <Container className="py-5 text-center mt-5" style={{ maxWidth: '600px' }}>
+        <div className="d-inline-flex p-4 rounded-circle bg-light text-secondary mb-4">
+          <ShoppingBag size={64} strokeWidth={1.5} />
         </div>
-        <h2 className="text-3xl font-black tracking-tight text-gray-900 uppercase">Your cart is empty</h2>
-        <p className="text-gray-500 max-w-sm mx-auto">
+        <h2 className="display-6 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900 }}>Your cart is empty</h2>
+        <p className="text-muted fs-5 mb-5 mx-auto" style={{ maxWidth: '400px' }}>
           Looks like you haven't added any premium footwear to your cart yet. Let's find your match!
         </p>
-        <Link 
+        <Button 
+          as={Link} 
           to="/" 
-          className="inline-block w-full sm:w-auto bg-gray-900 text-white px-8 py-4 font-bold rounded-xl hover:bg-black transition-all duration-200 uppercase text-xs tracking-widest shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+          variant="dark" 
+          size="lg" 
+          className="px-5 py-3 rounded-pill text-uppercase fw-bold shadow-sm"
+          style={{ letterSpacing: '1px' }}
         >
           Continue Shopping
-        </Link>
-      </div>
+        </Button>
+      </Container>
     );
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-      <div className="mb-10 border-b border-gray-100 pb-5">
-        <span className="text-sm font-bold text-blue-600 uppercase tracking-wider">Your Selection</span>
-        <h1 className="text-3xl font-black text-gray-900 uppercase tracking-tight mt-1 relative inline-block">
+    <Container className="py-5" style={{ maxWidth: '1200px' }}>
+      <div className="mb-5 border-bottom pb-3">
+        <span className="text-primary fw-bold text-uppercase small" style={{ letterSpacing: '1px' }}>Your Selection</span>
+        <h1 className="display-5 fw-black text-dark text-uppercase position-relative d-inline-block mt-1 mb-0" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
           Shopping Cart
-          <span className="absolute bottom-0 left-0 w-12 h-1 bg-gray-900 rounded-full -mb-1"></span>
+          <div className="position-absolute bottom-0 start-0 bg-dark rounded-pill" style={{ width: '3rem', height: '4px', marginBottom: '-4px' }}></div>
         </h1>
       </div>
 
-      <div className="lg:grid lg:grid-cols-12 lg:gap-x-12 lg:items-start">
+      <Row className="gy-5 gx-lg-5">
         {/* รายการสินค้า */}
-        <div className="lg:col-span-8">
-          <ul role="list" className="divide-y divide-gray-100 border-b border-gray-100">
+        <Col lg={8}>
+          <div className="d-flex flex-column gap-4 border-bottom pb-4">
             {cart.map((item) => (
-              <li key={item.cartItemId} className="flex py-6 sm:py-8 group transition-all">
+              <div key={item.cartItemId} className="d-flex py-3 position-relative group-hover">
                 {/* ภาพสินค้า */}
-                <div className="shrink-0 relative overflow-hidden rounded-2xl bg-gray-50 border border-gray-100">
+                <div className="flex-shrink-0 position-relative overflow-hidden rounded-4 bg-light border" style={{ width: '100px', height: '100px' }}>
                   <img
                     src={item.image_url || 'https://images.unsplash.com/photo-1542291026-7eec264c27ff?q=80&w=500&auto=format&fit=crop'}
                     alt={item.name}
-                    className="w-24 h-24 object-center object-cover sm:w-32 sm:h-32 transition-transform duration-500 group-hover:scale-105"
+                    className="w-100 h-100 object-fit-cover transition-transform"
                   />
                 </div>
 
                 {/* รายละเอียดสินค้า */}
-                <div className="ml-4 flex-1 flex flex-col justify-between sm:ml-6">
-                  <div className="relative pr-9 sm:grid sm:grid-cols-2 sm:gap-x-6 sm:pr-0">
-                    <div>
-                      <div className="flex justify-between">
-                        <h3 className="text-base font-bold text-gray-900">
-                          <Link to={`/product/${item._id}`} className="hover:text-blue-600 transition-colors uppercase tracking-tight">
-                            {item.name}
-                          </Link>
-                        </h3>
-                      </div>
-                      <div className="mt-2 flex items-center space-x-2">
-                        <span className="text-xs font-semibold px-2.5 py-1 bg-gray-100 text-gray-800 rounded-md">
+                <div className="ms-4 flex-grow-1 d-flex flex-column justify-content-between">
+                  <Row className="pe-5 pe-sm-0">
+                    <Col sm={8}>
+                      <h3 className="h6 fw-bold mb-2">
+                        <Link to={`/product/${item._id}`} className="text-dark text-decoration-none text-uppercase hover-primary">
+                          {item.name}
+                        </Link>
+                      </h3>
+                      <div className="mb-3">
+                        <Badge bg="light" text="dark" className="border px-2 py-1 fw-semibold">
                           Size: {item.selectedSize}
-                        </span>
+                        </Badge>
                       </div>
-                      <p className="mt-3 text-base font-black text-gray-900">
+                      <p className="fs-5 fw-black text-dark mb-0">
                         ฿{item.price.toLocaleString()}
                       </p>
-                    </div>
+                    </Col>
 
                     {/* ปุ่มเพิ่ม/ลด จำนวน และ ลบสินค้า */}
-                    <div className="mt-4 sm:mt-0 sm:pr-9 flex items-center justify-between sm:justify-start">
-                      <div className="flex items-center bg-gray-50 border border-gray-200 rounded-xl p-1 shadow-sm">
-                        <button 
+                    <Col sm={4} className="mt-3 mt-sm-0 d-flex align-items-center justify-content-start justify-content-sm-end pe-sm-5">
+                      <div className="d-flex align-items-center bg-light border rounded-3 p-1 shadow-sm">
+                        <Button 
+                          variant="link"
                           onClick={() => decreaseQty(item.cartItemId)} 
-                          className="p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-white transition-all"
+                          className="p-1 text-secondary hover-dark text-decoration-none"
                         >
-                          <Minus className="w-3.5 h-3.5" />
-                        </button>
-                        <span className="px-4 text-sm font-bold text-gray-900 min-w-[24px] text-center">{item.qty}</span>
-                        <button 
+                          <Minus size={16} />
+                        </Button>
+                        <span className="px-3 fw-bold text-dark text-center" style={{ minWidth: '24px' }}>{item.qty}</span>
+                        <Button 
+                          variant="link"
                           onClick={() => addToCart(item, item.selectedSize)} 
-                          className="p-1.5 rounded-lg text-gray-500 hover:text-gray-900 hover:bg-white transition-all"
+                          disabled={item.qty >= (item.countInStock !== undefined ? item.countInStock : 10)}
+                          className="p-1 text-secondary hover-dark text-decoration-none"
                         >
-                          <Plus className="w-3.5 h-3.5" />
-                        </button>
+                          <Plus size={16} />
+                        </Button>
                       </div>
-
-                      {/* ปุ่มไอคอนลบออกมุมขวา */}
-                      <div className="absolute top-0 right-0">
-                        <button 
-                          onClick={() => removeFromCart(item.cartItemId)}
-                          className="-m-2 p-2 inline-flex text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-full transition-all duration-200"
-                        >
-                          <span className="sr-only">Remove</span>
-                          <Trash2 className="w-5 h-5" />
-                        </button>
-                      </div>
-                    </div>
+                    </Col>
+                  </Row>
+                  
+                  {/* ปุ่มไอคอนลบออกมุมขวา */}
+                  <div className="position-absolute top-0 end-0 pt-2">
+                    <Button 
+                      variant="link"
+                      onClick={() => removeFromCart(item.cartItemId)}
+                      className="p-2 text-muted text-decoration-none hover-danger rounded-circle transition-colors"
+                    >
+                      <Trash2 size={20} />
+                    </Button>
                   </div>
                 </div>
-              </li>
+              </div>
             ))}
-          </ul>
-        </div>
+          </div>
+        </Col>
 
         {/* สรุปยอดสั่งซื้อ ด้านขวา */}
-        <div className="mt-16 bg-gradient-to-br from-gray-50 to-gray-100 px-6 py-8 sm:p-8 lg:mt-0 lg:col-span-4 rounded-3xl border border-gray-200/50 shadow-sm sticky top-6">
-          <h2 className="text-lg font-black text-gray-900 uppercase tracking-tight border-b border-gray-200 pb-3">Order summary</h2>
-          
-          <dl className="mt-6 space-y-4">
-            <div className="flex items-center justify-between">
-              <dt className="text-sm font-medium text-gray-500">Subtotal</dt>
-              <dd className="text-sm font-bold text-gray-900">฿{subtotal.toLocaleString()}</dd>
-            </div>
-            <div className="flex items-center justify-between border-t border-gray-200/60 pt-4">
-              <dt className="text-sm font-medium text-gray-500">Shipping estimate</dt>
-              <dd className="text-sm font-bold text-green-600 uppercase bg-green-50 px-2 py-0.5 rounded-md text-xs">Free</dd>
-            </div>
-            <div className="flex items-center justify-between border-t border-gray-200 pt-4">
-              <dt className="text-base font-black text-gray-900 uppercase tracking-tight">Order total</dt>
-              <dd className="text-xl font-black text-gray-900">฿{subtotal.toLocaleString()}</dd>
-            </div>
-          </dl>
+        <Col lg={4}>
+          <Card className="rounded-4 border-0 shadow-sm bg-light sticky-top" style={{ top: '2rem' }}>
+            <Card.Body className="p-4 p-md-5">
+              <h4 className="fs-5 fw-black text-dark text-uppercase border-bottom pb-3 mb-4">Order summary</h4>
+              
+              <div className="d-flex flex-column gap-3 mb-4">
+                <div className="d-flex justify-content-between align-items-center">
+                  <span className="text-muted fw-medium small">Subtotal</span>
+                  <span className="fw-bold text-dark">฿{subtotal.toLocaleString()}</span>
+                </div>
+                <div className="d-flex justify-content-between align-items-center border-top pt-3">
+                  <span className="text-muted fw-medium small">Shipping estimate</span>
+                  <Badge bg="success" className="bg-opacity-10 text-success text-uppercase border border-success border-opacity-25 px-2 py-1">Free</Badge>
+                </div>
+                <div className="d-flex justify-content-between align-items-center border-top pt-3">
+                  <span className="fs-5 fw-black text-dark text-uppercase">Order total</span>
+                  <span className="fs-4 fw-black text-dark">฿{subtotal.toLocaleString()}</span>
+                </div>
+              </div>
 
-          <div className="mt-8">
-            <button
-              type="button"
-              onClick={() => navigate('/shipping')}
-              className="w-full bg-gray-900 border border-transparent rounded-2xl shadow-md py-4 px-4 text-sm font-bold text-white hover:bg-black transition-all duration-200 flex justify-center items-center uppercase tracking-widest group transform hover:-translate-y-0.5"
-            >
-              Proceed to Checkout 
-              <ArrowRight className="ml-2 w-4 h-4 transition-transform group-hover:translate-x-1" />
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
+              <div className="pt-2">
+                <Button
+                  variant="dark"
+                  size="lg"
+                  onClick={() => navigate('/shipping')}
+                  className="w-100 py-3 rounded-4 fw-bold text-uppercase d-flex justify-content-center align-items-center gap-2 transition-transform-hover shadow"
+                  style={{ letterSpacing: '1px' }}
+                >
+                  Proceed to Checkout 
+                  <ArrowRight size={18} />
+                </Button>
+              </div>
+            </Card.Body>
+          </Card>
+        </Col>
+      </Row>
+    </Container>
   );
 };
 
