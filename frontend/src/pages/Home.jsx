@@ -23,7 +23,7 @@ const Home = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
-      
+
       {/* Premium Hero Section */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-gray-900 via-gray-800 to-black text-white px-8 py-16 sm:px-16 sm:py-24 shadow-2xl">
         {/* ตกแต่งแสงเบลอด้านหลัง */}
@@ -52,15 +52,17 @@ const Home = () => {
       <div>
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-end gap-3 mb-10 border-b border-gray-100 pb-5">
           <div>
-            
+
             <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight mt-1 relative inline-block">
               New Arrivals
               <span className="absolute bottom-0 left-0 w-12 h-1 bg-gray-900 rounded-full -mb-1"></span>
             </h2>
           </div>
-          <p className="text-sm text-gray-500 font-medium">{products.length} Products Found</p>
+          <p className="text-xs text-white font-semibold bg-[#d85e3e] px-3 py-1 rounded-md uppercase tracking-wider">
+            {products.length} Products Found
+          </p>
         </div>
-        
+
         {/* Loading State ด้วย Skeleton Loader */}
         {loading ? (
           <div className="grid grid-cols-1 gap-y-10 sm:grid-cols-2 gap-x-6 lg:grid-cols-4 xl:gap-x-8">
