@@ -45,8 +45,8 @@ const Home = () => {
   });
 
   return (
-    <Container className="py-5 my-3">
-      
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-16">
+
       {/* Premium Hero Section */}
       {!searchKeyword && (
         <div className="position-relative overflow-hidden rounded-4 bg-dark text-white p-4 p-md-5 mb-5 shadow-lg" style={{ background: 'linear-gradient(135deg, #212529, #343a40, #000)' }}>
@@ -77,14 +77,17 @@ const Home = () => {
       <div>
         <div className="d-flex flex-column flex-sm-row justify-content-between align-items-sm-end gap-2 mb-5 pb-3 border-bottom border-light-subtle">
           <div>
-            <h2 className="fs-2 fw-black text-dark text-uppercase position-relative d-inline-block mb-0" style={{ fontWeight: 900, letterSpacing: '-0.5px' }}>
-              {searchKeyword ? `Search Results for "${searchKeyword}"` : (pathname === '/men' ? "Men's Collection" : (pathname === '/women' ? "Women's Collection" : 'New Arrivals'))}
-              <div className="position-absolute bottom-0 start-0 bg-dark rounded-pill" style={{ width: '3rem', height: '4px', marginBottom: '-4px' }}></div>
+
+            <h2 className="text-3xl font-black text-gray-900 uppercase tracking-tight mt-1 relative inline-block">
+              New Arrivals
+              <span className="absolute bottom-0 left-0 w-12 h-1 bg-gray-900 rounded-full -mb-1"></span>
             </h2>
           </div>
-          <p className="text-muted fw-medium small mb-0">{filteredProducts.length} Products Found</p>
+          <p className="text-xs text-white font-semibold bg-[#d85e3e] px-3 py-1 rounded-md uppercase tracking-wider">
+            {products.length} Products Found
+          </p>
         </div>
-        
+
         {/* Loading State ด้วย Skeleton Loader */}
         {loading ? (
           <Row className="g-4">
@@ -122,7 +125,7 @@ const Home = () => {
         )}
       </div>
 
-    </Container>
+    </div>
   );
 };
 

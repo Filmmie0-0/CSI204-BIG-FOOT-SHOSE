@@ -24,7 +24,7 @@ function App() {
   const isAdminRoute = location.pathname.startsWith('/admin');
 
   return (
-    <div className={`min-vh-100 ${isAdminRoute ? 'bg-light' : 'bg-white'}`}>
+    <div className={`min-h-screen font-sans ${isAdminRoute ? 'bg-[#fdf5e6]' : 'bg-[#FF7A59]'}`}>
       {!isAdminRoute && <Navbar />}
       <main>
         <Routes>
