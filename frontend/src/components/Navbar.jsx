@@ -14,7 +14,7 @@ const Navbar = () => {
         <div className="flex justify-between items-center h-16">
           <div className="shrink-0 flex items-center">
             <Link to="/" className="text-2xl font-bold tracking-tighter text-black uppercase">
-              Big Foot
+              Big Foot Shoes
             </Link>
           </div>
 
