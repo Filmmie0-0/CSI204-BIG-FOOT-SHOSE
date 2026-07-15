@@ -13,7 +13,8 @@ import PlaceOrder from './pages/PlaceOrder';
 import OrderDetail from './pages/OrderDetail';
 import AdminDashboard from './pages/AdminDashboard';
 import Men from './pages/Men';
-import Women from './pages/Women'
+import Women from './pages/Women';
+import Kids from './pages/Kids';
 
 // Admin Components
 import AdminLayout from './components/AdminLayout';
@@ -54,6 +55,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/men" element={<Men />} />
           <Route path="/women" element={<Women />} />
+          <Route path="/kids" element={<Kids />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/profile" element={<Profile />} />

@@ -21,10 +21,11 @@ const AdminLayout = () => {
 
   const navItems = [
     { name: 'Dashboard', path: '/admin', icon: '📊', roles: ['admin', 'staff'] },
-    { name: 'จัดการสินค้า', path: '/admin/products', icon: '📦', roles: ['admin'] },
+    { name: 'จัดการสินค้า', path: '/admin/products', icon: '📦', roles: ['admin', 'staff'] },
     { name: 'จัดการสิทธิ์', path: '/admin/staff', icon: '👥', roles: ['admin'] },
     { name: 'จัดการคำสั่งซื้อ', path: '/admin/orders', icon: '📋', roles: ['admin', 'staff'] },
     { name: 'ดูข้อมูล', path: '/admin/info', icon: 'ℹ️', roles: ['admin'] },
+    { name: 'โปรไฟล์ส่วนตัว', path: '/profile', icon: '👤', roles: ['admin', 'staff'] },
   ];
 
   const filteredNavItems = navItems.filter(item => item.roles.includes(userInfo?.role));
@@ -36,7 +37,7 @@ const AdminLayout = () => {
         <Col md={3} lg={2} className="text-white d-flex flex-column shadow-lg z-2 position-relative" style={{ backgroundColor: '#FF7A59' }}>
           <div className="p-4 d-flex justify-content-center align-items-center" style={{ minHeight: '76px', backgroundColor: 'rgba(0,0,0,0.1)' }}>
             <Link to="/" className="text-white text-decoration-none fw-bold fs-5 d-flex align-items-center gap-2">
-              <span className="fs-3">👟</span> BigFoot<span className="text-light opacity-75">Admin</span>
+              <span className="fs-3">👟</span> BigFoot<span className="text-light opacity-75">{userInfo?.role === 'staff' ? 'Staff' : 'Admin'}</span>
             </Link>
           </div>
 

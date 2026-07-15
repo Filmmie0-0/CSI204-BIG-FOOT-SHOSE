@@ -23,16 +23,16 @@ const AdminProducts = () => {
   };
 
   useEffect(() => {
-    if (userInfo?.role !== 'admin') {
+    if (userInfo?.role !== 'admin' && userInfo?.role !== 'staff') {
       return;
     }
     fetchProducts();
   }, [userInfo]);
 
-  if (userInfo?.role !== 'admin') {
+  if (userInfo?.role !== 'admin' && userInfo?.role !== 'staff') {
     return (
       <div className="text-center py-5">
-        <Alert variant="danger" className="fw-bold fs-5 shadow-sm border-0 rounded-4">ไม่มีสิทธิ์เข้าถึงหน้านี้ (Admin Only)</Alert>
+        <Alert variant="danger" className="fw-bold fs-5 shadow-sm border-0 rounded-4">ไม่มีสิทธิ์เข้าถึงหน้านี้ (Admin & Staff Only)</Alert>
       </div>
     );
   }

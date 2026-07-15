@@ -1,6 +1,8 @@
 export const getProductGender = (product) => {
   if (!product) return '';
   
+  if (product.gender) return product.gender;
+
   // 1. Check SKU first as it is the most reliable (e.g. SHOE-MEN-1, SHOE-WOMEN-6, SHOE-UNISEX-3)
   const sku = (product.sku || '').toUpperCase();
   if (sku.includes('-WOMEN-')) return 'Women';

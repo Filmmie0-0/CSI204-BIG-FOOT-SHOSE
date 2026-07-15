@@ -218,6 +218,7 @@ const Navbar = () => {
               <Nav.Link as={Link} to="/" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/' ? 'active-route' : ''}`}>{getTranslation(language, 'nav', 'newArrivals')}</Nav.Link>
               <Nav.Link as={Link} to="/men" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/men' ? 'active-route' : ''}`}>{getTranslation(language, 'nav', 'men')}</Nav.Link>
               <Nav.Link as={Link} to="/women" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/women' ? 'active-route' : ''}`}>{getTranslation(language, 'nav', 'women')}</Nav.Link>
+              <Nav.Link as={Link} to="/kids" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/kids' ? 'active-route' : ''}`}>{getTranslation(language, 'nav', 'kids')}</Nav.Link>
             </Nav>
             
             {/* แถบไอคอน */}

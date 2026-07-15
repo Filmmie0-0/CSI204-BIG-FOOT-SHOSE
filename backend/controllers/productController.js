@@ -39,6 +39,7 @@ exports.createProduct = async (req, res) => {
       discount_price: req.body.discount_price || 0,
       countInStock: req.body.countInStock !== undefined ? req.body.countInStock : 10,
       sizes: req.body.sizes || [],
+      gender: req.body.gender || 'Unisex',
       status: req.body.status || 'active'
     });
 
@@ -65,6 +66,7 @@ exports.updateProduct = async (req, res) => {
       discount_price,
       countInStock,
       sizes,
+      gender,
       status
     } = req.body;
 
@@ -80,6 +82,7 @@ exports.updateProduct = async (req, res) => {
       product.discount_price = discount_price !== undefined ? discount_price : product.discount_price;
       product.countInStock = countInStock !== undefined ? countInStock : product.countInStock;
       if (sizes !== undefined) product.sizes = sizes;
+      if (gender !== undefined) product.gender = gender;
       product.status = status || product.status;
 
       const updatedProduct = await product.save();

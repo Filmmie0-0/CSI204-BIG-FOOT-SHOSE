@@ -26,7 +26,27 @@ const shoeData = [
   { id: '1603808033192-082d6919d3e1', name: 'Converse All Star', gender: 'Unisex', price: 2200, category: 'Casual' },
   { id: '1511556532299-8f662fc26c06', name: 'Jordan 1 Retro', gender: 'Men', price: 7500, category: 'Sneakers' },
   { id: '1595341888016-a392ef81b7de', name: 'New Balance Classic', gender: 'Unisex', price: 3400, category: 'Sneakers' },
-  { id: '1515955656352-a1fa3ffcd111', name: 'Kids Blue Denim Shoe', gender: 'Kids', price: 1700, category: 'Kids' }
+  { id: '1515955656352-a1fa3ffcd111', name: 'Kids Blue Denim Shoe', gender: 'Kids', price: 1700, category: 'Kids' },
+  { id: '1542291026-7eec264c27ff', name: 'Nike Air Max Red V2', gender: 'Men', price: 4600, category: 'Sneakers' },
+  { id: '1505784045224-1247b2b29cf3', name: 'Nike Classic Black V2', gender: 'Men', price: 3300, category: 'Sneakers' },
+  { id: '1460353581641-37baddab0fa2', name: 'White Minimalist Sneaker V2', gender: 'Unisex', price: 2600, category: 'Casual' },
+  { id: '1525966222134-fcfa99b8ae77', name: 'Vans Old Skool V2', gender: 'Unisex', price: 2900, category: 'Skate' },
+  { id: '1606107557195-0e29a4b5b4aa', name: 'Nike Green Neon V2', gender: 'Men', price: 5200, category: 'Running' },
+  { id: '1560769629-975ec94e6a86', name: 'Colorful Street Sneaker V2', gender: 'Women', price: 3500, category: 'Casual' },
+  { id: '1551107696-a4b0c5a0d9a2', name: 'Adidas Cloud White V2', gender: 'Men', price: 3900, category: 'Running' },
+  { id: '1543163521-1bf539c55dd2', name: 'Elegant High Heels V2', gender: 'Women', price: 4300, category: 'Heels' },
+  { id: '1534653299134-96a171b61581', name: 'Kids Tiny Steps V2', gender: 'Kids', price: 1600, category: 'Kids' },
+  { id: '1595950653106-6c9ebd614d3a', name: 'Nike Air Force 1 V2', gender: 'Unisex', price: 3800, category: 'Sneakers' },
+  { id: '1505784045224-1247b2b29cf3', name: 'Kids Red Runner V2', gender: 'Kids', price: 1900, category: 'Kids' },
+  { id: '1579338559194-a162d19bf842', name: 'Pink Fashion Sneaker V2', gender: 'Women', price: 3000, category: 'Sneakers' },
+  { id: '1542291026-7eec264c27ff', name: 'Kids Light Blue Velcro V2', gender: 'Kids', price: 1700, category: 'Kids' },
+  { id: '1562183241-b937e95585b6', name: 'Women Pink Runner V2', gender: 'Women', price: 3700, category: 'Running' },
+  { id: '1608231387042-66d1773070a5', name: 'Puma Retro Style V2', gender: 'Men', price: 3200, category: 'Sneakers' },
+  { id: '1604671801908-6f0c6a092c05', name: 'Nike Yellow Strike V2', gender: 'Men', price: 4900, category: 'Running' },
+  { id: '1603808033192-082d6919d3e1', name: 'Converse All Star V2', gender: 'Unisex', price: 2300, category: 'Casual' },
+  { id: '1511556532299-8f662fc26c06', name: 'Jordan 1 Retro V2', gender: 'Men', price: 7600, category: 'Sneakers' },
+  { id: '1595341888016-a392ef81b7de', name: 'New Balance Classic V2', gender: 'Unisex', price: 3500, category: 'Sneakers' },
+  { id: '1515955656352-a1fa3ffcd111', name: 'Kids Blue Denim Shoe V2', gender: 'Kids', price: 1800, category: 'Kids' }
 ];
 
 const targetDir = path.join(__dirname, '../../frontend/public/product');
@@ -76,12 +96,19 @@ const seedDatabase = async () => {
       try {
         await downloadImage(url, filepath);
         
+        let sizes = [];
+        if (shoe.gender === 'Men') sizes = ['39', '40', '41', '42', '43', '44', '45', '46'];
+        else if (shoe.gender === 'Women') sizes = ['35', '36', '37', '38', '39', '40', '41'];
+        else if (shoe.gender === 'Kids') sizes = ['25', '26', '27', '28', '29', '30', '31', '32', '33', '34'];
+        else sizes = ['36', '37', '38', '39', '40', '41', '42', '43', '44'];
+
         // Save to DB
         await Product.create({
           name: shoe.name,
           price: shoe.price,
           sku: `SHOE-${shoe.gender.toUpperCase()}-${count}`,
           image_url: `/product/${filename}`,
+          sizes: sizes,
           // category_id: shoe.category, // Removed because it expects ObjectId
           description: `High quality ${shoe.gender} shoe perfect for any occasion.`,
           status: 'active'
@@ -94,7 +121,7 @@ const seedDatabase = async () => {
       count++;
     }
 
-    console.log('Seeding and downloading complete! 20 items added.');
+    console.log('Seeding and downloading complete! 40 items added.');
     process.exit(0);
   } catch (error) {
     console.error('Error:', error);

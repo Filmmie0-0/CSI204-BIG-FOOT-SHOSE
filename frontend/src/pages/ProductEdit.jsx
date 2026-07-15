@@ -17,11 +17,12 @@ const ProductEdit = () => {
   const [sizes, setSizes] = useState('');
   const [countInStock, setCountInStock] = useState(10);
   const [status, setStatus] = useState('active');
+  const [gender, setGender] = useState('Unisex');
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!userInfo || userInfo.role !== 'admin') {
+    if (!userInfo || (userInfo.role !== 'admin' && userInfo.role !== 'staff')) {
       navigate('/admin');
       return;
     }
@@ -38,6 +39,7 @@ const ProductEdit = () => {
           setSizes(data.sizes ? data.sizes.join(',') : '');
           setCountInStock(data.countInStock !== undefined ? data.countInStock : 10);
           setStatus(data.status);
+          if (data.gender) setGender(data.gender);
         } catch (error) {
           console.error(error);
           alert('Error fetching product');
@@ -85,7 +87,7 @@ const ProductEdit = () => {
       };
       
       const sizesArray = sizes ? sizes.split(',').map(s => s.trim()).filter(s => s !== '') : [];
-      const productData = { name, price, image_url, sku, description, status, countInStock: Number(countInStock), sizes: sizesArray };
+      const productData = { name, price, image_url, sku, description, status, countInStock: Number(countInStock), sizes: sizesArray, gender };
 
       if (id) {
         await api.put(`/products/${id}`, productData, config);
@@ -141,6 +143,16 @@ const ProductEdit = () => {
             <Form.Group className="mb-4">
               <Form.Label className="fw-medium text-secondary">Sizes (Comma separated, e.g. 39,40,41)</Form.Label>
               <Form.Control type="text" value={sizes} onChange={(e) => setSizes(e.target.value)} placeholder="38,39,40,41" className="shadow-none focus-ring" style={{ '--bs-focus-ring-color': 'rgba(255, 127, 80, 0.25)' }} />
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-medium text-secondary">Category (Gender)</Form.Label>
+              <Form.Select value={gender} onChange={(e) => setGender(e.target.value)} className="shadow-none focus-ring" style={{ '--bs-focus-ring-color': 'rgba(255, 127, 80, 0.25)' }}>
+                <option value="Men">Men</option>
+                <option value="Women">Women</option>
+                <option value="Kids">Kids</option>
+                <option value="Unisex">Unisex</option>
+              </Form.Select>
             </Form.Group>
             
             <Form.Group className="mb-4">

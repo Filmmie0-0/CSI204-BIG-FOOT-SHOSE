@@ -177,6 +177,7 @@ const Profile = () => {
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
+                    disabled={userInfo?.role === 'staff'}
                     className={`py-3 px-4 shadow-sm focus-ring rounded-3 ${inputClass}`}
                     style={{ '--bs-focus-ring-color': isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(33, 37, 41, 0.25)' }}
                   />

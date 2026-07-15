@@ -32,6 +32,54 @@ exports.updateUserRole = async (req, res) => {
       res.status(404).json({ message: 'User not found' });
     }
   } catch (error) {
-    res.status(500).json({ message: 'Error updating user' });
+      res.status(500).json({ message: 'Error updating user' });
+  }
+};
+
+exports.deleteUser = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (user) {
+      if (user.role === 'admin') {
+        return res.status(403).json({ message: 'ไม่สามารถลบ Admin ได้' });
+      }
+      await User.deleteOne({ _id: req.params.id });
+      res.json({ message: 'ลบผู้ใช้เรียบร้อยแล้ว' });
+    } else {
+      res.status(404).json({ message: 'ไม่พบผู้ใช้นี้' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error deleting user' });
+  }
+};
+
+exports.createUser = async (req, res) => {
+  try {
+    const { username, email, password, role } = req.body;
+    
+    const userExists = await User.findOne({ $or: [{ email }, { username }] });
+    if (userExists) {
+      return res.status(400).json({ message: 'Username หรือ Email นี้มีผู้ใช้งานแล้ว' });
+    }
+
+    const user = await User.create({
+      username,
+      email,
+      password_hash: password, // The model has a pre-save hook that will hash it
+      role: role || 'staff'
+    });
+
+    if (user) {
+      res.status(201).json({
+        _id: user._id,
+        username: user.username,
+        email: user.email,
+        role: user.role
+      });
+    } else {
+      res.status(400).json({ message: 'Invalid user data' });
+    }
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating user' });
   }
 };
