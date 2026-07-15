@@ -1,9 +1,10 @@
 import { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
+import { useParams, Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import StripePayment from '../components/StripePayment';
 import { useCartStore } from '../store/cartStore';
-import { Container, Row, Col, Card, Alert, Spinner, Button } from 'react-bootstrap';
+import { useAuthStore } from '../store/authStore';
+import { Container, Row, Col, Card, Alert, Spinner, Button, Modal, Image } from 'react-bootstrap';
 
 const OrderDetail = () => {
   const { id } = useParams();
@@ -11,7 +12,12 @@ const OrderDetail = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
+  const navigate = useNavigate();
+  const { userInfo } = useAuthStore();
+  const isAdminOrStaff = userInfo?.role === 'admin' || userInfo?.role === 'staff';
+
   const [slipName, setSlipName] = useState('');
+  const [slipFile, setSlipFile] = useState(null);
   const [slipUploading, setSlipUploading] = useState(false);
   const [slipError, setSlipError] = useState('');
 
@@ -19,9 +25,20 @@ const OrderDetail = () => {
     setSlipUploading(true);
     setSlipError('');
     try {
+      let slip_image = '';
+      if (slipFile) {
+        const formData = new FormData();
+        formData.append('image', slipFile);
+        const { data } = await api.post('/upload/slip', formData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+        slip_image = data.image_url;
+      }
+
       await api.put(`/orders/${order._id}/pay`, {
         payment_method: 'PromptPay / Bank Transfer',
-        transaction_id: 'PP_SLIP_' + Date.now()
+        transaction_id: 'PP_SLIP_' + Date.now(),
+        slip_image
       });
       window.location.reload();
     } catch (err) {
@@ -63,6 +80,11 @@ const OrderDetail = () => {
   return (
     <Container className="py-5" style={{ maxWidth: '1200px' }}>
       <div className="mb-5 border-bottom border-white border-opacity-25 pb-4">
+        {isAdminOrStaff && (
+          <Button variant="outline-light" className="mb-3 d-flex align-items-center gap-2 fw-bold" onClick={() => navigate(-1)} style={{ color: '#fff', borderColor: '#fff' }}>
+            <span aria-hidden="true">&larr;</span> ย้อนกลับ (Back)
+          </Button>
+        )}
         <h1 className="display-6 fw-black text-white text-uppercase mb-2 drop-shadow-sm" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
           Order <span className="text-white opacity-75 fs-4 fw-medium">#{order._id}</span>
         </h1>
@@ -99,9 +121,17 @@ const OrderDetail = () => {
               </p>
               
               {order.order_status !== 'pending' ? (
-                <Alert variant="success" className="border-0 shadow-sm py-2 px-3 fw-bold mb-0 d-inline-block">
-                  Paid (ชำระเงินเรียบร้อยแล้ว)
-                </Alert>
+                <div>
+                  <Alert variant="success" className="border-0 shadow-sm py-2 px-3 fw-bold mb-3 d-inline-block">
+                    Paid (ชำระเงินเรียบร้อยแล้ว)
+                  </Alert>
+                  {isAdminOrStaff && order.payment?.slip_image && (
+                    <div className="mt-3">
+                      <p className="fw-bold text-dark mb-2">สลิปการโอนเงิน (Payment Slip):</p>
+                      <Image src={order.payment.slip_image} alt="Payment Slip" fluid className="rounded border shadow-sm" style={{ maxWidth: '300px' }} />
+                    </div>
+                  )}
+                </div>
               ) : (
                 <div>
                   <Alert variant="danger" className="border-0 shadow-sm py-2 px-3 fw-bold mb-4 d-inline-block">
@@ -139,6 +169,7 @@ const OrderDetail = () => {
                                 onChange={(e) => {
                                   if (e.target.files && e.target.files[0]) {
                                     setSlipName(e.target.files[0].name);
+                                    setSlipFile(e.target.files[0]);
                                   }
                                 }}
                                 className="d-none" 

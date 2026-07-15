@@ -115,7 +115,7 @@ const getOrders = async (req, res) => {
 
 const updateOrderToPaid = async (req, res) => {
   try {
-    const { payment_method, transaction_id } = req.body;
+    const { payment_method, transaction_id, slip_image } = req.body;
     const order = await Order.findById(req.params.id);
     if (order) {
       order.order_status = 'processing';
@@ -127,6 +127,7 @@ const updateOrderToPaid = async (req, res) => {
         payment_method: payment_method || 'credit_card',
         payment_status: 'completed',
         transaction_id: transaction_id || '',
+        slip_image: slip_image || '',
         amount_paid: order.total_amount,
         paid_at: Date.now()
       });

@@ -47,4 +47,12 @@ router.post('/', protect, admin, upload.single('image'), (req, res) => {
   }
 });
 
+router.post('/slip', protect, upload.single('image'), (req, res) => {
+  if (req.file) {
+    res.json({ image_url: `/product/${req.file.filename}` });
+  } else {
+    res.status(400).json({ message: 'Image upload failed' });
+  }
+});
+
 module.exports = router;

@@ -5,6 +5,7 @@ const paymentSchema = new mongoose.Schema({
   payment_method: { type: String, required: true, maxlength: 50 }, // credit_card, promptpay, cod
   payment_status: { type: String, enum: ['pending', 'completed', 'failed', 'refunded'], default: 'pending' },
   transaction_id: { type: String, maxlength: 150 },
+  slip_image: { type: String },
   amount_paid: { type: Number, required: true },
   paid_at: { type: Date }
 });
