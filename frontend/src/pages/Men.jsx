@@ -3,6 +3,7 @@ import api from '../utils/api'
 import ProductCard from '../components/ProductCard'
 import FilterDrawer from '../components/FilterDrawer'
 import { Container, Row, Col, Button } from 'react-bootstrap'
+import { getProductGender } from '../utils/genderHelper'
 
 const Men = () => {
   const [products, setProducts] = useState([])
@@ -41,11 +42,8 @@ const Men = () => {
 
     // บังคับกรอง
     let result = products.filter((product) => {
-      if (!product) return false;
-      const desc = product.description || '';
-      const name = product.name || '';
-      const sku = product.sku || '';
-      return /\bMen\b/i.test(desc) || /\bUnisex\b/i.test(desc) || /men/i.test(sku) || /\bMen\b/i.test(name);
+      const gender = getProductGender(product);
+      return gender === 'Men' || gender === 'Unisex';
     });
 
     // ตัวกรองจาก Drawer

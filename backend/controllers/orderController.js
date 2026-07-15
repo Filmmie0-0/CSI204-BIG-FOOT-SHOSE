@@ -2,6 +2,7 @@ const Order = require('../models/Order');
 const OrderItem = require('../models/OrderItem');
 const Address = require('../models/Address');
 const Payment = require('../models/Payment');
+const Product = require('../models/Product');
 
 const addOrderItems = async (req, res) => {
   try {
@@ -45,7 +46,8 @@ const addOrderItems = async (req, res) => {
              order_id: createdOrder._id,
              product_id: item.product || item._id,
              quantity: item.qty || item.quantity || 1,
-             price_per_unit: item.price || 0
+             price_per_unit: item.price || 0,
+             selectedSize: item.selectedSize || ''
            });
            
            // Decrement stock

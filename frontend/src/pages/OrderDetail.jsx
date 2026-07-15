@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import api from '../utils/api';
 import StripePayment from '../components/StripePayment';
 import { useCartStore } from '../store/cartStore';
-import { Container, Row, Col, Card, Alert, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Card, Alert, Spinner, Button } from 'react-bootstrap';
 
 const OrderDetail = () => {
   const { id } = useParams();

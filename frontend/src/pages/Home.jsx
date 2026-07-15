@@ -6,6 +6,7 @@ import FilterDrawer from '../components/FilterDrawer'
 import { Container, Row, Col, Button } from 'react-bootstrap'
 import { useLanguageStore } from '../store/languageStore'
 import { getTranslation } from '../utils/translations'
+import { getProductGender } from '../utils/genderHelper'
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -73,13 +74,13 @@ const Home = () => {
     // Category/Gender filter 
     if (pathname === '/men') {
       result = result.filter((product) => {
-        const desc = product.description || ''
-        return /\bMen\b/i.test(desc) || /\bUnisex\b/i.test(desc)
+        const gender = getProductGender(product);
+        return gender === 'Men' || gender === 'Unisex';
       })
     } else if (pathname === '/women') {
       result = result.filter((product) => {
-        const desc = product.description || ''
-        return /\bWomen\b/i.test(desc) || /\bUnisex\b/i.test(desc)
+        const gender = getProductGender(product);
+        return gender === 'Women' || gender === 'Unisex';
       })
     }
 
@@ -121,7 +122,7 @@ const Home = () => {
 
     if (filters.gender.length > 0) {
       result = result.filter(
-        (p) => p && p.gender && filters.gender.includes(p.gender),
+        (p) => p && filters.gender.includes(getProductGender(p)),
       )
     }
 

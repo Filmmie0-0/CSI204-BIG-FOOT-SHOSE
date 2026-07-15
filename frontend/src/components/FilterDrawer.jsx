@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react'
 import { Offcanvas, Form, Button, Row, Col } from 'react-bootstrap'
 import { Footprints, Snowflake, Disc, HelpCircle } from 'lucide-react'
+import { getProductGender } from '../utils/genderHelper'
 
 const FilterDrawer = ({ isOpen, onClose, filters, setFilters, products }) => {
   const [openSections, setOpenSections] = useState({
@@ -31,8 +32,10 @@ const FilterDrawer = ({ isOpen, onClose, filters, setFilters, products }) => {
         if (p.color)
           colorCount[p.color.toLowerCase()] =
             (colorCount[p.color.toLowerCase()] || 0) + 1
-        if (p.gender && genderCount[p.gender] !== undefined) {
-          genderCount[p.gender] = (genderCount[p.gender] || 0) + 1
+        
+        const gender = getProductGender(p);
+        if (gender && genderCount[gender] !== undefined) {
+          genderCount[gender] = (genderCount[gender] || 0) + 1
         }
       })
     }
