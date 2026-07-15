@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
   first_name: { type: String, maxlength: 50 },
   last_name: { type: String, maxlength: 50 },
   phone_number: { type: String, maxlength: 20 },
+  profile_image: { type: String, default: '' },
   role: { type: String, enum: ['customer', 'admin', 'staff'], default: 'customer' },
   status: { type: String, enum: ['active', 'suspended', 'inactive'], default: 'active' }
 }, {

@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom';
+import { useThemeStore } from './store/themeStore';
 import Navbar from './components/Navbar';
 import Home from './pages/Home';
 import Login from './pages/Login';
@@ -25,9 +27,26 @@ import ProductEdit from './pages/ProductEdit';
 function App() {
   const location = useLocation();
   const isAdminRoute = location.pathname.startsWith('/admin');
+  const theme = useThemeStore((state) => state.theme);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-bs-theme', theme);
+    if (theme === 'dark') {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [theme]);
+
+  let bgClass = '';
+  if (isAdminRoute) {
+    bgClass = theme === 'dark' ? 'bg-[#1a1a1a] text-white' : 'bg-[#fdf5e6]';
+  } else {
+    bgClass = theme === 'dark' ? 'bg-[#121212] text-white' : 'bg-[#FF7A59]';
+  }
 
   return (
-    <div className={`min-h-screen font-sans ${isAdminRoute ? 'bg-[#fdf5e6]' : 'bg-[#FF7A59]'}`}>
+    <div className={`min-h-screen font-sans ${bgClass} transition-colors duration-300`}>
       {!isAdminRoute && <Navbar />}
       <main>
         <Routes>

@@ -31,6 +31,7 @@ const registerUser = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        profile_image: user.profile_image,
         role: user.role,
         token: generateToken(user._id),
       });
@@ -58,6 +59,7 @@ const loginUser = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        profile_image: user.profile_image,
         role: user.role,
         token: generateToken(user._id),
       });
@@ -79,6 +81,9 @@ const updateUserProfile = async (req, res) => {
     if (user) {
       user.username = req.body.username || user.username;
       user.email = req.body.email || user.email;
+      if (req.body.profile_image !== undefined) {
+        user.profile_image = req.body.profile_image;
+      }
       
       // ถ้ามีการกรอกรหัสผ่านใหม่เข้ามา ให้เปลี่ยนรหัสผ่านด้วย
       if (req.body.password) {
@@ -91,6 +96,7 @@ const updateUserProfile = async (req, res) => {
         _id: updatedUser._id,
         username: updatedUser.username,
         email: updatedUser.email,
+        profile_image: updatedUser.profile_image,
         // ส่งข้อมูลที่อัปเดตกลับไปที่หน้าเว็บ
       });
     } else {
@@ -129,6 +135,7 @@ const googleLogin = async (req, res) => {
         _id: user._id,
         username: user.username,
         email: user.email,
+        profile_image: user.profile_image,
         role: user.role,
         token: generateToken(user._id),
       });
@@ -156,6 +163,7 @@ const googleLogin = async (req, res) => {
           _id: user._id,
           username: user.username,
           email: user.email,
+          profile_image: user.profile_image,
           role: user.role,
           token: generateToken(user._id),
         });

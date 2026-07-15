@@ -55,4 +55,33 @@ router.post('/slip', protect, upload.single('image'), (req, res) => {
   }
 });
 
+const profileUploadDir = path.join(__dirname, '../../frontend/public/profile');
+if (!fs.existsSync(profileUploadDir)) {
+  fs.mkdirSync(profileUploadDir, { recursive: true });
+}
+
+const profileStorage = multer.diskStorage({
+  destination(req, file, cb) {
+    cb(null, profileUploadDir);
+  },
+  filename(req, file, cb) {
+    cb(null, `profile-${Date.now()}${path.extname(file.originalname)}`);
+  },
+});
+
+const uploadProfile = multer({
+  storage: profileStorage,
+  fileFilter: function (req, file, cb) {
+    checkFileType(file, cb);
+  },
+});
+
+router.post('/profile', protect, uploadProfile.single('image'), (req, res) => {
+  if (req.file) {
+    res.json({ image_url: `/profile/${req.file.filename}` });
+  } else {
+    res.status(400).json({ message: 'Image upload failed' });
+  }
+});
+
 module.exports = router;

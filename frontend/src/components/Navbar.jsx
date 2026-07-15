@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react'
 import { useCartStore } from '../store/cartStore' 
 import { useAuthStore } from '../store/authStore'
 import { useLanguageStore } from '../store/languageStore'
+import { useThemeStore } from '../store/themeStore'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { ShoppingBag, Search, User, LogOut, Globe } from 'lucide-react'
+import { ShoppingBag, Search, User, LogOut, Globe, Sun, Moon } from 'lucide-react'
 import { Navbar as BsNavbar, Container, Nav, Badge, Button, Form } from 'react-bootstrap'
 import api from '../utils/api'
 import { getTranslation } from '../utils/translations'
@@ -13,6 +14,7 @@ const Navbar = () => {
   const cart = useCartStore((state) => state.cart)
   const cartItemCount = cart.reduce((acc, item) => acc + item.qty, 0)
   const { language, toggleLanguage } = useLanguageStore()
+  const { theme, toggleTheme } = useThemeStore()
   
   const [searchKeyword, setSearchKeyword] = useState('')
   const [allProducts, setAllProducts] = useState([])
@@ -66,12 +68,12 @@ const Navbar = () => {
       <style>
         {`
           .navbar-premium {
-            background-color: #ffffff !important;
-            border-bottom: 1px solid #e5e7eb;
+            background-color: var(--bs-body-bg) !important;
+            border-bottom: 1px solid var(--bs-border-color);
             transition: all 0.25s ease-in-out;
           }
           .navbar-premium.scrolled {
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
             padding-top: 10px !important;
             padding-bottom: 10px !important;
           }
@@ -79,14 +81,14 @@ const Navbar = () => {
             font-size: 1.35rem;
             font-weight: 900;
             letter-spacing: 0.5px;
-            color: #000000;
+            color: var(--bs-emphasis-color);
             text-transform: uppercase;
             text-decoration: none;
           }
           .nav-link-premium {
             font-size: 13px;
             font-weight: 700;
-            color: #111827 !important;
+            color: var(--bs-emphasis-color) !important;
             text-transform: uppercase;
             letter-spacing: 1px;
             padding: 8px 16px !important;
@@ -100,7 +102,7 @@ const Navbar = () => {
             height: 2px;
             bottom: 2px;
             left: 16px;
-            background-color: #000000;
+            background-color: var(--bs-emphasis-color);
             transition: width 0.2s ease;
           }
           .nav-link-premium:hover::after,
@@ -108,23 +110,24 @@ const Navbar = () => {
             width: calc(100% - 32px);
           }
           .search-box-premium {
-            background-color: #f3f4f6;
-            border: 1px solid transparent;
-            border-radius: 0px !important; /* ทรงเหลี่ยมมินิมอลแบบ Adidas */
+            background-color: var(--bs-tertiary-bg);
+            border: 1px solid var(--bs-border-color);
+            border-radius: 0px !important;
+            color: var(--bs-body-color) !important;
             font-size: 13px;
             transition: all 0.2s ease;
             width: 200px;
           }
           .search-box-premium:focus {
-            background-color: #ffffff;
-            border-color: #000000;
+            background-color: var(--bs-body-bg);
+            border-color: var(--bs-emphasis-color);
             box-shadow: none;
             width: 240px !important;
           }
           .navbar-icon-btn {
             background: none;
             border: none;
-            color: #111827;
+            color: var(--bs-emphasis-color);
             padding: 6px;
             display: flex;
             align-items: center;
@@ -140,7 +143,7 @@ const Navbar = () => {
             position: absolute;
             top: 0px;
             right: 0px;
-            background-color: #000000 !important;
+            background-color: #ff5722 !important;
             color: #ffffff;
             font-size: 9px;
             font-weight: 700;
@@ -154,14 +157,14 @@ const Navbar = () => {
           .suggestion-item {
             cursor: pointer;
             transition: background-color 0.15s ease;
-            border-bottom: 1px solid #f3f4f6;
+            border-bottom: 1px solid var(--bs-border-color);
           }
           .suggestion-item:hover {
-            background-color: #f9fafb;
+            background-color: var(--bs-tertiary-bg);
           }
           .lang-toggle-btn {
             background: none;
-            border: 1px solid #e5e7eb;
+            border: 1px solid var(--bs-border-color);
             border-radius: 20px;
             padding: 4px 10px;
             display: flex;
@@ -169,13 +172,13 @@ const Navbar = () => {
             gap: 6px;
             font-size: 11px;
             font-weight: 700;
-            color: #111827;
+            color: var(--bs-emphasis-color);
             cursor: pointer;
             transition: all 0.2s ease;
           }
           .lang-toggle-btn:hover {
-            border-color: #111827;
-            background-color: #f9fafb;
+            border-color: var(--bs-emphasis-color);
+            background-color: var(--bs-tertiary-bg);
           }
           .lang-text {
             opacity: 0.4;
@@ -183,7 +186,10 @@ const Navbar = () => {
           }
           .lang-text.active {
             opacity: 1;
-            color: #000000;
+            color: var(--bs-emphasis-color);
+          }
+          .nav-link-custom {
+            color: var(--bs-emphasis-color) !important;
           }
         `}
       </style>
@@ -230,7 +236,7 @@ const Navbar = () => {
                     onFocus={() => setShowSuggestions(true)}
                     onBlur={() => setTimeout(() => setShowSuggestions(false), 200)}
                   />
-                  <Button type="submit" variant="link" className="p-0 position-absolute top-50 end-0 translate-middle-y me-3 text-dark navbar-icon-btn">
+                  <Button type="submit" variant="link" className="p-0 position-absolute top-50 end-0 translate-middle-y me-3 navbar-icon-btn">
                     <Search size={16} strokeWidth={2.5} />
                   </Button>
 
@@ -256,7 +262,7 @@ const Navbar = () => {
                       ))}
                       <div 
                         className="px-3 py-2 text-center text-white fw-bold text-uppercase" 
-                        style={{ fontSize: '11px', cursor: 'pointer', backgroundColor: '#000000', letterSpacing: '1px' }}
+                        style={{ fontSize: '11px', cursor: 'pointer', backgroundColor: 'var(--bs-emphasis-color)', color: 'var(--bs-body-bg)', letterSpacing: '1px' }}
                         onClick={handleSearchSubmit}
                       >
                         {getTranslation(language, 'nav', 'viewAllResults')}
@@ -268,7 +274,6 @@ const Navbar = () => {
               
               {/* สิทธิ์ของไอคอนตามสถานะการเข้าสู่ระบบ */}
               <div className="d-flex align-items-center gap-3 mt-2 mt-lg-0">
-                {/* ปุ่มสลับภาษา */}
                 <button 
                   onClick={toggleLanguage} 
                   className="lang-toggle-btn me-1"
@@ -280,17 +285,34 @@ const Navbar = () => {
                   <span className={`lang-text ${language === 'en' ? 'active' : ''}`}>EN</span>
                 </button>
 
+                {/* ปุ่มสลับธีม */}
+                <button 
+                  onClick={toggleTheme} 
+                  className="navbar-icon-btn ms-1"
+                  title="Toggle Theme"
+                >
+                  {theme === 'light' ? <Moon size={18} strokeWidth={2} /> : <Sun size={18} strokeWidth={2} />}
+                </button>
+
                 {userInfo ? (
                   <>
                     {/* สิทธิ์พนักงาน/แอดมิน */}
                     {(userInfo.role === 'admin' || userInfo.role === 'staff') && (
-                      <Link to="/admin" className="text-dark fw-bold text-decoration-none text-uppercase nav-link-custom pe-2" style={{ fontSize: '12px', letterSpacing: '1px' }}>
+                      <Link to="/admin" className="fw-bold text-decoration-none text-uppercase nav-link-custom pe-2" style={{ fontSize: '12px', letterSpacing: '1px' }}>
                         {getTranslation(language, 'nav', 'dashboard')}
                       </Link>
                     )}
 
                     {/* ชื่อผู้ใช้เข้าสู่ระบบ */}
-                    <Link to="/profile" className="text-dark fw-bold text-uppercase text-decoration-none nav-link-custom pe-1" style={{ fontSize: '12px', letterSpacing: '1px' }}>
+                    <Link to="/profile" className="fw-bold text-uppercase text-decoration-none nav-link-custom pe-1 d-flex align-items-center gap-2" style={{ fontSize: '12px', letterSpacing: '1px' }}>
+                      {userInfo.profile_image && (
+                        <img 
+                          src={userInfo.profile_image} 
+                          alt="Profile" 
+                          className="rounded-circle object-fit-cover shadow-sm border border-secondary border-opacity-25"
+                          style={{ width: '26px', height: '26px' }}
+                        />
+                      )}
                       {userInfo.username}
                     </Link>
                     
