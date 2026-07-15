@@ -1,15 +1,18 @@
 import React, { useState, useEffect } from 'react'
 import { useCartStore } from '../store/cartStore' 
 import { useAuthStore } from '../store/authStore'
+import { useLanguageStore } from '../store/languageStore'
 import { Link, useNavigate, useLocation } from 'react-router-dom'
-import { ShoppingBag, Search, User, LogOut } from 'lucide-react'
+import { ShoppingBag, Search, User, LogOut, Globe } from 'lucide-react'
 import { Navbar as BsNavbar, Container, Nav, Badge, Button, Form } from 'react-bootstrap'
 import api from '../utils/api'
+import { getTranslation } from '../utils/translations'
 
 const Navbar = () => {
   const { userInfo, logout } = useAuthStore()
   const cart = useCartStore((state) => state.cart)
   const cartItemCount = cart.reduce((acc, item) => acc + item.qty, 0)
+  const { language, toggleLanguage } = useLanguageStore()
   
   const [searchKeyword, setSearchKeyword] = useState('')
   const [allProducts, setAllProducts] = useState([])
@@ -156,6 +159,32 @@ const Navbar = () => {
           .suggestion-item:hover {
             background-color: #f9fafb;
           }
+          .lang-toggle-btn {
+            background: none;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            padding: 4px 10px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            color: #111827;
+            cursor: pointer;
+            transition: all 0.2s ease;
+          }
+          .lang-toggle-btn:hover {
+            border-color: #111827;
+            background-color: #f9fafb;
+          }
+          .lang-text {
+            opacity: 0.4;
+            transition: opacity 0.2s ease;
+          }
+          .lang-text.active {
+            opacity: 1;
+            color: #000000;
+          }
         `}
       </style>
 
@@ -180,9 +209,9 @@ const Navbar = () => {
           <BsNavbar.Collapse id="basic-navbar-nav">
             {/* กลางหน้าเว็บ */}
             <Nav className="mx-auto gap-1 gap-lg-2 mt-3 mt-lg-0">
-              <Nav.Link as={Link} to="/" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/' ? 'active-route' : ''}`}>New Arrivals</Nav.Link>
-              <Nav.Link as={Link} to="/men" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/men' ? 'active-route' : ''}`}>Men</Nav.Link>
-              <Nav.Link as={Link} to="/women" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/women' ? 'active-route' : ''}`}>Women</Nav.Link>
+              <Nav.Link as={Link} to="/" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/' ? 'active-route' : ''}`}>{getTranslation(language, 'nav', 'newArrivals')}</Nav.Link>
+              <Nav.Link as={Link} to="/men" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/men' ? 'active-route' : ''}`}>{getTranslation(language, 'nav', 'men')}</Nav.Link>
+              <Nav.Link as={Link} to="/women" onClick={() => setTimeout(() => document.getElementById('products-section')?.scrollIntoView({ behavior: 'smooth' }), 100)} className={`nav-link-premium ${location.pathname === '/women' ? 'active-route' : ''}`}>{getTranslation(language, 'nav', 'women')}</Nav.Link>
             </Nav>
             
             {/* แถบไอคอน */}
@@ -191,7 +220,7 @@ const Navbar = () => {
                 <div className="position-relative">
                   <Form.Control
                     type="text"
-                    placeholder="ค้นหาสินค้า..."
+                    placeholder={getTranslation(language, 'nav', 'searchPlaceholder')}
                     className="search-box-premium ps-3 pe-5 py-2 fw-medium"
                     value={searchKeyword}
                     onChange={(e) => {
@@ -230,7 +259,7 @@ const Navbar = () => {
                         style={{ fontSize: '11px', cursor: 'pointer', backgroundColor: '#000000', letterSpacing: '1px' }}
                         onClick={handleSearchSubmit}
                       >
-                        ดูผลลัพธ์ทั้งหมด
+                        {getTranslation(language, 'nav', 'viewAllResults')}
                       </div>
                     </div>
                   )}
@@ -239,12 +268,24 @@ const Navbar = () => {
               
               {/* สิทธิ์ของไอคอนตามสถานะการเข้าสู่ระบบ */}
               <div className="d-flex align-items-center gap-3 mt-2 mt-lg-0">
+                {/* ปุ่มสลับภาษา */}
+                <button 
+                  onClick={toggleLanguage} 
+                  className="lang-toggle-btn me-1"
+                  title="Switch Language"
+                >
+                  <Globe size={14} strokeWidth={2} />
+                  <span className={`lang-text ${language === 'th' ? 'active' : ''}`}>TH</span>
+                  <span style={{ opacity: 0.3 }}>|</span>
+                  <span className={`lang-text ${language === 'en' ? 'active' : ''}`}>EN</span>
+                </button>
+
                 {userInfo ? (
                   <>
                     {/* สิทธิ์พนักงาน/แอดมิน */}
                     {(userInfo.role === 'admin' || userInfo.role === 'staff') && (
                       <Link to="/admin" className="text-dark fw-bold text-decoration-none text-uppercase nav-link-custom pe-2" style={{ fontSize: '12px', letterSpacing: '1px' }}>
-                        Dashboard
+                        {getTranslation(language, 'nav', 'dashboard')}
                       </Link>
                     )}
 
@@ -276,7 +317,7 @@ const Navbar = () => {
                   // เคสยังไม่ Login
                   <Link to="/login" className="navbar-icon-btn d-flex align-items-center gap-2">
                     <User size={20} strokeWidth={2} />
-                    <span className="fw-bold text-uppercase d-lg-none" style={{ fontSize: '12px', letterSpacing: '1px' }}>Sign In</span>
+                    <span className="fw-bold text-uppercase d-lg-none" style={{ fontSize: '12px', letterSpacing: '1px' }}>{getTranslation(language, 'nav', 'signIn')}</span>
                   </Link>
                 )}
               </div>

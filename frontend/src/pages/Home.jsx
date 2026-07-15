@@ -4,6 +4,8 @@ import api from '../utils/api'
 import ProductCard from '../components/ProductCard'
 import FilterDrawer from '../components/FilterDrawer'
 import { Container, Row, Col, Button } from 'react-bootstrap'
+import { useLanguageStore } from '../store/languageStore'
+import { getTranslation } from '../utils/translations'
 
 const Home = () => {
   const [products, setProducts] = useState([]);
@@ -13,6 +15,7 @@ const Home = () => {
   const pathname = location.pathname;
   const searchParams = new URLSearchParams(location.search);
   const searchKeyword = searchParams.get('search') || '';
+  const language = useLanguageStore((state) => state.language);
   
   // Hero Section Shoe Animation State
   const heroShoes = ['/product/shoe-1.jpg', '/product/shoe-3.jpg', '/product/shoe-7.jpg', '/product/shoe-9.jpg'];
@@ -283,14 +286,13 @@ const Home = () => {
               {/* Text Content */}
               <div className="col-lg-6 text-center text-lg-start mb-5 mb-lg-0 pe-lg-5 hero-text-anim">
                 <h1 className="display-3 fw-black text-white text-uppercase mb-4" style={{ fontWeight: 900, letterSpacing: '-2px', lineHeight: '1.1' }}>
-                  Step Into <br/><span style={{ color: '#ff5722' }}>Greatness.</span>
+                  {getTranslation(language, 'home', 'heroTitle')} <br/><span style={{ color: '#ff5722' }}>{getTranslation(language, 'home', 'heroTitleHighlight')}</span>
                 </h1>
                 <p
                   className="fs-5 text-light opacity-75 fw-medium mb-5 mx-auto mx-lg-0"
                   style={{ maxWidth: '450px', lineHeight: '1.6' }}
                 >
-                  Experience the perfect blend of premium comfort, cutting-edge
-                  style, and unmatched durability.
+                  {getTranslation(language, 'home', 'heroDesc')}
                 </p>
                 <Button
                   variant="light"
@@ -317,7 +319,7 @@ const Home = () => {
                       ?.scrollIntoView({ behavior: 'smooth' })
                   }
                 >
-                  Shop Now
+                  {getTranslation(language, 'home', 'shopNow')}
                 </Button>
               </div>
 
@@ -377,7 +379,7 @@ const Home = () => {
                 style={localStyles.sectionTitle}
                 className="position-relative d-inline-block"
               >
-                New Arrivals
+                {getTranslation(language, 'home', 'newArrivals')}
                 <span style={localStyles.headingUnderline}></span>
               </h2>
             </div>
@@ -387,7 +389,7 @@ const Home = () => {
                 className="text-muted font-weight-bold m-0"
                 style={{ fontSize: '14px', color: '#6b7280' }}
               >
-                {filteredProducts.length} Products Found
+                {filteredProducts.length} {getTranslation(language, 'home', 'productsFound')}
               </span>
 
               {/* ปุ่มกดเปิดสไตล์ */}
@@ -410,7 +412,7 @@ const Home = () => {
                     d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
                   />
                 </svg>
-                <span>ตัวกรอง</span>
+                <span>{getTranslation(language, 'home', 'filter')}</span>
               </button>
             </div>
           </div>
@@ -458,10 +460,9 @@ const Home = () => {
                   d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"
                 />
               </svg>
-              <h5 className="fw-bold text-dark mb-2">No products available</h5>
+              <h5 className="fw-bold text-dark mb-2">{getTranslation(language, 'home', 'noProducts')}</h5>
               <p className="small text-muted mb-0">
-                Please make sure your database server is connected or try a
-                different search keyword.
+                {getTranslation(language, 'home', 'noProductsDesc')}
               </p>
             </div>
           ) : (
