@@ -3,7 +3,6 @@ import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuthStore } from '../store/authStore';
 import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
-import { GoogleLogin } from '@react-oauth/google';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -41,24 +40,6 @@ const Login = () => {
       }
     } catch (err) {
       setError(err.response?.data?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleSuccess = async (credentialResponse) => {
-    setLoading(true);
-    setError('');
-    try {
-      const { data } = await api.post('/users/google', { token: credentialResponse.credential });
-      login(data);
-      if (data.role === 'admin' || data.role === 'staff') {
-        navigate('/admin');
-      } else {
-        navigate('/');
-      }
-    } catch (err) {
-      setError(err.response?.data?.message || 'เกิดข้อผิดพลาดในการเข้าสู่ระบบด้วย Google');
     } finally {
       setLoading(false);
     }
@@ -142,21 +123,6 @@ const Login = () => {
               </Button>
             </div>
             
-            <div className="d-flex align-items-center my-4">
-              <div className="flex-grow-1 border-bottom"></div>
-              <span className="px-3 text-muted small fw-medium text-uppercase">Or</span>
-              <div className="flex-grow-1 border-bottom"></div>
-            </div>
-            
-            <div className="d-flex justify-content-center">
-              <GoogleLogin
-                onSuccess={handleGoogleSuccess}
-                onError={() => {
-                  setError('Google Login Failed');
-                }}
-                useOneTap
-              />
-            </div>
           </Form>
 
           <div className="mt-5 text-center small border-top pt-4">
