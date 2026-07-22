@@ -309,7 +309,7 @@ Table product_reviews {
   comment text
   created_at timestamp [default: `now()` ]
 }
-
+{
 Ref: addresses.user_id > users.id
 Ref: categories.parent_id > categories.id
 Ref: products.category_id > categories.id
@@ -328,6 +328,7 @@ Ref: order_items.variant_id > product_variants.id
 Ref: payments.order_id - orders.id 
 Ref: product_reviews.user_id > users.id
 Ref: product_reviews.product_id > products.id
+}
 
 ---
 
