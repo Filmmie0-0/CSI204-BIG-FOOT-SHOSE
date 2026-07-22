@@ -147,11 +147,11 @@
 </p>
 
 ---
-## 🧪 System UAT (User Acceptance Testing)
+## System UAT (User Acceptance Testing)
 
 จากการทดสอบ User Acceptance Testing (UAT) ของระบบ **BIG FOOT SHOES** โดยกลุ่มผู้ใช้งาน (Customer, Staff, Admin) พบข้อผิดพลาดที่ต้องดำเนินการแก้ไขเร่งด่วนเพื่อปรับปรุงระบบให้พร้อมใช้งานจริง ดังนี้
 
-### 🔴 Critical Issues
+### Critical Issues
 - **Authentication & Security (ระบบสมาชิกและความปลอดภัย):** 
   - ข้อมูลการสมัครสมาชิกและการเข้าสู่ระบบไม่ถูกบันทึกลง Database ทำให้ผู้ใช้ทุกระดับ (Role) ไม่สามารถ Login ได้
   - ขาดการตรวจสอบสิทธิ์ (Role Authorization) อย่างรัดกุม ลูกค้าทั่วไปสามารถเข้าถึงโครงสร้างหน้า `/admin` ได้ผ่านการพิมพ์ URL
@@ -161,7 +161,7 @@
 - **Order Management (ระบบจัดการคำสั่งซื้อหลังบ้าน):**
   - Admin และ Staff ไม่สามารถเปิดตรวจสอบไฟล์ภาพสลิปโอนเงินที่ลูกค้าแนบมาได้ และสถานะการชำระเงินไม่มีการอัปเดต
 
-### 🟠 High & Medium Issues (ปัญหาที่ควรปรับปรุง)
+### High & Medium Issues (ปัญหาที่ควรปรับปรุง)
 - **Stock Validation (ระบบจัดการสต๊อก):** 
   - ระบบไม่มีการตรวจสอบและจำกัดจำนวนสินค้าตามสต๊อกจริง ทำให้ลูกค้ากดเพิ่มสินค้าลงตะกร้าได้ไม่จำกัด
 - **Search & Filters (ระบบค้นหาและตัวกรอง):** 
@@ -174,7 +174,7 @@
 
 ---
 
-### 🛠️ Action Plan / แนวทางการแก้ไข (Next Steps)
+### Action Plan / แนวทางการแก้ไข (Next Steps)
 1. **Fix API Payload & Database Schema (High Priority):** ตรวจสอบและปรับแก้ JSON Payload ระหว่าง Frontend/Backend ให้ตรงกัน โดยเฉพาะในส่วนของระบบ Login/Register และระบบ Checkout
 2. **Implement Role-Based Access Control (RBAC):** เพิ่ม Middleware หรือ Route Guard ป้องกันไม่ให้ผู้ใช้ที่ไม่มีสิทธิ์เข้าถึง Route `/admin`
 3. **Fix Payment Logic & Receipt Rendering:** แก้ไข Logic การเลือกช่องทางชำระเงินให้ส่งค่าตามจริง และพัฒนาระบบ Image Rendering สำหรับดูสลิปโอนเงินในหน้าต่างของ Admin/Staff
