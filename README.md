@@ -44,8 +44,8 @@
 
 เพื่อการจัดการและติดตามความคืบหน้าของโครงการ ได้แบ่งแผนการดำเนินงานออกเป็น 4 ระยะ (Phases) ดังนี้:
 * **Phase 1: Design & Database** - ออกแบบ UX/UI (Figma), วางโครงสร้างระบบ และออกแบบฐานข้อมูล (DB Schema)
-* **Phase 2: Backend & API** - พัฒนาระบบหลังบ้านด้วย Node.js/Express, เชื่อมต่อ MongoDB, และทำระบบ Authentication (JWT)
-* **Phase 3: Frontend & Integration** - พัฒนาหน้าเว็บด้วย React.js และเชื่อมต่อ API เพื่อให้ระบบทำงานได้จริง
+* **Phase 2: Frontend & Integration** - พัฒนาหน้าเว็บด้วย React.js และเชื่อมต่อ API เพื่อให้ระบบทำงานได้จริง
+* **Phase 3: Backend & API** - พัฒนาระบบหลังบ้านด้วย Node.js/Express, เชื่อมต่อ MongoDB, และทำระบบ Authentication (JWT)
 * **Phase 4: Testing & Deployment** - ทดสอบการทำงานของระบบ (UAT, API Testing) และนำระบบขึ้นโฮสต์ (Vercel, Render/Heroku)
 
 ---
@@ -146,6 +146,40 @@
 <p align="center">
   <img width="1063" height="1803" alt="Sequence Diagram (2)" src="https://github.com/user-attachments/assets/12b1f3b1-6155-43f1-83bd-9017e174be09" />
 </p>
+
+---
+## 🧪 System UAT (User Acceptance Testing)
+
+จากการทดสอบ User Acceptance Testing (UAT) ของระบบ **BIG FOOT SHOES** โดยกลุ่มผู้ใช้งาน (Customer, Staff, Admin) พบข้อผิดพลาดที่ต้องดำเนินการแก้ไขเร่งด่วนเพื่อปรับปรุงระบบให้พร้อมใช้งานจริง ดังนี้
+
+### 🔴 Critical Issues
+- **Authentication & Security (ระบบสมาชิกและความปลอดภัย):** 
+  - ข้อมูลการสมัครสมาชิกและการเข้าสู่ระบบไม่ถูกบันทึกลง Database ทำให้ผู้ใช้ทุกระดับ (Role) ไม่สามารถ Login ได้
+  - ขาดการตรวจสอบสิทธิ์ (Role Authorization) อย่างรัดกุม ลูกค้าทั่วไปสามารถเข้าถึงโครงสร้างหน้า `/admin` ได้ผ่านการพิมพ์ URL
+- **Payment & Checkout (ระบบตะกร้าสินค้าและการชำระเงิน):** 
+  - ระบบล็อกช่องทางการชำระเงินไว้ที่ค่าเริ่มต้น (เช่น เครดิตการ์ด) ไม่ว่าผู้ใช้จะเลือกช่องทางใดก็ตาม
+  - โครงสร้างข้อมูล (Payload) ระหว่าง Frontend และ Backend ไม่ตรงกัน ทำให้ไม่สามารถส่งข้อมูลยืนยันคำสั่งซื้อได้สำเร็จ
+- **Order Management (ระบบจัดการคำสั่งซื้อหลังบ้าน):**
+  - Admin และ Staff ไม่สามารถเปิดตรวจสอบไฟล์ภาพสลิปโอนเงินที่ลูกค้าแนบมาได้ และสถานะการชำระเงินไม่มีการอัปเดต
+
+### 🟠 High & Medium Issues (ปัญหาที่ควรปรับปรุง)
+- **Stock Validation (ระบบจัดการสต๊อก):** 
+  - ระบบไม่มีการตรวจสอบและจำกัดจำนวนสินค้าตามสต๊อกจริง ทำให้ลูกค้ากดเพิ่มสินค้าลงตะกร้าได้ไม่จำกัด
+- **Search & Filters (ระบบค้นหาและตัวกรอง):** 
+  - ฟังก์ชันค้นหาสินค้าด้วยคีย์เวิร์ดยังไม่ทำงาน และยังไม่มี UI ช่องค้นหาในหน้า Frontend
+  - ตัวกรองสินค้า (Filter) ตามสี (Color) และหมวดหมู่ (Style) ไม่แสดงผลลัพธ์สินค้าตามที่ผู้ใช้เลือก
+- **Dashboard & UI (ระบบแสดงผล):**
+  - หน้า Dashboard ของ Admin ไม่แสดงข้อมูลสรุปยอดขายและรายได้รวม
+  - ไม่มีหน้า UI สำหรับให้เจ้าหน้าที่จัดการ (เพิ่ม/ลด/แก้ไข) ข้อมูลหมวดหมู่สินค้า
+  - หน้าจอของลูกค้า (Customer) ไม่สามารถดึงข้อมูลสถานะคำสั่งซื้อล่าสุด (เช่น กำลังจัดส่ง) มาแสดงผลได้
+
+---
+
+### 🛠️ Action Plan / แนวทางการแก้ไข (Next Steps)
+1. **Fix API Payload & Database Schema (High Priority):** ตรวจสอบและปรับแก้ JSON Payload ระหว่าง Frontend/Backend ให้ตรงกัน โดยเฉพาะในส่วนของระบบ Login/Register และระบบ Checkout
+2. **Implement Role-Based Access Control (RBAC):** เพิ่ม Middleware หรือ Route Guard ป้องกันไม่ให้ผู้ใช้ที่ไม่มีสิทธิ์เข้าถึง Route `/admin`
+3. **Fix Payment Logic & Receipt Rendering:** แก้ไข Logic การเลือกช่องทางชำระเงินให้ส่งค่าตามจริง และพัฒนาระบบ Image Rendering สำหรับดูสลิปโอนเงินในหน้าต่างของ Admin/Staff
+4. **Enable Stock Validation:** เพิ่มเงื่อนไขตรวจสอบจำนวนสินค้าคงเหลือทั้งฝั่ง Frontend (ปิดปุ่มเมื่อเกินจำนวน) และ Backend (ตรวจสอบซ้ำก่อนเซฟลง Database)
 
 ---
 
