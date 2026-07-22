@@ -16,14 +16,14 @@
 
 ---
 
-##  ที่มาและความสำคัญ (Background)
+##  ที่มาและความสำคัญ
 
 ในปัจจุบันการเลือกซื้อรองเท้าผ่านช่องทางออนไลน์ได้รับความนิยมอย่างมาก แต่ผู้ซื้อยังคงต้องการแพลตฟอร์มที่ใช้งานง่าย มีข้อมูลครบถ้วน และมีความปลอดภัย โครงการ **Big Foot Shoes** จึงถูกพัฒนาขึ้นเพื่อเป็นพื้นที่ศูนย์กลางที่ "แมตช์รองเท้าที่ใช่ให้กับผู้ใช้งาน" โดยรวบรวมสินค้าไว้ในที่เดียว พร้อมระบบจัดการหลังบ้านที่มีประสิทธิภาพ เพื่อเติมเต็มประสบการณ์การช้อปปิ้งออนไลน์ให้ราบรื่นและสมบูรณ์แบบที่สุด
 
-##  เป้าหมายทางธุรกิจและขอบเขต (Objectives & Scope)
+##  เป้าหมายทางธุรกิจและขอบเขต
 
 ### วัตถุประสงค์
-* พัฒนาเว็บไซต์อีคอมเมิร์ซสำหรับจำหน่ายรองเท้าที่สามารถใช้งานได้จริง
+* พัฒนาเว็บไซต์อีคอมเมิร์ซสำหรับจำหน่ายรองเท้า
 * เพื่อให้ลูกค้าสามารถค้นหา เลือกสินค้า และสั่งซื้อได้อย่างสะดวกและปลอดภัย
 * เพื่อให้ผู้ดูแลระบบ (Admin) และพนักงาน (Staff) สามารถจัดการสินค้า สต๊อก และคำสั่งซื้อได้อย่างมีประสิทธิภาพ
 
@@ -40,13 +40,13 @@
 
 ---
 
-##  แผนการดำเนินงาน (Project Roadmap & Timeline)
+##  แผนการดำเนินงาน
 
 เพื่อการจัดการและติดตามความคืบหน้าของโครงการ ได้แบ่งแผนการดำเนินงานออกเป็น 4 ระยะ (Phases) ดังนี้:
 * **Phase 1: Design & Database** - ออกแบบ UX/UI (Figma), วางโครงสร้างระบบ และออกแบบฐานข้อมูล (DB Schema)
 * **Phase 2: Frontend & Integration** - พัฒนาหน้าเว็บด้วย React.js และเชื่อมต่อ API เพื่อให้ระบบทำงานได้จริง
 * **Phase 3: Backend & API** - พัฒนาระบบหลังบ้านด้วย Node.js/Express, เชื่อมต่อ MongoDB, และทำระบบ Authentication (JWT)
-* **Phase 4: Testing & Deployment** - ทดสอบการทำงานของระบบ (UAT, API Testing) และนำระบบขึ้นโฮสต์ (Vercel, Render/Heroku)
+* **Phase 4: Testing** - ทดสอบการทำงานของระบบ (UAT, API Testing)
 
 ---
 
@@ -118,41 +118,40 @@
    ```bash
    cd backend
    npm install
-   # สร้างไฟล์ .env และกำหนดค่าตัวแปร เช่น PORT, MONGO_URI, JWT_SECRET
-   npm run dev
+   npm run start
    ```
 3. **ตั้งค่า Frontend**
    ```bash
    cd frontend
    npm install
-   # สร้างไฟล์ .env (ถ้ามี) สำหรับ URL ของ API
-   npm start
+   npm run dev
    ```
 
 ---
 ## USE CASEDIAGRAM
 <p align="center">
-  <img width="656" height="959" alt="use casediagram (1)" src="https://github.com/user-attachments/assets/37732f47-ac9e-4c5a-a39e-9d030dff8a43" />
+  <img width="990" height="990" alt="USE CASEDIAGRAM" src="https://github.com/user-attachments/assets/19a74bd8-3bc2-4a17-a515-b36d4dda1512" />
+" />
 </p>
 
 ---
 ## Class Diagram
 <p align="center">
-  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/09438cc9-3763-4cbe-a3e2-0e68fb8903d2" />
+  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/51eee758-ac1c-4dde-9f9a-cc76b90c2f41" />
 </p>
 
 ---
 ## Sequence Diagram
 <p align="center">
-  <img width="1063" height="1803" alt="Sequence Diagram (2)" src="https://github.com/user-attachments/assets/12b1f3b1-6155-43f1-83bd-9017e174be09" />
+   <img width="990" height="990" alt="Sequence Diagram" src="https://github.com/user-attachments/assets/027fc7b0-c04e-49f8-be1c-bbf3fc0a562d" />
 </p>
 
 ---
-## 🧪 System UAT (User Acceptance Testing)
+## System UAT (User Acceptance Testing)
 
 จากการทดสอบ User Acceptance Testing (UAT) ของระบบ **BIG FOOT SHOES** โดยกลุ่มผู้ใช้งาน (Customer, Staff, Admin) พบข้อผิดพลาดที่ต้องดำเนินการแก้ไขเร่งด่วนเพื่อปรับปรุงระบบให้พร้อมใช้งานจริง ดังนี้
 
-### 🔴 Critical Issues
+### Critical Issues
 - **Authentication & Security (ระบบสมาชิกและความปลอดภัย):** 
   - ข้อมูลการสมัครสมาชิกและการเข้าสู่ระบบไม่ถูกบันทึกลง Database ทำให้ผู้ใช้ทุกระดับ (Role) ไม่สามารถ Login ได้
   - ขาดการตรวจสอบสิทธิ์ (Role Authorization) อย่างรัดกุม ลูกค้าทั่วไปสามารถเข้าถึงโครงสร้างหน้า `/admin` ได้ผ่านการพิมพ์ URL
@@ -162,7 +161,7 @@
 - **Order Management (ระบบจัดการคำสั่งซื้อหลังบ้าน):**
   - Admin และ Staff ไม่สามารถเปิดตรวจสอบไฟล์ภาพสลิปโอนเงินที่ลูกค้าแนบมาได้ และสถานะการชำระเงินไม่มีการอัปเดต
 
-### 🟠 High & Medium Issues (ปัญหาที่ควรปรับปรุง)
+### High & Medium Issues (ปัญหาที่ควรปรับปรุง)
 - **Stock Validation (ระบบจัดการสต๊อก):** 
   - ระบบไม่มีการตรวจสอบและจำกัดจำนวนสินค้าตามสต๊อกจริง ทำให้ลูกค้ากดเพิ่มสินค้าลงตะกร้าได้ไม่จำกัด
 - **Search & Filters (ระบบค้นหาและตัวกรอง):** 
@@ -175,7 +174,7 @@
 
 ---
 
-### 🛠️ Action Plan / แนวทางการแก้ไข (Next Steps)
+### Action Plan / แนวทางการแก้ไข (Next Steps)
 1. **Fix API Payload & Database Schema (High Priority):** ตรวจสอบและปรับแก้ JSON Payload ระหว่าง Frontend/Backend ให้ตรงกัน โดยเฉพาะในส่วนของระบบ Login/Register และระบบ Checkout
 2. **Implement Role-Based Access Control (RBAC):** เพิ่ม Middleware หรือ Route Guard ป้องกันไม่ให้ผู้ใช้ที่ไม่มีสิทธิ์เข้าถึง Route `/admin`
 3. **Fix Payment Logic & Receipt Rendering:** แก้ไข Logic การเลือกช่องทางชำระเงินให้ส่งค่าตามจริง และพัฒนาระบบ Image Rendering สำหรับดูสลิปโอนเงินในหน้าต่างของ Admin/Staff
