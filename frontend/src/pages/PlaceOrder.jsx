@@ -80,6 +80,9 @@ const PlaceOrder = () => {
               <p className="text-secondary fs-6 mb-0 lh-lg">
                 <span className="fw-bold text-dark me-2">Address:</span>
                 {shippingAddress.address}, {shippingAddress.city}, {shippingAddress.postalCode}, {shippingAddress.country}
+                <br />
+                <span className="fw-bold text-dark me-2">Phone:</span>
+                {shippingAddress.phoneNumber}
               </p>
             </Card.Body>
           </Card>

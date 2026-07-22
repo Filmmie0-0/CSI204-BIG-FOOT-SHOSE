@@ -202,11 +202,9 @@ Table users {
 Table addresses {
   id integer [primary key, increment]
   user_id integer
-  address_type varchar(20)
   receiver_name varchar(100) [not null]
   receiver_phone varchar(20) [not null]
   address_line1 varchar(255) [not null]
-  address_line2 varchar(255)
   city varchar(100) [not null]
   state varchar(100) [not null]
   postal_code varchar(20) [not null]

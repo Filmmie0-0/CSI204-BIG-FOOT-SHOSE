@@ -104,6 +104,13 @@ const OrderDetail = () => {
                 <br />
                 <span className="fw-bold text-dark me-2">Address:</span>
                 {order.shipping_address_id ? `${order.shipping_address_id.address_line1}, ${order.shipping_address_id.city}, ${order.shipping_address_id.postal_code}, ${order.shipping_address_id.state}` : 'N/A'}
+                {order.shipping_address_id?.receiver_phone && (
+                  <>
+                    <br />
+                    <span className="fw-bold text-dark me-2">Phone:</span>
+                    {order.shipping_address_id.receiver_phone}
+                  </>
+                )}
               </p>
               {order.order_status === 'delivered' ? (
                 <div className="d-flex flex-column align-items-start gap-2">

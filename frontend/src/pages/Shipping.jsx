@@ -12,11 +12,12 @@ const Shipping = () => {
   const [city, setCity] = useState(shippingAddress.city || '');
   const [postalCode, setPostalCode] = useState(shippingAddress.postalCode || '');
   const [country, setCountry] = useState(shippingAddress.country || 'Thailand');
+  const [phoneNumber, setPhoneNumber] = useState(shippingAddress.phoneNumber || '');
 
   const submitHandler = (e) => {
     e.preventDefault();
     // บันทึกข้อมูลลง Zustand
-    saveShippingAddress({ address, city, postalCode, country });
+    saveShippingAddress({ address, city, postalCode, country, phoneNumber });
     
     // บันทึกเสร็จแล้วพาไปหน้าสรุปคำสั่งซื้อ (Place Order)
     navigate('/placeorder');
@@ -52,6 +53,19 @@ const Shipping = () => {
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
                 placeholder="Bangkok"
+                className="py-3 px-4 shadow-none focus-ring border-0"
+                style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
+              />
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-bold text-dark text-uppercase small" style={{ letterSpacing: '1px' }}>Phone Number</Form.Label>
+              <Form.Control
+                type="tel"
+                required
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                placeholder="08X-XXX-XXXX"
                 className="py-3 px-4 shadow-none focus-ring border-0"
                 style={{ '--bs-focus-ring-color': 'rgba(33, 37, 41, 0.25)' }}
               />

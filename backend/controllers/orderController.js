@@ -17,9 +17,8 @@ const addOrderItems = async (req, res) => {
         // Create an address record
         const address = await Address.create({
           user_id: userId,
-          address_type: 'shipping',
           receiver_name: shippingAddress.name || 'Receiver',
-          receiver_phone: shippingAddress.phone || '0000000000',
+          receiver_phone: shippingAddress.phoneNumber || shippingAddress.phone || '0000000000',
           address_line1: shippingAddress.address || 'Address',
           city: shippingAddress.city || 'City',
           state: shippingAddress.country || 'State',
