@@ -132,19 +132,20 @@
 ---
 ## USE CASEDIAGRAM
 <p align="center">
-  <img width="656" height="959" alt="use casediagram (1)" src="https://github.com/user-attachments/assets/37732f47-ac9e-4c5a-a39e-9d030dff8a43" />
+  <img width="990" height="990" alt="USE CASEDIAGRAM" src="https://github.com/user-attachments/assets/19a74bd8-3bc2-4a17-a515-b36d4dda1512" />
+" />
 </p>
 
 ---
 ## Class Diagram
 <p align="center">
-  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/09438cc9-3763-4cbe-a3e2-0e68fb8903d2" />
+  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/51eee758-ac1c-4dde-9f9a-cc76b90c2f41" />
 </p>
 
 ---
 ## Sequence Diagram
 <p align="center">
-  <img width="1063" height="1803" alt="Sequence Diagram (2)" src="https://github.com/user-attachments/assets/12b1f3b1-6155-43f1-83bd-9017e174be09" />
+   <img width="990" height="990" alt="Sequence Diagram" src="https://github.com/user-attachments/assets/027fc7b0-c04e-49f8-be1c-bbf3fc0a562d" />
 </p>
 
 ---
