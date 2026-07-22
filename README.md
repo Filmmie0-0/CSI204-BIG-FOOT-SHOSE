@@ -118,15 +118,13 @@
    ```bash
    cd backend
    npm install
-   # สร้างไฟล์ .env และกำหนดค่าตัวแปร เช่น PORT, MONGO_URI, JWT_SECRET
-   npm run dev
+   npm run start
    ```
 3. **ตั้งค่า Frontend**
    ```bash
    cd frontend
    npm install
-   # สร้างไฟล์ .env (ถ้ามี) สำหรับ URL ของ API
-   npm start
+   npm run dev
    ```
 
 ---
