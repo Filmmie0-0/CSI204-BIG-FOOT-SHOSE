@@ -331,7 +331,7 @@ const Navbar = () => {
                     <button 
                       className="navbar-icon-btn" 
                       title="Logout"
-                      onClick={() => { logout(); useCartStore.getState().clearCart(); }}
+                      onClick={() => { logout(); useCartStore.getState().resetCartLocally(); }}
                     >
                       <LogOut size={18} strokeWidth={2} />
                     </button>

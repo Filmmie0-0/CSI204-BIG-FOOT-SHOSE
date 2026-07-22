@@ -31,10 +31,7 @@ const Home = () => {
 
   const [filters, setFilters] = useState({
     sortBy: 'newest',
-    style: '',
-    sizeGroup: '',
     size: '',
-    color: '',
     priceRange: '',
     gender: [],
   })
@@ -85,23 +82,9 @@ const Home = () => {
     }
 
     // ตัวกรองย่อย
-    if (filters.style) {
-      result = result.filter(
-        (p) =>
-          p && p.style && p.style.toLowerCase() === filters.style.toLowerCase(),
-      )
-    }
-
     if (filters.size) {
       result = result.filter(
         (p) => p && Array.isArray(p.sizes) && p.sizes.includes(filters.size),
-      )
-    }
-
-    if (filters.color) {
-      result = result.filter(
-        (p) =>
-          p && p.color && p.color.toLowerCase() === filters.color.toLowerCase(),
       )
     }
 

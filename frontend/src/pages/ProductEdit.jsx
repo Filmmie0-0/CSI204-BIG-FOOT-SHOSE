@@ -18,6 +18,8 @@ const ProductEdit = () => {
   const [countInStock, setCountInStock] = useState(10);
   const [status, setStatus] = useState('active');
   const [gender, setGender] = useState('Unisex');
+  const [categoryId, setCategoryId] = useState('');
+  const [categories, setCategories] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -27,9 +29,14 @@ const ProductEdit = () => {
       return;
     }
 
-    if (id) {
-      const fetchProduct = async () => {
-        try {
+    const fetchInitialData = async () => {
+      try {
+        // Fetch categories first
+        const catRes = await api.get('/categories');
+        setCategories(catRes.data);
+
+        // Fetch product if editing
+        if (id) {
           const { data } = await api.get(`/products/${id}`);
           setName(data.name);
           setPrice(data.price);
@@ -40,17 +47,17 @@ const ProductEdit = () => {
           setCountInStock(data.countInStock !== undefined ? data.countInStock : 10);
           setStatus(data.status);
           if (data.gender) setGender(data.gender);
-        } catch (error) {
-          console.error(error);
-          alert('Error fetching product');
-        } finally {
-          setLoading(false);
+          if (data.category_id) setCategoryId(data.category_id);
         }
-      };
-      fetchProduct();
-    } else {
-      setLoading(false);
-    }
+      } catch (error) {
+        console.error(error);
+        alert('Error fetching data');
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchInitialData();
   }, [id, userInfo, navigate]);
 
   const uploadFileHandler = async (e) => {
@@ -87,7 +94,18 @@ const ProductEdit = () => {
       };
       
       const sizesArray = sizes ? sizes.split(',').map(s => s.trim()).filter(s => s !== '') : [];
-      const productData = { name, price, image_url, sku, description, status, countInStock: Number(countInStock), sizes: sizesArray, gender };
+      const productData = { 
+        name, 
+        price, 
+        image_url, 
+        sku, 
+        description, 
+        status, 
+        countInStock: Number(countInStock), 
+        sizes: sizesArray, 
+        gender,
+        category_id: categoryId || null 
+      };
 
       if (id) {
         await api.put(`/products/${id}`, productData, config);
@@ -146,12 +164,22 @@ const ProductEdit = () => {
             </Form.Group>
 
             <Form.Group className="mb-4">
-              <Form.Label className="fw-medium text-secondary">Category (Gender)</Form.Label>
+              <Form.Label className="fw-medium text-secondary">Gender</Form.Label>
               <Form.Select value={gender} onChange={(e) => setGender(e.target.value)} className="shadow-none focus-ring" style={{ '--bs-focus-ring-color': 'rgba(255, 127, 80, 0.25)' }}>
                 <option value="Men">Men</option>
                 <option value="Women">Women</option>
                 <option value="Kids">Kids</option>
                 <option value="Unisex">Unisex</option>
+              </Form.Select>
+            </Form.Group>
+
+            <Form.Group className="mb-4">
+              <Form.Label className="fw-medium text-secondary">Category</Form.Label>
+              <Form.Select value={categoryId} onChange={(e) => setCategoryId(e.target.value)} className="shadow-none focus-ring" style={{ '--bs-focus-ring-color': 'rgba(255, 127, 80, 0.25)' }}>
+                <option value="">-- No Category --</option>
+                {categories.map(cat => (
+                  <option key={cat._id} value={cat._id}>{cat.name}</option>
+                ))}
               </Form.Select>
             </Form.Group>
             

@@ -143,9 +143,13 @@ const updateOrderToPaid = async (req, res) => {
 
 const updateOrderToDelivered = async (req, res) => {
   try {
+    const { tracking_number } = req.body;
     const order = await Order.findById(req.params.id);
     if (order) {
       order.order_status = 'delivered';
+      if (tracking_number) {
+        order.tracking_number = tracking_number;
+      }
       const updatedOrder = await order.save();
       res.json(updatedOrder);
     } else {

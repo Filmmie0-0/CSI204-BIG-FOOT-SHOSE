@@ -37,12 +37,15 @@ const AdminOrders = () => {
   };
 
   const markAsDelivered = async (id) => {
-    if (window.confirm('ยืนยันการจัดส่งสินค้า?')) {
-      try {
-        await api.put(`/orders/${id}/deliver`);
-        fetchOrders();
-      } catch (err) {
-        alert('เกิดข้อผิดพลาดในการอัปเดตสถานะ');
+    const trackingNumber = window.prompt('กรุณากรอกหมายเลขติดตามพัสดุ (เว้นว่างได้):');
+    if (trackingNumber !== null) {
+      if (window.confirm('ยืนยันการจัดส่งสินค้า?')) {
+        try {
+          await api.put(`/orders/${id}/deliver`, { tracking_number: trackingNumber });
+          fetchOrders();
+        } catch (err) {
+          alert('เกิดข้อผิดพลาดในการอัปเดตสถานะ');
+        }
       }
     }
   };

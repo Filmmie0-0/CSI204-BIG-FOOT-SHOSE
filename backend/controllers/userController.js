@@ -177,4 +177,74 @@ const googleLogin = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, updateUserProfile, googleLogin };
+const crypto = require('crypto');
+
+// @desc    ลืมรหัสผ่าน (Forgot Password)
+// @route   POST /api/users/forgot-password
+// @access  Public
+const forgotPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ message: 'ไม่พบผู้ใช้งานด้วยอีเมลนี้' });
+    }
+
+    // สร้าง Token จำลอง
+    const resetToken = crypto.randomBytes(20).toString('hex');
+
+    // บันทึก Token และเวลาหมดอายุ (10 นาที) ลงใน Database
+    user.reset_password_token = crypto.createHash('sha256').update(resetToken).digest('hex');
+    user.reset_password_expire = Date.now() + 10 * 60 * 1000;
+    
+    await user.save();
+
+    // เนื่องจากไม่มีระบบส่งอีเมล เราจะส่ง Token กลับไปทาง response แทน
+    // ในแอปจริง คุณต้องส่งเป็นลิงก์ไปทางอีเมล และไม่ควรส่ง token กลับไปตรงๆ
+    res.status(200).json({ 
+      success: true, 
+      message: 'รหัสสำหรับการรีเซ็ตได้ถูกสร้างขึ้นแล้ว (จำลองการส่งอีเมล)',
+      resetToken 
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'เกิดข้อผิดพลาด', error: error.message });
+  }
+};
+
+// @desc    รีเซ็ตรหัสผ่าน (Reset Password)
+// @route   PUT /api/users/reset-password/:token
+// @access  Public
+const resetPassword = async (req, res) => {
+  try {
+    // เข้ารหัส token ที่ส่งมาจาก URL เพื่อไปเทียบกับใน Database
+    const resetPasswordToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+
+    const user = await User.findOne({
+      reset_password_token: resetPasswordToken,
+      reset_password_expire: { $gt: Date.now() } // เช็คว่ายังไม่หมดอายุ
+    });
+
+    if (!user) {
+      return res.status(400).json({ message: 'Token ไม่ถูกต้อง หรือหมดอายุแล้ว' });
+    }
+
+    // ตั้งรหัสผ่านใหม่
+    user.password_hash = req.body.password;
+    
+    // เคลียร์ค่า Token ทิ้ง
+    user.reset_password_token = undefined;
+    user.reset_password_expire = undefined;
+
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'รีเซ็ตรหัสผ่านสำเร็จ'
+    });
+  } catch (error) {
+    res.status(500).json({ message: 'เกิดข้อผิดพลาดในการเปลี่ยนรหัสผ่าน', error: error.message });
+  }
+};
+
+module.exports = { registerUser, loginUser, updateUserProfile, googleLogin, forgotPassword, resetPassword };

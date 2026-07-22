@@ -163,6 +163,49 @@ const AdminDashboardHome = () => {
           </div>
         </Card.Body>
       </Card>
+
+      {stats.lowStockItems && stats.lowStockItems.length > 0 && (
+        <Row className="mt-4">
+          <Col>
+            <Card className="shadow-sm border-0 rounded-4 border-start border-warning border-4">
+              <Card.Body className="p-4">
+                <div className="d-flex justify-content-between align-items-center mb-4">
+                  <h5 className="fw-bold text-dark mb-0 d-flex align-items-center gap-2">
+                    <span className="text-warning">⚠️</span> Low Stock Alerts
+                  </h5>
+                </div>
+                <div className="table-responsive">
+                  <table className="table table-hover align-middle mb-0">
+                    <thead className="bg-light">
+                      <tr>
+                        <th className="border-0 text-secondary text-uppercase fw-bold" style={{ fontSize: '0.75rem' }}>Product</th>
+                        <th className="border-0 text-secondary text-uppercase fw-bold text-end" style={{ fontSize: '0.75rem' }}>Stock Remaining</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {stats.lowStockItems.map(item => (
+                        <tr key={item._id}>
+                          <td>
+                            <div className="d-flex align-items-center gap-3">
+                              <img src={item.image_url} alt={item.name} className="rounded border shadow-sm" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
+                              <span className="fw-bold text-dark">{item.name}</span>
+                            </div>
+                          </td>
+                          <td className="text-end">
+                            <span className="badge bg-danger rounded-pill px-3 py-2 fw-bold bg-opacity-10 text-danger border border-danger border-opacity-25">
+                              {item.countInStock} Left
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </Card.Body>
+            </Card>
+          </Col>
+        </Row>
+      )}
     </div>
   );
 };

@@ -106,7 +106,15 @@ const OrderDetail = () => {
                 {order.shipping_address_id ? `${order.shipping_address_id.address_line1}, ${order.shipping_address_id.city}, ${order.shipping_address_id.postal_code}, ${order.shipping_address_id.state}` : 'N/A'}
               </p>
               {order.order_status === 'delivered' ? (
-                <Alert variant="success" className="border-0 shadow-sm py-2 px-3 fw-bold mb-0 d-inline-block">Delivered</Alert>
+                <div className="d-flex flex-column align-items-start gap-2">
+                  <Alert variant="success" className="border-0 shadow-sm py-2 px-3 fw-bold mb-0 d-inline-block">Delivered</Alert>
+                  {order.tracking_number && (
+                    <div className="bg-light px-3 py-2 rounded-3 border">
+                      <span className="fw-bold text-dark me-2">Tracking Number:</span>
+                      <span className="text-primary fw-medium">{order.tracking_number}</span>
+                    </div>
+                  )}
+                </div>
               ) : (
                 <Alert variant="danger" className="border-0 shadow-sm py-2 px-3 fw-bold mb-0 d-inline-block">Not Delivered</Alert>
               )}

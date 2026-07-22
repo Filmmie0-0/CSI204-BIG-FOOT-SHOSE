@@ -11,6 +11,9 @@ exports.getStats = async (req, res) => {
     const payments = await Payment.find({ payment_status: 'completed' });
     const totalRevenue = payments.reduce((acc, curr) => acc + (curr.amount_paid || 0), 0);
     
+    // Get low stock products (e.g., countInStock <= 5)
+    const lowStockItems = await Product.find({ countInStock: { $lte: 5 } }).select('name countInStock image_url');
+
     // Generate chart data for the last 30 days
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 29);
@@ -40,6 +43,7 @@ exports.getStats = async (req, res) => {
       totalOrders,
       totalProducts,
       totalRevenue,
+      lowStockItems,
       chartData
     });
   } catch (error) {

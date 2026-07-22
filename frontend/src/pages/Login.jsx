@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import api from '../utils/api';
 import { useAuthStore } from '../store/authStore';
+import { useCartStore } from '../store/cartStore';
 import { Container, Card, Form, Button, Alert, Spinner } from 'react-bootstrap';
 const Login = () => {
   const [email, setEmail] = useState('');
@@ -31,6 +32,9 @@ const Login = () => {
     try {
       const { data } = await api.post('/users/login', { email, password });
       login(data);
+      
+      // ดึงและรวมตะกร้าหลังจากล็อกอินสำเร็จ
+      await useCartStore.getState().fetchBackendCart();
       
       // เช็ค Role หลังล็อกอินสำเร็จ
       if (data.role === 'admin' || data.role === 'staff') {
@@ -89,9 +93,14 @@ const Login = () => {
             </Form.Group>
             
             <Form.Group className="mb-4">
-              <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-2" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
-                Password
-              </Form.Label>
+              <div className="d-flex justify-content-between align-items-center mb-2">
+                <Form.Label className="fw-bold text-muted text-uppercase small ms-1 mb-0" style={{ fontSize: '0.75rem', letterSpacing: '1px' }}>
+                  Password
+                </Form.Label>
+                <Link to="/forgot-password" className="text-decoration-none fw-bold small text-primary hover-opacity transition-colors">
+                  Forgot Password?
+                </Link>
+              </div>
               <Form.Control
                 type="password"
                 required

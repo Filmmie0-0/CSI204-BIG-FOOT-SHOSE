@@ -17,71 +17,46 @@ const FilterDrawer = ({ isOpen, onClose, filters, setFilters, products }) => {
     setOpenSections((prev) => ({ ...prev, [section]: !prev[section] }))
   }
 
-  // คำนวณจำนวนสินค้า
+  // คำนวณจำนวนสินค้าและรวบรวมไซส์ที่มีทั้งหมด
   const counts = useMemo(() => {
-    const styleCount = {}
-    const colorCount = {}
-    const genderCount = { Men: 0, Unisex: 0, Women: 0 }
+    const genderCount = { Men: 0, Unisex: 0, Women: 0, Kids: 0 }
+    const availableSizes = new Set()
 
     if (Array.isArray(products)) {
       products.forEach((p) => {
         if (!p) return
-        if (p.style)
-          styleCount[p.style.toLowerCase()] =
-            (styleCount[p.style.toLowerCase()] || 0) + 1
-        if (p.color)
-          colorCount[p.color.toLowerCase()] =
-            (colorCount[p.color.toLowerCase()] || 0) + 1
         
         const gender = getProductGender(p);
         if (gender && genderCount[gender] !== undefined) {
           genderCount[gender] = (genderCount[gender] || 0) + 1
         }
+        
+        // รวบรวมไซส์ทั้งหมดจากสินค้า
+        if (Array.isArray(p.sizes)) {
+          p.sizes.forEach(size => availableSizes.add(size))
+        }
       })
     }
-    return { styleCount, colorCount, genderCount }
+    
+    // เรียงลำดับไซส์จากน้อยไปมาก (สมมติว่าเป็นตัวเลข EU size)
+    const sortedSizes = Array.from(availableSizes).sort((a, b) => {
+      const numA = parseInt(a);
+      const numB = parseInt(b);
+      if (!isNaN(numA) && !isNaN(numB)) return numA - numB;
+      return a.localeCompare(b);
+    })
+
+    return { genderCount, sortedSizes }
   }, [products])
 
-  const stylesData = [
-    { id: 'manshoe', name: 'Man’s Shoe', icon: '👞' },
-    { id: 'flip-flops', name: 'Flip-Flops', icon: '🩴' },
-    { id: 'running', name: 'Running Shoe™', icon: '👟' },
-    { id: 'sandals', name: 'Sandals', icon: '👡' },
-  ]
-
-  const sizesData = [
-    'M2',
-    'M3',
-    'M4',
-    'M5',
-    'M6',
-    'M7',
-    'M8',
-    'M9',
-    'M10',
-    'M11',
-    'M12',
-    'M13',
-    'M14',
-  ]
-
-  const colorsData = [
-    { name: 'Banana Ice', hex: '#FFFACC' },
-    { name: 'Beige', hex: '#F5F5DC' },
-    { name: 'Black', hex: '#000000' },
-    { name: 'Blue', hex: '#1E90FF' },
-    { name: 'Green', hex: '#2E8B57' },
-    { name: 'Pink', hex: '#FFC0CB' },
-    { name: 'Red', hex: '#FF0000' },
-    { name: 'White', hex: '#FFFFFF' },
-    { name: 'Yellow', hex: '#FFD700' },
-  ]
+  const sizesData = counts.sortedSizes
 
   const pricesData = [
     'Under 1000฿',
     '1000฿ - 2000฿',
     '2000฿ - 3000฿',
     '3000฿ - 4000฿',
+    'Over 4000฿'
   ]
 
   const styles = {
@@ -246,52 +221,6 @@ const FilterDrawer = ({ isOpen, onClose, filters, setFilters, products }) => {
             )}
           </div>
 
-          {/* สไตล์ */}
-          <div className="border-bottom pb-4 mb-3">
-            <button
-              onClick={() => toggleSection('style')}
-              style={styles.sectionBtn}
-              className="justify-content-between"
-            >
-              <span>Style</span>
-              <span style={{ fontSize: '16px' }}>
-                {openSections.style ? '−' : '+'}
-              </span>
-            </button>
-            {openSections.style && (
-              <Row className="g-2 mt-2">
-                {stylesData.map((style) => {
-                  const isActive = filters.style === style.id
-                  const count = counts.styleCount[style.id] || 0
-                  return (
-                    <Col xs={6} key={style.id}>
-                      <button
-                        onClick={() =>
-                          setFilters({
-                            ...filters,
-                            style: isActive ? '' : style.id,
-                          })
-                        }
-                        style={styles.styleCard(isActive)}
-                      >
-                        <span style={{ fontSize: '24px', marginBottom: '4px' }}>
-                          {style.icon}
-                        </span>
-                        <span>{style.name}</span>
-                        <span
-                          className="text-muted"
-                          style={{ fontSize: '10px' }}
-                        >
-                          ({count})
-                        </span>
-                      </button>
-                    </Col>
-                  )
-                })}
-              </Row>
-            )}
-          </div>
-
           {/* ไซส์ */}
           <div className="border-bottom pb-4 mb-3">
             <button
@@ -306,20 +235,6 @@ const FilterDrawer = ({ isOpen, onClose, filters, setFilters, products }) => {
             </button>
             {openSections.size && (
               <div className="mt-2">
-                <div className="d-flex mb-3">
-                  {['Men', 'Women', 'Kids'].map((group) => (
-                    <button
-                      key={group}
-                      type="button"
-                      onClick={() =>
-                        setFilters({ ...filters, sizeGroup: group, size: '' })
-                      }
-                      style={styles.sizeGroupBtn(filters.sizeGroup === group)}
-                    >
-                      {group}
-                    </button>
-                  ))}
-                </div>
                 <Row className="g-1">
                   {sizesData.map((size) => {
                     const isActive = filters.size === size
@@ -342,64 +257,6 @@ const FilterDrawer = ({ isOpen, onClose, filters, setFilters, products }) => {
                   })}
                 </Row>
               </div>
-            )}
-          </div>
-
-          {/* สี */}
-          <div className="border-bottom pb-4 mb-3">
-            <button
-              onClick={() => toggleSection('color')}
-              style={styles.sectionBtn}
-              className="justify-content-between"
-            >
-              <span>Color</span>
-              <span style={{ fontSize: '16px' }}>
-                {openSections.color ? '−' : '+'}
-              </span>
-            </button>
-            {openSections.color && (
-              <Row className="g-2 mt-2">
-                {colorsData.map((color) => {
-                  const isActive = filters.color === color.name
-                  const count = counts.colorCount[color.name.toLowerCase()] || 0
-                  return (
-                    <Col xs={4} key={color.name}>
-                      <button
-                        onClick={() =>
-                          setFilters({
-                            ...filters,
-                            color: isActive ? '' : color.name,
-                          })
-                        }
-                        style={styles.colorCard(isActive)}
-                      >
-                        <div
-                          style={{
-                            width: '20px',
-                            height: '20px',
-                            borderRadius: '50%',
-                            backgroundColor: color.hex,
-                            border: '1px solid #dee2e6',
-                            marginBottom: '4px',
-                          }}
-                        />
-                        <span
-                          className="text-truncate w-100 text-center"
-                          style={{ fontSize: '10px' }}
-                        >
-                          {color.name}
-                        </span>
-                        <span
-                          className="text-muted"
-                          style={{ fontSize: '9px' }}
-                        >
-                          ({count})
-                        </span>
-                      </button>
-                    </Col>
-                  )
-                })}
-              </Row>
             )}
           </div>
 
@@ -484,10 +341,8 @@ const FilterDrawer = ({ isOpen, onClose, filters, setFilters, products }) => {
             onClick={() =>
               setFilters({
                 sortBy: 'newest',
-                style: '',
-                sizeGroup: 'Men',
+                sizeGroup: '',
                 size: '',
-                color: '',
                 priceRange: '',
                 gender: [],
               })

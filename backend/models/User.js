@@ -10,7 +10,9 @@ const userSchema = new mongoose.Schema({
   phone_number: { type: String, maxlength: 20 },
   profile_image: { type: String, default: '' },
   role: { type: String, enum: ['customer', 'admin', 'staff'], default: 'customer' },
-  status: { type: String, enum: ['active', 'suspended', 'inactive'], default: 'active' }
+  status: { type: String, enum: ['active', 'suspended', 'inactive'], default: 'active' },
+  reset_password_token: { type: String },
+  reset_password_expire: { type: Date }
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });

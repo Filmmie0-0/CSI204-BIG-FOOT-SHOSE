@@ -15,6 +15,7 @@ const ProductDetail = () => {
   
   // --- เพิ่ม State สำหรับเก็บไซส์ที่เลือก ---
   const [selectedSize, setSelectedSize] = useState('');
+  const [showSuccess, setShowSuccess] = useState(false);
   
   const addToCart = useCartStore((state) => state.addToCart);
 
@@ -49,7 +50,12 @@ const ProductDetail = () => {
     }
     // ส่งไซส์ที่เลือกไปด้วย (ถ้าไม่มีก็จะเป็น string ว่าง)
     addToCart(product, selectedSize);
-    navigate('/cart'); 
+    
+    // โชว์ข้อความว่าเพิ่มสำเร็จแทนการเด้งไปหน้า Cart
+    setShowSuccess(true);
+    setTimeout(() => {
+      setShowSuccess(false);
+    }, 3000);
   };
 
   if (loading) return (
@@ -92,7 +98,7 @@ const ProductDetail = () => {
 
             {/* --- UI สำหรับเลือกไซส์ --- */}
             {product.sizes && product.sizes.length > 0 && (
-              <div className="mb-5">
+              <div className="mb-4">
                 <h5 className="fw-bold text-dark text-uppercase mb-3" style={{ fontSize: '0.9rem', letterSpacing: '1px' }}>Size (EU)</h5>
                 <div className="d-flex flex-wrap gap-2">
                   {product.sizes.map((size) => (
@@ -107,6 +113,17 @@ const ProductDetail = () => {
                     </Button>
                   ))}
                 </div>
+              </div>
+            )}
+            
+            {showSuccess && (
+              <div className="alert alert-success fw-bold d-flex justify-content-between align-items-center rounded-3 shadow-sm border-0 mb-4 px-4 py-3" style={{ backgroundColor: 'rgba(25, 135, 84, 0.1)', color: '#198754' }}>
+                <span className="d-flex align-items-center gap-2">
+                  <span className="fs-5">✨</span> เพิ่มลงตะกร้าเรียบร้อยแล้ว!
+                </span>
+                <Button variant="success" size="sm" onClick={() => navigate('/cart')} className="rounded-pill px-3 fw-bold shadow-sm">
+                  ดูตะกร้า
+                </Button>
               </div>
             )}
             

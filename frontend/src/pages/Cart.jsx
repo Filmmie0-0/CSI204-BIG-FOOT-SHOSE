@@ -190,7 +190,7 @@ const Cart = () => {
             <Button
               size="lg"
               onClick={() => navigate('/shipping')}
-              className="w-100 py-3 text-uppercase fw-bold rounded-pill border-0 shadow d-flex justify-content-center align-items-center"
+              className="w-100 py-3 text-uppercase fw-bold rounded-pill border-0 shadow d-flex justify-content-center align-items-center mb-3"
               style={{ letterSpacing: '1px', backgroundColor: '#ff5722', color: '#fff', transition: 'all 0.3s' }}
               onMouseEnter={(e) => { 
                 e.target.style.transform = 'translateY(-3px)'; 
@@ -203,6 +203,23 @@ const Cart = () => {
             >
               Proceed to Checkout 
               <ArrowRight size={18} className="ms-2" />
+            </Button>
+            
+            <Button
+              variant="light"
+              size="lg"
+              onClick={() => navigate('/')}
+              className="w-100 py-3 text-uppercase fw-bold rounded-pill shadow-sm border border-secondary border-opacity-25"
+              style={{ letterSpacing: '1px', color: '#111827', transition: 'all 0.3s' }}
+              onMouseEnter={(e) => { 
+                e.target.style.transform = 'translateY(-2px)'; 
+                e.target.style.backgroundColor = '#f8f9fa';
+              }} 
+              onMouseLeave={(e) => { 
+                e.target.style.transform = 'translateY(0)'; 
+              }}
+            >
+              Continue Shopping
             </Button>
           </Card>
         </Col>
