@@ -46,7 +46,7 @@
 * **Phase 1: Design & Database** - ออกแบบ UX/UI (Figma), วางโครงสร้างระบบ และออกแบบฐานข้อมูล (DB Schema)
 * **Phase 2: Frontend & Integration** - พัฒนาหน้าเว็บด้วย React.js และเชื่อมต่อ API เพื่อให้ระบบทำงานได้จริง
 * **Phase 3: Backend & API** - พัฒนาระบบหลังบ้านด้วย Node.js/Express, เชื่อมต่อ MongoDB, และทำระบบ Authentication (JWT)
-* **Phase 4: Testing & Deployment** - ทดสอบการทำงานของระบบ (UAT, API Testing) และนำระบบขึ้นโฮสต์ (Vercel, Render/Heroku)
+* **Phase 4: Testing** - ทดสอบการทำงานของระบบ (UAT, API Testing)
 
 ---
 
