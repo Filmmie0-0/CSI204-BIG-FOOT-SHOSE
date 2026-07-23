@@ -52,7 +52,7 @@
    * **Database Design:** ออกแบบตารางฐานข้อมูลและ Diagram (Use Case, Class Diagram, Sequence Diagram)
 3. **Development (การพัฒนาระบบ):**
    * **Frontend:** พัฒนาส่วนแสดงผลด้วย React.js และ Bootstrap
-   * **Backend:** พัฒนาระบบจัดการหลังบ้านและ RESTful API ด้วย Node.js, Express.js และเชื่อมต่อฐานข้อมูล MongoDB
+   * **Backend:** พัฒนาระบบจัดการหลังบ้านด้วย Node.js, Express.js และเชื่อมต่อฐานข้อมูล MongoDB
 4. **Testing (การทดสอบระบบ):**
    * ทดสอบการทำงานพื้นฐานตามฟังก์ชัน (Manual Testing)
    * ทดสอบการเชื่อมต่อ API ระหว่างระบบ (API Testing ด้วย Postman)
