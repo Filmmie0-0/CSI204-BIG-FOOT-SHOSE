@@ -45,8 +45,8 @@
 โครงการนี้ประยุกต์ใช้ **Software Development Life Cycle (SDLC)** ในรูปแบบ Agile/Iterative เพื่อให้สามารถพัฒนาและปรับปรุงระบบได้อย่างยืดหยุ่น โดยแบ่งออกเป็น 6 ระยะ (Phases) ดังนี้:
 
 1. **Requirement Analysis (การวิเคราะห์ความต้องการ):**
-   * รวบรวมความต้องการของระบบอีคอมเมิร์ซ E-Commerce (รองเท้า)
-   * กำหนดบทบาทผู้ใช้งาน (Customer, Staff, Admin) และขอบเขตของระบบ (Functional Requirements)
+   * รวบรวมความต้องการของระบบอีคอมเมิร์ซรองเท้า
+   * กำหนดบทบาทผู้ใช้งาน (Customer, Staff, Admin) และขอบเขตของระบบ
 2. **Design (การออกแบบระบบ):**
    * **UX/UI Design:** ออกแบบหน้าจอการใช้งาน (Wireframes/Prototypes) ผ่าน Figma
    * **Database Design:** ออกแบบตารางฐานข้อมูลและ Diagram (Use Case, Class Diagram, Sequence Diagram)
