@@ -51,7 +51,7 @@
    * **UX/UI Design:** ออกแบบหน้าจอการใช้งาน (Wireframes/Prototypes) ผ่าน Figma
    * **Database Design:** ออกแบบตารางฐานข้อมูลและ Diagram (Use Case, Class Diagram, Sequence Diagram)
 3. **Development (การพัฒนาระบบ):**
-   * **Frontend:** พัฒนาส่วนแสดงผลด้วย React.js และ Bootstrap ให้รองรับ Responsive Design
+   * **Frontend:** พัฒนาส่วนแสดงผลด้วย React.js และ Bootstrap
    * **Backend:** พัฒนาระบบจัดการหลังบ้านและ RESTful API ด้วย Node.js, Express.js และเชื่อมต่อฐานข้อมูล MongoDB
 4. **Testing (การทดสอบระบบ):**
    * ทดสอบการทำงานพื้นฐานตามฟังก์ชัน (Manual Testing)
