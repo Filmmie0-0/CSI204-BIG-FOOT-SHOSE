@@ -40,7 +40,7 @@
 
 ---
 
-## 🔄 กระบวนการพัฒนาซอฟต์แวร์ (SDLC)
+## กระบวนการพัฒนาซอฟต์แวร์ (SDLC)
 
 โครงการนี้ประยุกต์ใช้ **Software Development Life Cycle (SDLC)** ในรูปแบบ Agile/Iterative เพื่อให้สามารถพัฒนาและปรับปรุงระบบได้อย่างยืดหยุ่น โดยแบ่งออกเป็น 6 ระยะ (Phases) ดังนี้:
 
@@ -49,7 +49,6 @@
    * กำหนดบทบาทผู้ใช้งาน (Customer, Staff, Admin) และขอบเขตของระบบ (Functional Requirements)
 2. **Design (การออกแบบระบบ):**
    * **UX/UI Design:** ออกแบบหน้าจอการใช้งาน (Wireframes/Prototypes) ผ่าน Figma
-   * **System Architecture:** วางโครงสร้างระบบแบบ MERN Stack
    * **Database Design:** ออกแบบตารางฐานข้อมูลและ Diagram (Use Case, Class Diagram, Sequence Diagram)
 3. **Development (การพัฒนาระบบ):**
    * **Frontend:** พัฒนาส่วนแสดงผลด้วย React.js และ Bootstrap ให้รองรับ Responsive Design
@@ -61,7 +60,7 @@
 5. **Deployment (การติดตั้งและส่งมอบ):**
    * นำระบบจำลองขึ้นใช้งานจริง (Production/Local Environment) ให้ผู้ใช้งานเข้ามาทดสอบฟีเจอร์การสั่งซื้อ ชำระเงิน
 6. **Maintenance (การบำรุงรักษา):**
-   * ตรวจสอบระบบและดูแลการทำงานของ Database (Monitoring)
+   * ตรวจสอบระบบและดูแลการทำงานของ Database
    * ดำเนินการอัปเดตแก้ไขข้อบกพร่องต่างๆ ตาม Feedback ที่ได้รับหลังจากการเปิดทดสอบใช้งาน
 
 ---
