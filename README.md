@@ -219,7 +219,6 @@ Table addresses {
   city varchar(100) [not null]
   state varchar(100) [not null]
   postal_code varchar(20) [not null]
-  is_default boolean [default: false]
   created_at timestamp [default: `now()` ]
 }
 
