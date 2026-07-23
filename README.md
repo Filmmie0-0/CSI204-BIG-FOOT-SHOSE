@@ -10,8 +10,8 @@
 |---|---|---|---|
 | 1 | 65075821 | อภิวัฒ คุณทรัพย์ | Frontend |
 | 2 | 67160172 | ภัสสร เพ็ญพรเลิศชัย | Design, Frontend |
-| 3 | 67164463 | ณัฐดนัย กาสินพิลา | Backend,database |
-| 4 | 67172347 | รัฐภูมิ ลิ้มเลิศ | Backend,frontend |
+| 3 | 67164463 | ณัฐดนัย กาสินพิลา | Backend |
+| 4 | 67172347 | รัฐภูมิ ลิ้มเลิศ | Backend |
 | 5 | 67172354 | บุราชัย สละสำราญ | Design, Frontend |
 
 ---
@@ -40,13 +40,29 @@
 
 ---
 
-##  แผนการดำเนินงาน
+## 🔄 กระบวนการพัฒนาซอฟต์แวร์ (SDLC)
 
-เพื่อการจัดการและติดตามความคืบหน้าของโครงการ ได้แบ่งแผนการดำเนินงานออกเป็น 4 ระยะ (Phases) ดังนี้:
-* **Phase 1: Design & Database** - ออกแบบ UX/UI (Figma), วางโครงสร้างระบบ และออกแบบฐานข้อมูล (DB Schema)
-* **Phase 2: Frontend** - พัฒนาหน้าเว็บด้วย React.js
-* **Phase 3: Backend & API** - พัฒนาระบบหลังบ้านด้วย Node.js/Express, เชื่อมต่อ MongoDB, และทำระบบ Authentication (JWT)
-* **Phase 4: Testing** - ทดสอบการทำงานของระบบ (UAT)
+โครงการนี้ประยุกต์ใช้ **Software Development Life Cycle (SDLC)** ในรูปแบบ Agile/Iterative เพื่อให้สามารถพัฒนาและปรับปรุงระบบได้อย่างยืดหยุ่น โดยแบ่งออกเป็น 6 ระยะ (Phases) ดังนี้:
+
+1. **Requirement Analysis (การวิเคราะห์ความต้องการ):**
+   * รวบรวมความต้องการของระบบอีคอมเมิร์ซ E-Commerce (รองเท้า)
+   * กำหนดบทบาทผู้ใช้งาน (Customer, Staff, Admin) และขอบเขตของระบบ (Functional Requirements)
+2. **Design (การออกแบบระบบ):**
+   * **UX/UI Design:** ออกแบบหน้าจอการใช้งาน (Wireframes/Prototypes) ผ่าน Figma
+   * **System Architecture:** วางโครงสร้างระบบแบบ MERN Stack
+   * **Database Design:** ออกแบบตารางฐานข้อมูลและ Diagram (Use Case, Class Diagram, Sequence Diagram)
+3. **Development (การพัฒนาระบบ):**
+   * **Frontend:** พัฒนาส่วนแสดงผลด้วย React.js และ Bootstrap ให้รองรับ Responsive Design
+   * **Backend:** พัฒนาระบบจัดการหลังบ้านและ RESTful API ด้วย Node.js, Express.js และเชื่อมต่อฐานข้อมูล MongoDB
+4. **Testing (การทดสอบระบบ):**
+   * ทดสอบการทำงานพื้นฐานตามฟังก์ชัน (Manual Testing)
+   * ทดสอบการเชื่อมต่อ API ระหว่างระบบ (API Testing ด้วย Postman)
+   * **UAT (User Acceptance Testing):** ทดสอบการใช้งานจากฝั่งผู้ใช้งานจริงเพื่อหาข้อบกพร่อง
+5. **Deployment (การติดตั้งและส่งมอบ):**
+   * นำระบบจำลองขึ้นใช้งานจริง (Production/Local Environment) ให้ผู้ใช้งานเข้ามาทดสอบฟีเจอร์การสั่งซื้อ ชำระเงิน
+6. **Maintenance (การบำรุงรักษา):**
+   * ตรวจสอบระบบและดูแลการทำงานของ Database (Monitoring)
+   * ดำเนินการอัปเดตแก้ไขข้อบกพร่องต่างๆ ตาม Feedback ที่ได้รับหลังจากการเปิดทดสอบใช้งาน
 
 ---
 
@@ -141,12 +157,13 @@
 ## USE CASEDIAGRAM
 <p align="center">
   <img width="990" height="990" alt="USE CASEDIAGRAM" src="https://github.com/user-attachments/assets/19a74bd8-3bc2-4a17-a515-b36d4dda1512" />
+" />
 </p>
 
 ---
 ## Class Diagram
 <p align="center">
-   <img width="1076" height="1168" alt="Classdiagram" src="https://github.com/user-attachments/assets/3f472312-f7d4-4f8e-960a-e4e572ea02a1" />
+  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/51eee758-ac1c-4dde-9f9a-cc76b90c2f41" />
 </p>
 
 ---
@@ -162,7 +179,7 @@
 
 ### Critical Issues
 - **Authentication & Security (ระบบสมาชิกและความปลอดภัย):** 
-  - ข้อมูลการสมัครสมาชิกและการเข้าสู่ระบบไม่ถูกบันทึกลง Database ทำให้ผู้ใช้ทุกระดับ (Role) ไม่สามารถ Login (แก้ไขแล้ว)
+  - ข้อมูลการสมัครสมาชิกและการเข้าสู่ระบบไม่ถูกบันทึกลง Database ทำให้ผู้ใช้ทุกระดับ (Role) ไม่สามารถ Login ได้
   - ขาดการตรวจสอบสิทธิ์ (Role Authorization) อย่างรัดกุม ลูกค้าทั่วไปสามารถเข้าถึงโครงสร้างหน้า `/admin` ได้ผ่านการพิมพ์ URL(แก้ไขแล้ว)
 - **Payment & Checkout (ระบบตะกร้าสินค้าและการชำระเงิน):** 
   - ระบบล็อกช่องทางการชำระเงินไว้ที่ค่าเริ่มต้น (เช่น เครดิตการ์ด) ไม่ว่าผู้ใช้จะเลือกช่องทางใดก็ตาม(แก้ไขแล้ว)
@@ -199,8 +216,6 @@ Table users {
   username varchar(50) [unique, not null]
   email varchar(100) [unique, not null]
   password_hash varchar(255) [not null]
-  first_name varchar(50)
-  last_name varchar(50)
   phone_number varchar(20)
   profile_image varchar(255)
   role varchar(20) [default: 'customer']
@@ -218,6 +233,7 @@ Table addresses {
   city varchar(100) [not null]
   state varchar(100) [not null]
   postal_code varchar(20) [not null]
+  is_default boolean [default: false]
   created_at timestamp [default: `now()` ]
 }
 
