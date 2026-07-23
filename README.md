@@ -141,7 +141,6 @@
 ## USE CASEDIAGRAM
 <p align="center">
   <img width="990" height="990" alt="USE CASEDIAGRAM" src="https://github.com/user-attachments/assets/19a74bd8-3bc2-4a17-a515-b36d4dda1512" />
-" />
 </p>
 
 ---
