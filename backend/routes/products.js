@@ -9,4 +9,8 @@ router.post('/', protect, admin, productController.createProduct);
 router.put('/:id', protect, admin, productController.updateProduct);
 router.delete('/:id', protect, admin, productController.deleteProduct);
 
+// Review routes
+router.get('/:id/reviews', productController.getProductReviews);
+router.post('/:id/reviews', protect, productController.createProductReview);
+
 module.exports = router;

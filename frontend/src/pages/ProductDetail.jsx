@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useCartStore } from '../store/cartStore';
 import { useAuthStore } from '../store/authStore';
 import api from '../utils/api';
-import { Container, Row, Col, Button, Spinner } from 'react-bootstrap';
+import { Container, Row, Col, Button, Spinner, Form, Card } from 'react-bootstrap';
 
 const ProductDetail = () => {
   const { id } = useParams();
@@ -17,24 +17,33 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [showSuccess, setShowSuccess] = useState(false);
   
+  // Review states
+  const [reviews, setReviews] = useState([]);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [reviewLoading, setReviewLoading] = useState(false);
+  const [reviewError, setReviewError] = useState('');
+
   const addToCart = useCartStore((state) => state.addToCart);
 
   useEffect(() => {
-    const fetchProduct = async () => {
+    const fetchProductAndReviews = async () => {
       try {
-        const { data } = await api.get(`/products/${id}`);
-        setProduct(data);
-        // กำหนดให้เลือกไซส์แรกเป็นค่าเริ่มต้น
-        if (data.sizes && data.sizes.length > 0) {
-          setSelectedSize(data.sizes[0]);
+        const { data: productData } = await api.get(`/products/${id}`);
+        setProduct(productData);
+        if (productData.sizes && productData.sizes.length > 0) {
+          setSelectedSize(productData.sizes[0]);
         }
+        
+        const { data: reviewsData } = await api.get(`/products/${id}/reviews`);
+        setReviews(reviewsData);
       } catch (error) {
         console.error(error);
       } finally {
         setLoading(false);
       }
     };
-    fetchProduct();
+    fetchProductAndReviews();
   }, [id]);
 
   const handleAddToCart = () => {
@@ -57,6 +66,31 @@ const ProductDetail = () => {
       setShowSuccess(false);
     }, 3000);
   };
+
+  const submitReviewHandler = async (e) => {
+    e.preventDefault();
+    setReviewLoading(true);
+    setReviewError('');
+    try {
+      await api.post(`/products/${id}/reviews`, {
+        rating,
+        comment
+      });
+      alert('Review submitted successfully');
+      setRating(5);
+      setComment('');
+      // Refresh reviews and product details
+      const { data: productData } = await api.get(`/products/${id}`);
+      setProduct(productData);
+      const { data: reviewsData } = await api.get(`/products/${id}/reviews`);
+      setReviews(reviewsData);
+    } catch (error) {
+      setReviewError(error.response?.data?.message || 'Error submitting review');
+    } finally {
+      setReviewLoading(false);
+    }
+  };
+
 
   if (loading) return (
     <div className="text-center py-5 mt-5">
@@ -81,9 +115,19 @@ const ProductDetail = () => {
           </Col>
           
           <Col md={6} className="d-flex flex-column justify-content-center">
-            <h1 className="display-5 fw-black text-dark text-uppercase mb-3" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
+            <h1 className="display-5 fw-black text-dark text-uppercase mb-2" style={{ fontWeight: 900, letterSpacing: '-1px' }}>
               {product.name}
             </h1>
+            
+            <div className="mb-3 d-flex align-items-center gap-2">
+              <span style={{ color: '#ffc107', fontSize: '1.2rem' }}>
+                {'★'.repeat(Math.round(product.rating || 0))}{'☆'.repeat(5 - Math.round(product.rating || 0))}
+              </span>
+              <span className="text-muted fw-bold">
+                {product.rating ? product.rating.toFixed(1) : 0} ({product.numReviews || 0} reviews)
+              </span>
+            </div>
+
             <p className="fs-2 fw-black mb-4" style={{ color: '#ff5722' }}>฿{product.price?.toLocaleString()}</p>
             
             <div className="mb-4">
@@ -155,6 +199,95 @@ const ProductDetail = () => {
               >
                 {isAdminOrStaff ? 'Admin cannot purchase' : ((product.countInStock !== undefined ? product.countInStock : 10) === 0 ? 'Out of Stock' : 'Add to Cart')}
               </Button>
+            </div>
+          </Col>
+        </Row>
+      </div>
+
+      {/* --- Reviews Section --- */}
+      <div className="bg-white rounded-4 shadow-sm p-4 p-md-5 mt-4">
+        <h3 className="fw-bold mb-4">Customer Reviews</h3>
+        
+        <Row>
+          <Col md={6}>
+            <h5 className="mb-3">Reviews ({reviews.length})</h5>
+            {reviews.length === 0 && <div className="alert alert-info border-0 rounded-3 text-center py-3">No reviews yet. Be the first to review this product!</div>}
+            
+            <div className="d-flex flex-column gap-3 mb-4">
+              {reviews.map((review) => (
+                <Card key={review._id} className="border-0 shadow-sm rounded-4">
+                  <Card.Body>
+                    <div className="d-flex justify-content-between mb-2">
+                      <strong className="text-dark">
+                        {review.user_id?.first_name 
+                          ? `${review.user_id.first_name} ${review.user_id.last_name || ''}`
+                          : review.user_id?.username || 'User'}
+                      </strong>
+                      <span style={{ color: '#ffc107' }}>
+                        {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                      </span>
+                    </div>
+                    <p className="text-secondary mb-1">{review.comment}</p>
+                    <small className="text-muted">{new Date(review.created_at).toLocaleDateString()}</small>
+                  </Card.Body>
+                </Card>
+              ))}
+            </div>
+          </Col>
+          
+          <Col md={6}>
+            <div className="bg-light p-4 rounded-4 shadow-sm border border-light">
+              <h5 className="fw-bold mb-3">Write a Review</h5>
+              {userInfo ? (
+                <Form onSubmit={submitReviewHandler}>
+                  <Form.Group controlId="rating" className="mb-3">
+                    <Form.Label className="fw-bold">Rating</Form.Label>
+                    <Form.Select 
+                      value={rating} 
+                      onChange={(e) => setRating(Number(e.target.value))}
+                      className="border-0 shadow-sm rounded-3 py-2"
+                    >
+                      <option value="5">5 - Excellent</option>
+                      <option value="4">4 - Very Good</option>
+                      <option value="3">3 - Good</option>
+                      <option value="2">2 - Fair</option>
+                      <option value="1">1 - Poor</option>
+                    </Form.Select>
+                  </Form.Group>
+                  <Form.Group controlId="comment" className="mb-4">
+                    <Form.Label className="fw-bold">Comment</Form.Label>
+                    <Form.Control
+                      as="textarea"
+                      row="3"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      placeholder="Share your thoughts about this product..."
+                      className="border-0 shadow-sm rounded-3 py-2"
+                      style={{ resize: 'none' }}
+                      required
+                    ></Form.Control>
+                  </Form.Group>
+                  
+                  {reviewError && <div className="alert alert-danger rounded-3 p-2 mb-3">{reviewError}</div>}
+                  
+                  <Button
+                    type="submit"
+                    variant="dark"
+                    className="w-100 rounded-pill py-2 fw-bold"
+                    disabled={reviewLoading}
+                    style={{ transition: 'all 0.2s' }}
+                  >
+                    {reviewLoading ? <Spinner size="sm" animation="border" /> : 'Submit Review'}
+                  </Button>
+                </Form>
+              ) : (
+                <div className="alert alert-warning border-0 rounded-3 text-center py-4 shadow-sm">
+                  <p className="mb-3 fw-bold text-dark">Please sign in to write a review</p>
+                  <Button variant="dark" className="rounded-pill px-4 fw-bold shadow-sm" onClick={() => navigate('/login')}>
+                    Sign In
+                  </Button>
+                </div>
+              )}
             </div>
           </Col>
         </Row>

@@ -1,4 +1,5 @@
 const Product = require('../models/Product');
+const ProductReview = require('../models/ProductReview');
 
 exports.getProducts = async (req, res) => {
   try {
@@ -115,3 +116,66 @@ exports.deleteProduct = async (req, res) => {
   }
 };
 
+// @desc    Create new review
+// @route   POST /api/products/:id/reviews
+// @access  Private
+exports.createProductReview = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const productId = req.params.id;
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({ message: 'Product not found' });
+    }
+
+    // Check if user already reviewed
+    const alreadyReviewed = await ProductReview.findOne({
+      product_id: productId,
+      user_id: req.user._id
+    });
+
+    if (alreadyReviewed) {
+      return res.status(400).json({ message: 'Product already reviewed' });
+    }
+
+    const review = new ProductReview({
+      user_id: req.user._id,
+      product_id: productId,
+      rating: Number(rating),
+      comment
+    });
+
+    await review.save();
+
+    // Update product rating and numReviews
+    const reviews = await ProductReview.find({ product_id: productId });
+    
+    product.numReviews = reviews.length;
+    product.rating = reviews.reduce((acc, item) => item.rating + acc, 0) / reviews.length;
+
+    await product.save();
+
+    res.status(201).json({ message: 'Review added' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};
+
+// @desc    Get product reviews
+// @route   GET /api/products/:id/reviews
+// @access  Public
+exports.getProductReviews = async (req, res) => {
+  try {
+    const reviews = await ProductReview.find({ product_id: req.params.id })
+      .populate('user_id', 'username first_name last_name')
+      .sort({ created_at: -1 });
+    
+    res.json(reviews);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server Error' });
+  }
+};

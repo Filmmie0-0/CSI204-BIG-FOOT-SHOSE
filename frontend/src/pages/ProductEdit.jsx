@@ -20,6 +20,7 @@ const ProductEdit = () => {
   const [gender, setGender] = useState('Unisex');
   const [categoryId, setCategoryId] = useState('');
   const [categories, setCategories] = useState([]);
+  const [reviews, setReviews] = useState([]);
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -48,6 +49,14 @@ const ProductEdit = () => {
           setStatus(data.status);
           if (data.gender) setGender(data.gender);
           if (data.category_id) setCategoryId(data.category_id);
+
+          // Fetch reviews for this product
+          try {
+            const { data: reviewsData } = await api.get(`/products/${id}/reviews`);
+            setReviews(reviewsData);
+          } catch (reviewError) {
+            console.error('Error fetching reviews:', reviewError);
+          }
         }
       } catch (error) {
         console.error(error);
@@ -210,6 +219,39 @@ const ProductEdit = () => {
           </Form>
         </Card.Body>
       </Card>
+
+      {/* --- Admin Reviews Section --- */}
+      {id && (
+        <Card className="shadow-sm border-0 mt-5">
+          <Card.Header className="bg-white border-bottom px-4 py-4">
+            <h5 className="mb-0 fw-bold text-dark">Customer Reviews ({reviews.length})</h5>
+          </Card.Header>
+          <Card.Body className="p-4 p-md-5">
+            {reviews.length === 0 ? (
+              <div className="text-center text-muted py-4">No reviews yet for this product.</div>
+            ) : (
+              <div className="d-flex flex-column gap-3">
+                {reviews.map((review) => (
+                  <div key={review._id} className="p-3 border rounded-3 bg-light">
+                    <div className="d-flex justify-content-between mb-2">
+                      <strong className="text-dark">
+                        {review.user_id?.first_name 
+                          ? `${review.user_id.first_name} ${review.user_id.last_name || ''}`
+                          : review.user_id?.username || 'User'}
+                      </strong>
+                      <span style={{ color: '#ffc107' }}>
+                        {'★'.repeat(review.rating)}{'☆'.repeat(5 - review.rating)}
+                      </span>
+                    </div>
+                    <p className="text-secondary mb-1">{review.comment}</p>
+                    <small className="text-muted">{new Date(review.created_at).toLocaleString()}</small>
+                  </div>
+                ))}
+              </div>
+            )}
+          </Card.Body>
+        </Card>
+      )}
     </Container>
   );
 };

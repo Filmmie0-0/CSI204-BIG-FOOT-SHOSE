@@ -11,7 +11,9 @@ const productSchema = new mongoose.Schema({
   sizes: [{ type: String }], // เพิ่มฟิลด์ sizes
   gender: { type: String, enum: ['Men', 'Women', 'Kids', 'Unisex'] }, // Added gender for category selection
   countInStock: { type: Number, required: true, default: 10 },
-  status: { type: String, enum: ['active', 'draft', 'out_of_stock'], default: 'active' }
+  status: { type: String, enum: ['active', 'draft', 'out_of_stock'], default: 'active' },
+  rating: { type: Number, required: true, default: 0 },
+  numReviews: { type: Number, required: true, default: 0 }
 }, {
   timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });
