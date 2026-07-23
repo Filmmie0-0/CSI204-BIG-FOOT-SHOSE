@@ -162,7 +162,7 @@
 ---
 ## Class Diagram
 <p align="center">
-  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/51eee758-ac1c-4dde-9f9a-cc76b90c2f41" />
+  <img width="1076" height="1168" alt="Classdiagram" src="https://github.com/user-attachments/assets/9d32c996-38bb-4702-a78f-b50e6b31a08f" />
 </p>
 
 ---
