@@ -10,7 +10,7 @@
 |---|---|---|---|
 | 1 | 65075821 | อภิวัฒ คุณทรัพย์ | Frontend |
 | 2 | 67160172 | ภัสสร เพ็ญพรเลิศชัย | Design, Frontend |
-| 3 | 67164463 | ณัฐดนัย กาสินพิลา | Backend |
+| 3 | 67164463 | ณัฐดนัย กาสินพิลา | Backend,database |
 | 4 | 67172347 | รัฐภูมิ ลิ้มเลิศ | Backend |
 | 5 | 67172354 | บุราชัย สละสำราญ | Design, Frontend |
 
@@ -89,6 +89,27 @@
    * นำระบบจำลองขึ้นใช้งานจริง (Production/Local Environment) ให้ผู้ใช้งานเข้ามาทดสอบฟีเจอร์การสั่งซื้อ ชำระเงิน
 7. **Maintenance (การบำรุงรักษา):**
    * ตรวจสอบระบบและดูแลการทำงานของ Database (Monitoring)
+## กระบวนการพัฒนาซอฟต์แวร์ (SDLC)
+
+โครงการนี้ประยุกต์ใช้ **Software Development Life Cycle (SDLC)** ในรูปแบบ Agile/Iterative เพื่อให้สามารถพัฒนาและปรับปรุงระบบได้อย่างยืดหยุ่น โดยแบ่งออกเป็น 6 ระยะ (Phases) ดังนี้:
+
+1. **Requirement Analysis (การวิเคราะห์ความต้องการ):**
+   * รวบรวมความต้องการของระบบอีคอมเมิร์ซรองเท้า
+   * กำหนดบทบาทผู้ใช้งาน (Customer, Staff, Admin) และขอบเขตของระบบ
+2. **Design (การออกแบบระบบ):**
+   * **UX/UI Design:** ออกแบบหน้าจอการใช้งาน (Wireframes/Prototypes) ผ่าน Figma
+   * **Database Design:** ออกแบบตารางฐานข้อมูลและ Diagram (Use Case, Class Diagram, Sequence Diagram)
+3. **Development (การพัฒนาระบบ):**
+   * **Frontend:** พัฒนาส่วนแสดงผลด้วย React.js และ Bootstrap
+   * **Backend:** พัฒนาระบบจัดการหลังบ้านด้วย Node.js, Express.js และเชื่อมต่อฐานข้อมูล MongoDB
+4. **Testing (การทดสอบระบบ):**
+   * ทดสอบการทำงานพื้นฐานตามฟังก์ชัน (Manual Testing)
+   * ทดสอบการเชื่อมต่อ API ระหว่างระบบ (API Testing ด้วย Postman)
+   * **UAT (User Acceptance Testing):** ทดสอบการใช้งานจากฝั่งผู้ใช้งานจริงเพื่อหาข้อบกพร่อง
+5. **Deployment (การติดตั้งและส่งมอบ):**
+   * นำระบบจำลองขึ้นใช้งานจริง (Production/Local Environment) ให้ผู้ใช้งานเข้ามาทดสอบฟีเจอร์การสั่งซื้อ ชำระเงิน
+6. **Maintenance (การบำรุงรักษา):**
+   * ตรวจสอบระบบและดูแลการทำงานของ Database
    * ดำเนินการอัปเดตแก้ไขข้อบกพร่องต่างๆ ตาม Feedback ที่ได้รับหลังจากการเปิดทดสอบใช้งาน
 
 ---
@@ -190,7 +211,7 @@
 ---
 ## Class Diagram
 <p align="center">
-  <img width="990" height="990" alt="Class Diagram" src="https://github.com/user-attachments/assets/51eee758-ac1c-4dde-9f9a-cc76b90c2f41" />
+  <img width="1076" height="1168" alt="Classdiagram" src="https://github.com/user-attachments/assets/9d32c996-38bb-4702-a78f-b50e6b31a08f" />
 </p>
 
 ---
