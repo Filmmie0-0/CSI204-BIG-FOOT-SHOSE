@@ -71,6 +71,7 @@ const Navbar = () => {
             background-color: var(--bs-body-bg) !important;
             border-bottom: 1px solid var(--bs-border-color);
             transition: all 0.25s ease-in-out;
+            z-index: 1030 !important;
           }
           .navbar-premium.scrolled {
             box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);

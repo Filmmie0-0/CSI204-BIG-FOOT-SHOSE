@@ -28,7 +28,7 @@ import AdminProducts from './pages/AdminProducts';
 import AdminCategories from './pages/AdminCategories';
 import AdminOrders from './pages/AdminOrders';
 import AdminStaff from './pages/AdminStaff';
-import AdminInfo from './pages/AdminInfo';
+// import AdminInfo from './pages/AdminInfo';
 import ProductEdit from './pages/ProductEdit';
 
 function App() {
@@ -89,7 +89,7 @@ function App() {
             <Route path="categories" element={<AdminCategories />} />
             <Route path="staff" element={<AdminStaff />} />
             <Route path="orders" element={<AdminOrders />} />
-            <Route path="info" element={<AdminInfo />} />
+            {/* <Route path="info" element={<AdminInfo />} /> */}
           </Route>
         </Routes>
       </main>

@@ -41,13 +41,13 @@ const AdminLayout = () => {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/admin', icon: '📊', roles: ['admin', 'staff'] },
-    { name: 'จัดการสินค้า', path: '/admin/products', icon: '📦', roles: ['admin', 'staff'] },
-    { name: 'จัดการหมวดหมู่', path: '/admin/categories', icon: '🏷️', roles: ['admin', 'staff'] },
-    { name: 'จัดการสิทธิ์', path: '/admin/staff', icon: '👥', roles: ['admin'] },
-    { name: 'จัดการคำสั่งซื้อ', path: '/admin/orders', icon: '📋', roles: ['admin', 'staff'] },
-    { name: 'ดูข้อมูล', path: '/admin/info', icon: 'ℹ️', roles: ['admin'] },
-    { name: 'โปรไฟล์ส่วนตัว', path: '/profile', icon: '👤', roles: ['admin', 'staff'] },
+    { name: 'Dashboard', path: '/admin', icon: '', roles: ['admin', 'staff'] },
+    { name: 'จัดการสินค้า', path: '/admin/products', icon: '', roles: ['admin', 'staff'] },
+    { name: 'จัดการหมวดหมู่', path: '/admin/categories', icon: '', roles: ['admin', 'staff'] },
+    { name: 'จัดการสิทธิ์', path: '/admin/staff', icon: '', roles: ['admin'] },
+    { name: 'จัดการคำสั่งซื้อ', path: '/admin/orders', icon: '', roles: ['admin', 'staff'] },
+    // { name: 'ดูข้อมูล', path: '/admin/info', icon: 'ℹ️', roles: ['admin'] },
+    { name: 'โปรไฟล์ส่วนตัว', path: '/profile', icon: '', roles: ['admin', 'staff'] },
   ];
 
   const filteredNavItems = navItems.filter(item => item.roles.includes(userInfo?.role));

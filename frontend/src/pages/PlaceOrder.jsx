@@ -157,7 +157,7 @@ const PlaceOrder = () => {
         </Col>
 
         <Col lg={4}>
-          <Card className="rounded-4 border-0 shadow-sm bg-light sticky-top" style={{ top: '2rem' }}>
+          <Card className="rounded-4 border-0 shadow-sm bg-light sticky-top" style={{ top: '50vh', transform: 'translateY(-50%)' }}>
             <Card.Body className="p-4 p-md-5">
               <h4 className="fs-5 fw-black text-dark text-uppercase border-bottom pb-3 mb-4">Order Total</h4>
               
